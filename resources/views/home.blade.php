@@ -109,14 +109,14 @@
                         </div>
                     </div>
                     <div class="col-span-12 lg:col-span-5 relative mt-24 lg:mt-0">
-                        <div class="relative aspect-[3/4] overflow-hidden rounded-sm group">
+                        <div class="relative aspect-3/4 overflow-hidden rounded-sm group">
                             <img src="https://images.unsplash.com/photo-1509460913899-515f1df34fed?auto=format&fit=crop&q=80&w=1200" alt="Dramatic Portrait" class="w-full h-full object-cover grayscale transition-all duration-[2s] group-hover:scale-110 mask-image">
                             <div class="absolute bottom-8 right-8 text-right">
                                 <span class="block text-xs font-bold uppercase tracking-widest text-white/50">Model: Sophia K.</span>
                                 <span class="block text-xs font-bold uppercase tracking-widest text-white/50">Series: Midnight Soul</span>
                             </div>
                         </div>
-                        <div class="absolute -top-12 -left-12 w-48 h-48 bg-zinc-900 flex items-center justify-center text-center p-8 rounded-full border border-zinc-800 hidden xl:flex">
+                        <div class="absolute -top-12 -left-12 w-48 h-48 bg-zinc-900 flex items-center justify-center text-center p-8 rounded-full border border-zinc-800 xl:flex">
                             <p class="text-[10px] font-bold leading-tight uppercase tracking-widest">Shot on 35mm Analog Film</p>
                         </div>
                     </div>
@@ -157,56 +157,56 @@
                     <a href="#" id="view-all-portfolio" class="text-xs font-bold uppercase tracking-[0.3em] border-b border-zinc-800 pb-2 hover:border-white transition-all">View Full Archive</a>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <div class="project-card group relative aspect-[3/4] overflow-hidden bg-zinc-900">
+                    <div class="project-card group relative aspect-3/4 overflow-hidden bg-zinc-900">
                         <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110">
                         <div class="absolute inset-0 bg-black/60 flex flex-col justify-end p-8 project-overlay">
                             <span class="text-[10px] font-bold uppercase text-zinc-400 mb-2">Editorial</span>
                             <h3 class="text-2xl font-display font-black uppercase">Ethereal Echoes</h3>
                         </div>
                     </div>
-                    <div class="project-card group relative aspect-[3/4] overflow-hidden bg-zinc-900 lg:mt-12">
+                    <div class="project-card group relative aspect-3/4 overflow-hidden bg-zinc-900 lg:mt-12">
                         <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110">
                         <div class="absolute inset-0 bg-black/60 flex flex-col justify-end p-8 project-overlay">
                             <span class="text-[10px] font-bold uppercase text-zinc-400 mb-2">Street</span>
                             <h3 class="text-2xl font-display font-black uppercase">Urban Silence</h3>
                         </div>
                     </div>
-                    <div class="project-card group relative aspect-[3/4] overflow-hidden bg-zinc-900">
+                    <div class="project-card group relative aspect-3/4 overflow-hidden bg-zinc-900">
                         <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110">
                         <div class="absolute inset-0 bg-black/60 flex flex-col justify-end p-8 project-overlay">
                             <span class="text-[10px] font-bold uppercase text-zinc-400 mb-2">Portrait</span>
                             <h3 class="text-2xl font-display font-black uppercase">Golden Hour Soul</h3>
                         </div>
                     </div>
-                    <div class="project-card group relative aspect-[3/4] overflow-hidden bg-zinc-900 lg:mt-12">
+                    <div class="project-card group relative aspect-3/4 overflow-hidden bg-zinc-900 lg:mt-12">
                         <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110">
                         <div class="absolute inset-0 bg-black/60 flex flex-col justify-end p-8 project-overlay">
                             <span class="text-[10px] font-bold uppercase text-zinc-400 mb-2">Minimalist</span>
                             <h3 class="text-2xl font-display font-black uppercase">The Minimalist</h3>
                         </div>
                     </div>
-                    <div class="project-card group relative aspect-[3/4] overflow-hidden bg-zinc-900">
+                    <div class="project-card group relative aspect-3/4 overflow-hidden bg-zinc-900">
                         <img src="https://images.unsplash.com/photo-1523950103971-5cf00677a26c?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110">
                         <div class="absolute inset-0 bg-black/60 flex flex-col justify-end p-8 project-overlay">
                             <span class="text-[10px] font-bold uppercase text-zinc-400 mb-2">Fashion</span>
                             <h3 class="text-2xl font-display font-black uppercase">Fashion Forward</h3>
                         </div>
                     </div>
-                    <div class="project-card group relative aspect-[3/4] overflow-hidden bg-zinc-900 lg:mt-12">
+                    <div class="project-card group relative aspect-3/4 overflow-hidden bg-zinc-900 lg:mt-12">
                         <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110">
                         <div class="absolute inset-0 bg-black/60 flex flex-col justify-end p-8 project-overlay">
                             <span class="text-[10px] font-bold uppercase text-zinc-400 mb-2">Landscape</span>
                             <h3 class="text-2xl font-display font-black uppercase">Nature's Mirror</h3>
                         </div>
                     </div>
-                    <div class="project-card group relative aspect-[3/4] overflow-hidden bg-zinc-900">
+                    <div class="project-card group relative aspect-3/4 overflow-hidden bg-zinc-900">
                         <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110">
                         <div class="absolute inset-0 bg-black/60 flex flex-col justify-end p-8 project-overlay">
                             <span class="text-[10px] font-bold uppercase text-zinc-400 mb-2">Studio</span>
                             <h3 class="text-2xl font-display font-black uppercase">Studio Noir</h3>
                         </div>
                     </div>
-                    <div class="project-card group relative aspect-[3/4] overflow-hidden bg-zinc-900 lg:mt-12">
+                    <div class="project-card group relative aspect-3/4 overflow-hidden bg-zinc-900 lg:mt-12">
                         <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110">
                         <div class="absolute inset-0 bg-black/60 flex flex-col justify-end p-8 project-overlay">
                             <span class="text-[10px] font-bold uppercase text-zinc-400 mb-2">Portrait</span>

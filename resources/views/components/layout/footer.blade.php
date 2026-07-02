@@ -1,4 +1,4 @@
-<footer class="py-32 px-12 border-t border-zinc-900 bg-[#09090b]">
+<footer class="pt-20 pb-10 px-12 border-t border-zinc-900 bg-[#09090b]">
     <div class="asymmetric-grid gap-y-20">
         <div class="col-span-12 lg:col-span-5">
             <h3 class="text-5xl font-display font-black uppercase mb-8 leading-none">Let's create<br/><span class="font-serif italic capitalize text-zinc-400">Extraordinary</span></h3>
