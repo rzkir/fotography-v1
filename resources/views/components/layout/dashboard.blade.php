@@ -101,6 +101,27 @@
         .custom-scroll::-webkit-scrollbar-thumb:hover {
             background: rgba(245, 242, 237, 0.28);
         }
+        .skeleton-shimmer {
+            background: linear-gradient(
+                90deg,
+                rgba(245, 242, 237, 0.04) 0%,
+                rgba(245, 242, 237, 0.1) 50%,
+                rgba(245, 242, 237, 0.04) 100%
+            );
+            background-size: 200% 100%;
+            animation: skeleton-shimmer 1.4s ease-in-out infinite;
+        }
+        @keyframes skeleton-shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .page-content-enter {
+            animation: page-content-enter 0.35s ease-out forwards;
+        }
+        @keyframes page-content-enter {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
     <title>Noir/Studio - {{ $title }}</title>
 </head>
@@ -146,5 +167,8 @@
             </div>
         </main>
     </div>
+
+    @stack('scripts')
+    @vite(['resources/js/app.js'])
 </body>
 </html>

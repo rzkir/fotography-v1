@@ -63,13 +63,22 @@
                                 <a href="{{ route('dashboard.portofolio.edit', $portfolio) }}" class="flex-1 text-center py-3 glass rounded-xl text-xs font-bold glass-hover">
                                     Edit
                                 </a>
-                                <form method="POST" action="{{ route('dashboard.portofolio.destroy', $portfolio) }}" onsubmit="return confirm('Delete this project?')">
+                                <form id="delete-portfolio-{{ $portfolio->id }}" method="POST" action="{{ route('dashboard.portofolio.destroy', $portfolio) }}" class="hidden">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="w-11 h-11 flex items-center justify-center glass rounded-xl glass-hover text-red-400">
-                                        <iconify-icon icon="lucide:trash-2"></iconify-icon>
-                                    </button>
                                 </form>
+                                <button
+                                    type="button"
+                                    data-alert-open="portfolio-delete-dialog"
+                                    data-alert-title="Delete {{ $portfolio->title }}?"
+                                    data-alert-description="This project and all uploaded images will be permanently removed. This action cannot be undone."
+                                    data-alert-confirm="Delete Project"
+                                    data-alert-form="delete-portfolio-{{ $portfolio->id }}"
+                                    class="w-11 h-11 flex items-center justify-center glass rounded-xl glass-hover text-red-400"
+                                    title="Delete project"
+                                >
+                                    <iconify-icon icon="lucide:trash-2"></iconify-icon>
+                                </button>
                             </div>
                         </div>
                     </article>
@@ -77,4 +86,11 @@
             </div>
         @endif
     </div>
+
+    <x-alert-dialog
+        id="portfolio-delete-dialog"
+        title="Delete this project?"
+        description="This project and all uploaded images will be permanently removed. This action cannot be undone."
+        confirm-label="Delete Project"
+    />
 </x-layout.dashboard>

@@ -94,7 +94,7 @@ class PortfolioController extends Controller
             'metrics' => $this->buildMetrics($request),
             'technical_specs' => $this->buildTechnicalSpecs($request),
             'timeline' => $this->buildTimeline($request),
-            'contributors' => $this->buildContributors($request),
+            'contributors' => $this->buildContributors($request, $portfolio),
             'testimonial' => $this->buildTestimonial($request),
             'status' => $request->input('status'),
             'is_published' => $request->boolean('is_published'),
@@ -144,6 +144,10 @@ class PortfolioController extends Controller
 
         if ($request->hasFile('gallery_images')) {
             foreach ($request->file('gallery_images') as $file) {
+                if (! $file->isValid()) {
+                    continue;
+                }
+
                 $path = $file->store('portfolios/gallery', 'public');
                 $gallery[] = [
                     'path' => $path,
@@ -174,7 +178,7 @@ class PortfolioController extends Controller
     }
 
     /**
-     * @return array<string, string|null>
+     * @return array<string, mixed>
      */
     private function buildTechnicalSpecs(Request $request): array
     {
@@ -183,37 +187,93 @@ class PortfolioController extends Controller
             'camera_settings' => $request->input('camera_settings'),
             'lighting_array' => $request->input('lighting_array'),
             'lighting_notes' => $request->input('lighting_notes'),
-            'post_processing' => $request->input('post_processing'),
+            'post_processing' => $this->buildPostProcessing($request),
             'retouching_notes' => $request->input('retouching_notes'),
         ];
     }
 
     /**
-     * @return list<array<string, mixed>>
+     * @return list<array{title: string, text: string|null}>
      */
-    private function buildTimeline(Request $request): array
+    private function buildPostProcessing(Request $request): array
     {
-        if (! $request->filled('timeline_json')) {
-            return [];
-        }
-
-        $timeline = json_decode($request->string('timeline_json')->toString(), true);
-
-        return is_array($timeline) ? $timeline : [];
+        return collect($request->input('post_processing', []))
+            ->filter(fn (array $step): bool => filled($step['title'] ?? null) || filled($step['text'] ?? null))
+            ->map(fn (array $step): array => [
+                'title' => $step['title'] ?? '',
+                'text' => $step['text'] ?? null,
+            ])
+            ->values()
+            ->all();
     }
 
     /**
-     * @return list<array<string, mixed>>
+     * @return list<array{title: string, text: string|null}>
      */
-    private function buildContributors(Request $request): array
+    private function buildTimeline(Request $request): array
     {
-        if (! $request->filled('contributors_json')) {
-            return [];
+        return collect($request->input('timeline', []))
+            ->filter(fn (array $item): bool => filled($item['title'] ?? null) || filled($item['text'] ?? null))
+            ->map(fn (array $item): array => [
+                'title' => $item['title'] ?? '',
+                'text' => $item['text'] ?? null,
+            ])
+            ->values()
+            ->all();
+    }
+
+    /**
+     * @return list<array{name: string, job: string, description: string|null, social_media: string|null, path?: string, image?: string}>
+     */
+    private function buildContributors(Request $request, ?Portfolio $portfolio = null): array
+    {
+        $contributors = [];
+
+        foreach ($request->input('contributors', []) as $index => $contributor) {
+            $hasFile = $request->hasFile("contributors.{$index}.image");
+            $hasExisting = filled($contributor['existing_image'] ?? null);
+            $hasText = filled($contributor['name'] ?? null)
+                || filled($contributor['job'] ?? null)
+                || filled($contributor['description'] ?? null)
+                || filled($contributor['social_media'] ?? null);
+
+            if (! $hasFile && ! $hasExisting && ! $hasText) {
+                continue;
+            }
+
+            $imagePath = $contributor['existing_image'] ?? null;
+
+            if ($hasFile) {
+                if ($imagePath && ! str_starts_with($imagePath, 'http')) {
+                    Storage::disk('public')->delete($imagePath);
+                }
+
+                $imagePath = $request->file("contributors.{$index}.image")->store('portfolios/contributors', 'public');
+            }
+
+            $item = [
+                'name' => $contributor['name'] ?? '',
+                'job' => $contributor['job'] ?? '',
+                'description' => $contributor['description'] ?? null,
+                'social_media' => $contributor['social_media'] ?? null,
+            ];
+
+            if ($imagePath) {
+                if (str_starts_with($imagePath, 'http')) {
+                    $item['image'] = $imagePath;
+                } else {
+                    $item['path'] = $imagePath;
+                }
+            }
+
+            $contributors[] = $item;
         }
 
-        $contributors = json_decode($request->string('contributors_json')->toString(), true);
+        if ($portfolio !== null) {
+            $this->deleteRemovedContributorFiles($portfolio, $contributors);
+        }
 
-        return is_array($contributors) ? $contributors : [];
+        return $contributors;
     }
 
     /**
@@ -270,6 +330,12 @@ class PortfolioController extends Controller
                 Storage::disk('public')->delete($image['path']);
             }
         }
+
+        foreach ($portfolio->contributors ?? [] as $contributor) {
+            if (! empty($contributor['path'])) {
+                Storage::disk('public')->delete($contributor['path']);
+            }
+        }
     }
 
     /**
@@ -279,6 +345,19 @@ class PortfolioController extends Controller
     {
         $newPaths = collect($newGallery)->pluck('path')->filter()->all();
         $oldPaths = collect($portfolio->gallery_images ?? [])->pluck('path')->filter()->all();
+
+        foreach (array_diff($oldPaths, $newPaths) as $path) {
+            Storage::disk('public')->delete($path);
+        }
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $newContributors
+     */
+    private function deleteRemovedContributorFiles(Portfolio $portfolio, array $newContributors): void
+    {
+        $newPaths = collect($newContributors)->pluck('path')->filter()->all();
+        $oldPaths = collect($portfolio->contributors ?? [])->pluck('path')->filter()->all();
 
         foreach (array_diff($oldPaths, $newPaths) as $path) {
             Storage::disk('public')->delete($path);

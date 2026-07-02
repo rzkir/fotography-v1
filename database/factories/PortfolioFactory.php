@@ -47,15 +47,24 @@ class PortfolioFactory extends Factory
                 'camera_settings' => 'ISO 100-400 · 1/125s - 1/250s',
                 'lighting_array' => 'Profoto B10X + 3\' Deep Octa',
                 'lighting_notes' => 'Single source with negative fill for extreme contrast.',
-                'post_processing' => 'Custom LUTs · Frequency Separation',
+                'post_processing' => [
+                    ['title' => 'Curation & RAW', 'text' => 'Initial selection and RAW development.'],
+                    ['title' => 'Color Grading', 'text' => 'Custom LUTs · Frequency Separation'],
+                ],
                 'retouching_notes' => fake()->sentence(),
             ],
             'timeline' => [
-                ['title' => 'Week 01: Ideation', 'description' => 'Moodboarding and location scouting.', 'active' => true],
-                ['title' => 'Week 02: Pre-Production', 'description' => 'Casting and wardrobe selection.', 'active' => false],
+                ['title' => 'Week 01: Ideation', 'text' => 'Moodboarding and location scouting.'],
+                ['title' => 'Week 02: Pre-Production', 'text' => 'Casting and wardrobe selection.'],
             ],
             'contributors' => [
-                ['name' => 'Evan W.', 'role' => 'Lead Photographer', 'bio' => fake()->sentence(), 'image' => 'https://i.pravatar.cc/300?u=a'],
+                [
+                    'name' => 'Evan W.',
+                    'job' => 'Lead Photographer',
+                    'description' => fake()->sentence(),
+                    'social_media' => '@evanw',
+                    'image' => 'https://i.pravatar.cc/300?u=a',
+                ],
             ],
             'testimonial' => [
                 'quote' => fake()->paragraph(),

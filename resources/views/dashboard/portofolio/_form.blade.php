@@ -12,6 +12,70 @@
     if ($contentSections === []) {
         $contentSections = [['title' => '', 'description' => '']];
     }
+
+    $postProcessingRaw = old('post_processing', $specs['post_processing'] ?? [['title' => '', 'text' => '']]);
+    if (is_string($postProcessingRaw)) {
+        $postProcessingRaw = [['title' => '', 'text' => $postProcessingRaw]];
+    }
+    $postProcessingSteps = collect($postProcessingRaw)->map(function (mixed $step): array {
+        if (! is_array($step)) {
+            return ['title' => '', 'text' => (string) $step];
+        }
+
+        return [
+            'title' => $step['title'] ?? '',
+            'text' => $step['text'] ?? ($step['description'] ?? ''),
+        ];
+    })->values()->all();
+
+    if ($postProcessingSteps === []) {
+        $postProcessingSteps = [['title' => '', 'text' => '']];
+    }
+
+    $timelineItems = old('timeline', $portfolio?->timeline ?? [['title' => '', 'text' => '']]);
+    $timelineItems = collect($timelineItems)->map(fn (array $item): array => [
+        'title' => $item['title'] ?? '',
+        'text' => $item['text'] ?? ($item['description'] ?? ''),
+    ])->values()->all();
+
+    if ($timelineItems === []) {
+        $timelineItems = [['title' => '', 'text' => '']];
+    }
+
+    $contributorsRaw = old('contributors');
+    if ($contributorsRaw === null) {
+        $contributorsRaw = collect($portfolio?->contributors ?? [])->map(fn (array $contributor): array => [
+            'name' => $contributor['name'] ?? '',
+            'job' => $contributor['job'] ?? ($contributor['role'] ?? ''),
+            'description' => $contributor['description'] ?? ($contributor['bio'] ?? ''),
+            'social_media' => $contributor['social_media'] ?? '',
+            'existing_image' => $contributor['path'] ?? ($contributor['image'] ?? ''),
+        ])->values()->all();
+    }
+    $contributors = collect($contributorsRaw)->map(fn (array $contributor): array => [
+        'name' => $contributor['name'] ?? '',
+        'job' => $contributor['job'] ?? '',
+        'description' => $contributor['description'] ?? '',
+        'social_media' => $contributor['social_media'] ?? '',
+        'existing_image' => $contributor['existing_image'] ?? '',
+    ])->values()->all();
+
+    if ($contributors === []) {
+        $contributors = [['name' => '', 'job' => '', 'description' => '', 'social_media' => '', 'existing_image' => '']];
+    }
+
+    $contributorImageUrl = function (array $contributor): ?string {
+        $existing = $contributor['existing_image'] ?? null;
+        if (! filled($existing)) {
+            return null;
+        }
+
+        if (str_starts_with($existing, 'http')) {
+            return $existing;
+        }
+
+        return \Illuminate\Support\Facades\Storage::disk('public')->url($existing);
+    };
 @endphp
 
 <div class="glass rounded-[3rem] p-6 lg:p-10 relative overflow-hidden">
@@ -80,6 +144,10 @@
                 hint="Add images one by one · upload button stays available"
             />
 
+            @if ($portfolio)
+                <input type="hidden" name="existing_gallery" id="existing_gallery" value='@json($portfolio->gallery_images ?? [])'>
+            @endif
+
             @if ($portfolio && count($portfolio->galleryImageUrls()))
                 <div class="space-y-2">
                     <p class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Saved Gallery</p>
@@ -93,7 +161,6 @@
                             </div>
                         @endforeach
                     </div>
-                    <input type="hidden" name="existing_gallery" id="existing_gallery" value="{{ json_encode($portfolio->gallery_images ?? []) }}">
                 </div>
             @endif
         </div>
@@ -191,31 +258,321 @@
             <x-input name="camera_settings" label="Camera Settings" :value="$specs['camera_settings'] ?? null" placeholder="ISO 100-400 · 1/125s - 1/250s" />
             <x-input name="lighting_array" label="Lighting Array" :value="$specs['lighting_array'] ?? null" placeholder="Profoto B10X + 3' Deep Octa" />
             <x-textarea name="lighting_notes" label="Lighting Notes" :value="$specs['lighting_notes'] ?? null" rows="3" />
-            <x-textarea name="post_processing" label="Post-Processing Workflow" :value="$specs['post_processing'] ?? null" rows="3" placeholder="Curation & RAW · Color Grading · Retouching" />
             <x-textarea name="retouching_notes" label="Retouching Notes" :value="$specs['retouching_notes'] ?? null" rows="3" />
+        </div>
+
+        <div class="mt-8 pt-8 border-t border-white/5">
+            <div class="flex items-center justify-between mb-6">
+                <h4 class="text-sm font-bold flex items-center gap-2">
+                    <iconify-icon icon="lucide:layers" class="text-[#f5f2ed]/40"></iconify-icon>
+                    Post-Processing Workflow
+                </h4>
+                <button
+                    type="button"
+                    id="add-post-processing-step"
+                    class="px-4 py-2 glass rounded-xl text-xs font-bold glass-hover flex items-center gap-2"
+                >
+                    <iconify-icon icon="lucide:plus"></iconify-icon>
+                    Add Step
+                </button>
+            </div>
+
+            <div id="post-processing-list" class="space-y-4">
+                @foreach ($postProcessingSteps as $index => $step)
+                    <div class="post-processing-item glass rounded-2xl p-6 space-y-4" data-post-processing-item>
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] uppercase tracking-widest font-bold opacity-40 post-processing-label">Step {{ $index + 1 }}</span>
+                            <button
+                                type="button"
+                                data-remove-post-processing
+                                @class([
+                                    'text-[10px] uppercase tracking-widest font-bold opacity-40 hover:opacity-100 hover:text-red-400 transition-colors',
+                                    'hidden' => count($postProcessingSteps) === 1,
+                                ])
+                            >
+                                Remove
+                            </button>
+                        </div>
+                        <x-input
+                            name="post_processing[{{ $index }}][title]"
+                            label="Title"
+                            :value="$step['title']"
+                            placeholder="Color Grading"
+                        />
+                        <x-textarea
+                            name="post_processing[{{ $index }}][text]"
+                            label="Text"
+                            :value="$step['text']"
+                            rows="3"
+                            placeholder="Custom LUTs, curve adjustments, and tonal balance..."
+                        />
+                    </div>
+                @endforeach
+            </div>
+
+            <template id="post-processing-template">
+                <div class="post-processing-item glass rounded-2xl p-6 space-y-4" data-post-processing-item>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] uppercase tracking-widest font-bold opacity-40 post-processing-label">Step</span>
+                        <button type="button" data-remove-post-processing class="text-[10px] uppercase tracking-widest font-bold opacity-40 hover:opacity-100 hover:text-red-400 transition-colors">
+                            Remove
+                        </button>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Title</label>
+                        <input type="text" data-field="title" class="input-field" placeholder="Color Grading">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Text</label>
+                        <textarea data-field="text" rows="3" class="input-field resize-none" placeholder="Custom LUTs, curve adjustments, and tonal balance..."></textarea>
+                    </div>
+                </div>
+            </template>
         </div>
     </div>
 
     <div class="mt-12 pt-8 border-t border-white/5">
         <h3 class="text-lg font-bold flex items-center gap-2 mb-6">
             <iconify-icon icon="lucide:git-branch" class="text-[#f5f2ed]/40"></iconify-icon>
-            Timeline & Contributors (JSON)
+            Timeline & Contributors
         </h3>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <x-textarea
-                name="timeline_json"
-                label="Production Timeline"
-                rows="8"
-                :value="old('timeline_json', $portfolio ? json_encode($portfolio->timeline ?? [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) : '')"
-                hint='[{"title":"Week 01: Ideation","description":"...","active":true}]'
-            />
-            <x-textarea
-                name="contributors_json"
-                label="Contributors"
-                rows="8"
-                :value="old('contributors_json', $portfolio ? json_encode($portfolio->contributors ?? [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) : '')"
-                hint='[{"name":"Evan W.","role":"Lead Photographer","bio":"...","image":"https://..."}]'
-            />
+
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <h4 class="text-sm font-bold flex items-center gap-2">
+                    <iconify-icon icon="lucide:calendar-range" class="text-[#f5f2ed]/40"></iconify-icon>
+                    Production Timeline
+                </h4>
+                <button
+                    type="button"
+                    id="add-timeline-item"
+                    class="px-4 py-2 glass rounded-xl text-xs font-bold glass-hover flex items-center gap-2"
+                >
+                    <iconify-icon icon="lucide:plus"></iconify-icon>
+                    Add Phase
+                </button>
+            </div>
+
+            <div id="timeline-list" class="space-y-4">
+                @foreach ($timelineItems as $index => $item)
+                    <div class="timeline-item glass rounded-2xl p-6 space-y-4" data-timeline-item>
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] uppercase tracking-widest font-bold opacity-40 timeline-label">Phase {{ $index + 1 }}</span>
+                            <button
+                                type="button"
+                                data-remove-timeline
+                                @class([
+                                    'text-[10px] uppercase tracking-widest font-bold opacity-40 hover:opacity-100 hover:text-red-400 transition-colors',
+                                    'hidden' => count($timelineItems) === 1,
+                                ])
+                            >
+                                Remove
+                            </button>
+                        </div>
+                        <x-input
+                            name="timeline[{{ $index }}][title]"
+                            label="Title"
+                            :value="$item['title']"
+                            placeholder="Week 01: Ideation"
+                        />
+                        <x-textarea
+                            name="timeline[{{ $index }}][text]"
+                            label="Text"
+                            :value="$item['text']"
+                            rows="3"
+                            placeholder="Moodboarding and location scouting..."
+                        />
+                    </div>
+                @endforeach
+            </div>
+
+            <template id="timeline-template">
+                <div class="timeline-item glass rounded-2xl p-6 space-y-4" data-timeline-item>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] uppercase tracking-widest font-bold opacity-40 timeline-label">Phase</span>
+                        <button type="button" data-remove-timeline class="text-[10px] uppercase tracking-widest font-bold opacity-40 hover:opacity-100 hover:text-red-400 transition-colors">
+                            Remove
+                        </button>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Title</label>
+                        <input type="text" data-field="title" class="input-field" placeholder="Week 01: Ideation">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Text</label>
+                        <textarea data-field="text" rows="3" class="input-field resize-none" placeholder="Moodboarding and location scouting..."></textarea>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        <div>
+            <div class="flex items-center justify-between mb-6">
+                <h4 class="text-sm font-bold flex items-center gap-2">
+                    <iconify-icon icon="lucide:users" class="text-[#f5f2ed]/40"></iconify-icon>
+                    Contributors
+                </h4>
+                <button
+                    type="button"
+                    id="add-contributor"
+                    class="px-4 py-2 glass rounded-xl text-xs font-bold glass-hover flex items-center gap-2"
+                >
+                    <iconify-icon icon="lucide:plus"></iconify-icon>
+                    Add Contributor
+                </button>
+            </div>
+
+            <div id="contributors-list" class="space-y-4">
+                @foreach ($contributors as $index => $contributor)
+                    @php $previewUrl = $contributorImageUrl($contributor); @endphp
+                    <div class="contributor-item glass rounded-2xl p-6 space-y-4" data-contributor-item>
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] uppercase tracking-widest font-bold opacity-40 contributor-label">Contributor {{ $index + 1 }}</span>
+                            <button
+                                type="button"
+                                data-remove-contributor
+                                @class([
+                                    'text-[10px] uppercase tracking-widest font-bold opacity-40 hover:opacity-100 hover:text-red-400 transition-colors',
+                                    'hidden' => count($contributors) === 1,
+                                ])
+                            >
+                                Remove
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="space-y-2 relative" data-contributor-image-root>
+                                <p class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Photo</p>
+                                <input
+                                    type="file"
+                                    id="contributor-image-{{ $index }}"
+                                    name="contributors[{{ $index }}][image]"
+                                    accept="image/*,.heic,.heif,.avif,.jpg,.jpeg,.png,.gif,.webp,.bmp,.svg,.tiff,.tif,.ico,.jfif,.jxl,.apng"
+                                    tabindex="-1"
+                                    class="absolute h-px w-px overflow-hidden opacity-0"
+                                    style="clip: rect(0, 0, 0, 0); white-space: nowrap;"
+                                    data-field="image"
+                                    data-contributor-image-input
+                                >
+                                <div
+                                    data-contributor-preview-wrap
+                                    @class(['hidden' => ! $previewUrl])
+                                >
+                                    @if ($previewUrl)
+                                        <div class="relative aspect-square rounded-xl overflow-hidden border border-white/10 group">
+                                            <img src="{{ $previewUrl }}" alt="{{ $contributor['name'] ?: 'Contributor' }}" class="w-full h-full object-cover" data-contributor-preview-img>
+                                            <button
+                                                type="button"
+                                                data-remove-contributor-image
+                                                class="absolute top-2 right-2 w-7 h-7 bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                            >
+                                                <iconify-icon icon="lucide:x" class="text-xs"></iconify-icon>
+                                            </button>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div
+                                    data-contributor-dropzone
+                                    @class([
+                                        'relative flex flex-col items-center justify-center gap-2 p-6 glass rounded-xl border-dashed border-white/10 cursor-pointer hover:border-white/20 transition-colors aspect-square overflow-hidden',
+                                        'hidden' => filled($previewUrl),
+                                    ])
+                                >
+                                    <label for="contributor-image-{{ $index }}" data-contributor-image-trigger class="absolute inset-0 z-10 cursor-pointer" aria-label="Upload contributor photo"></label>
+                                    <div class="pointer-events-none flex flex-col items-center justify-center gap-2">
+                                        <iconify-icon icon="lucide:user-round" class="text-2xl opacity-30"></iconify-icon>
+                                        <span class="text-[10px] opacity-40 font-medium text-center">Upload photo</span>
+                                    </div>
+                                </div>
+                                <input
+                                    type="hidden"
+                                    name="contributors[{{ $index }}][existing_image]"
+                                    value="{{ $contributor['existing_image'] }}"
+                                    data-field="existing_image"
+                                >
+                            </div>
+
+                            <div class="lg:col-span-2 space-y-4">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <x-input
+                                        name="contributors[{{ $index }}][name]"
+                                        label="Name"
+                                        :value="$contributor['name']"
+                                        placeholder="Evan W."
+                                    />
+                                    <x-input
+                                        name="contributors[{{ $index }}][job]"
+                                        label="Job"
+                                        :value="$contributor['job']"
+                                        placeholder="Lead Photographer"
+                                    />
+                                </div>
+                                <x-input
+                                    name="contributors[{{ $index }}][social_media]"
+                                    label="Social Media"
+                                    :value="$contributor['social_media']"
+                                    placeholder="@username or https://instagram.com/..."
+                                />
+                                <x-textarea
+                                    name="contributors[{{ $index }}][description]"
+                                    label="Description"
+                                    :value="$contributor['description']"
+                                    rows="3"
+                                    placeholder="Brief bio or contribution notes..."
+                                />
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            <template id="contributor-template">
+                <div class="contributor-item glass rounded-2xl p-6 space-y-4" data-contributor-item>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] uppercase tracking-widest font-bold opacity-40 contributor-label">Contributor</span>
+                        <button type="button" data-remove-contributor class="text-[10px] uppercase tracking-widest font-bold opacity-40 hover:opacity-100 hover:text-red-400 transition-colors">
+                            Remove
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="space-y-2 relative" data-contributor-image-root>
+                            <p class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Photo</p>
+                            <input type="file" accept="image/*,.heic,.heif,.avif,.jpg,.jpeg,.png,.gif,.webp,.bmp,.svg,.tiff,.tif,.ico,.jfif,.jxl,.apng" tabindex="-1" class="absolute h-px w-px overflow-hidden opacity-0" style="clip: rect(0, 0, 0, 0); white-space: nowrap;" data-field="image" data-contributor-image-input>
+                            <div class="hidden" data-contributor-preview-wrap></div>
+                            <div data-contributor-dropzone class="relative flex flex-col items-center justify-center gap-2 p-6 glass rounded-xl border-dashed border-white/10 cursor-pointer hover:border-white/20 transition-colors aspect-square overflow-hidden">
+                                <label data-contributor-image-trigger class="absolute inset-0 z-10 cursor-pointer" aria-label="Upload contributor photo"></label>
+                                <div class="pointer-events-none flex flex-col items-center justify-center gap-2">
+                                    <iconify-icon icon="lucide:user-round" class="text-2xl opacity-30"></iconify-icon>
+                                    <span class="text-[10px] opacity-40 font-medium text-center">Upload photo</span>
+                                </div>
+                            </div>
+                            <input type="hidden" value="" data-field="existing_image">
+                        </div>
+
+                        <div class="lg:col-span-2 space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Name</label>
+                                    <input type="text" data-field="name" class="input-field" placeholder="Evan W.">
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Job</label>
+                                    <input type="text" data-field="job" class="input-field" placeholder="Lead Photographer">
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Social Media</label>
+                                <input type="text" data-field="social_media" class="input-field" placeholder="@username or https://instagram.com/...">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Description</label>
+                                <textarea data-field="description" rows="3" class="input-field resize-none" placeholder="Brief bio or contribution notes..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
         </div>
     </div>
 
@@ -239,113 +596,3 @@
         </div>
     </div>
 </div>
-
-@if ($portfolio)
-<script>
-    document.querySelectorAll('.gallery-remove').forEach((button) => {
-        button.addEventListener('click', () => {
-            const index = parseInt(button.dataset.index, 10);
-            const input = document.getElementById('existing_gallery');
-            const gallery = JSON.parse(input.value || '[]');
-            gallery.splice(index, 1);
-            input.value = JSON.stringify(gallery);
-            button.closest('[data-gallery-index]').remove();
-        });
-    });
-</script>
-@endif
-
-<script>
-    (function () {
-        const titleInput = document.getElementById('title');
-        const slugInput = document.getElementById('slug');
-
-        if (!titleInput || !slugInput) {
-            return;
-        }
-
-        let slugTouched = Boolean(slugInput.value);
-
-        slugInput.addEventListener('input', () => {
-            slugTouched = true;
-        });
-
-        titleInput.addEventListener('input', () => {
-            if (!slugTouched) {
-                slugInput.value = slugify(titleInput.value);
-            }
-        });
-
-        function slugify(text) {
-            return text
-                .toLowerCase()
-                .trim()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .replace(/[^a-z0-9\s-]/g, '')
-                .replace(/[\s_]+/g, '-')
-                .replace(/-+/g, '-')
-                .replace(/^-+|-+$/g, '');
-        }
-    })();
-
-    (function () {
-        const list = document.getElementById('content-sections-list');
-        const template = document.getElementById('content-section-template');
-        const addButton = document.getElementById('add-content-section');
-
-        if (!list || !template || !addButton) {
-            return;
-        }
-
-        const reindexSections = () => {
-            const items = list.querySelectorAll('[data-section-item]');
-
-            items.forEach((item, index) => {
-                const label = item.querySelector('.section-label');
-                if (label) {
-                    label.textContent = `Section ${index + 1}`;
-                }
-
-                const titleInput = item.querySelector('[data-field="title"]') || item.querySelector('input[name*="[title]"]');
-                const descriptionInput = item.querySelector('[data-field="description"]') || item.querySelector('textarea[name*="[description]"]');
-
-                if (titleInput) {
-                    titleInput.name = `content_sections[${index}][title]`;
-                }
-
-                if (descriptionInput) {
-                    descriptionInput.name = `content_sections[${index}][description]`;
-                }
-
-                const removeBtn = item.querySelector('[data-remove-section]');
-                if (removeBtn) {
-                    removeBtn.classList.toggle('hidden', items.length === 1);
-                }
-            });
-        };
-
-        addButton.addEventListener('click', () => {
-            const clone = template.content.cloneNode(true);
-            list.appendChild(clone);
-            reindexSections();
-        });
-
-        list.addEventListener('click', (event) => {
-            const removeBtn = event.target.closest('[data-remove-section]');
-
-            if (!removeBtn) {
-                return;
-            }
-
-            const items = list.querySelectorAll('[data-section-item]');
-
-            if (items.length <= 1) {
-                return;
-            }
-
-            removeBtn.closest('[data-section-item]')?.remove();
-            reindexSections();
-        });
-    })();
-</script>

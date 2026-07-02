@@ -54,10 +54,14 @@ class PortfolioCrudTest extends TestCase
             'camera_setup' => 'Leica M11',
             'status' => 'published',
             'is_published' => '1',
-            'timeline_json' => json_encode([
-                ['title' => 'Week 01: Ideation', 'description' => 'Moodboarding.', 'active' => true],
-            ]),
+            'timeline' => [
+                ['title' => 'Week 01: Ideation', 'text' => 'Moodboarding.'],
+            ],
             'hero_image' => UploadedFile::fake()->image('hero.jpg'),
+            'gallery_images' => [
+                UploadedFile::fake()->image('gallery-1.jpg'),
+                UploadedFile::fake()->image('gallery-2.jpg'),
+            ],
         ]);
 
         $portfolio = Portfolio::query()->first();
@@ -73,6 +77,7 @@ class PortfolioCrudTest extends TestCase
         ]);
 
         Storage::disk('public')->assertExists($portfolio->hero_image);
+        $this->assertCount(2, $portfolio->gallery_images ?? []);
     }
 
     public function test_user_can_update_own_portfolio(): void
