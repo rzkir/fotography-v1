@@ -36,6 +36,18 @@
             <span @class(['font-medium' => $active === 'projects'])>Projects</span>
         </a>
         <a
+            href="{{ route('dashboard.jurnal.index') }}"
+            id="nav-journal"
+            @class([
+                'flex items-center gap-4 px-6 py-4 rounded-2xl',
+                'active-nav' => $active === 'journal',
+                'glass-hover opacity-60 hover:opacity-100' => $active !== 'journal',
+            ])
+        >
+            <iconify-icon icon="lucide:book-open"></iconify-icon>
+            <span @class(['font-medium' => $active === 'journal'])>Journal</span>
+        </a>
+        <a
             href="/works"
             id="nav-gallery"
             @class([

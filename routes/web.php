@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Dashboard\JurnalController;
 use App\Http\Controllers\Dashboard\PortfolioController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,4 +36,5 @@ Route::middleware('auth')->prefix('dashboard')->name('dashboard.')->group(functi
     })->name('index');
 
     Route::resource('portofolio', PortfolioController::class)->except(['show']);
+    Route::resource('jurnal', JurnalController::class)->except(['show']);
 });

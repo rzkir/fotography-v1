@@ -16,7 +16,15 @@ export function initPageSkeletons() {
         };
 
         requestAnimationFrame(() => {
-            window.setTimeout(reveal, 200);
+            window.setTimeout(() => {
+                reveal();
+
+                requestAnimationFrame(() => {
+                    if (typeof window.initializeAllQuillEditors === 'function') {
+                        window.initializeAllQuillEditors();
+                    }
+                });
+            }, 200);
         });
     });
 }
