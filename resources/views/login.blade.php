@@ -55,9 +55,6 @@
 <body>
     <div class="min-h-screen relative overflow-hidden bg-[#0d0d0d] flex items-center justify-center">
         <div class="diagonal-line"></div>
-
-        <x-layout.header />
-
         <main class="relative z-10 w-full container px-12">
             <div class="text-center mb-16">
                 <h1 class="text-6xl font-display font-black uppercase tracking-tighter mb-4">Welcome Back</h1>
