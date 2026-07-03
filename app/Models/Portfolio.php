@@ -58,8 +58,10 @@ class Portfolio extends Model
 
     public function portfolioCategory(): BelongsTo
     {
+        $userId = $this->attributes['user_id'] ?? auth()->id();
+
         return $this->belongsTo(PortfolioCategory::class, 'category_id', 'category_id')
-            ->whereColumn('portfolio_categories.user_id', 'portfolios.user_id');
+            ->where('portfolio_categories.user_id', $userId);
     }
 
     /**

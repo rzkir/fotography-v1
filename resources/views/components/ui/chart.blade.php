@@ -41,7 +41,7 @@
         </div>
     </div>
 
-    <div class="card-photography p-6 lg:p-10 rounded-[3rem] bg-gradient-to-br from-white/5 to-transparent">
+    <div class="card-photography p-6 lg:p-10 rounded-[3rem] bg-linear-to-br from-white/5 to-transparent">
         <h2 class="text-2xl font-display font-black mb-8">Upcoming Shoots</h2>
 
         <div class="space-y-8">
@@ -68,7 +68,7 @@
             @endforelse
         </div>
 
-        <a href="/contact" class="block w-full mt-12 py-4 rounded-[1.5rem] bg-white text-black text-xs font-black tracking-[0.2em] text-center hover:bg-[#ff6b35] hover:text-white transition-all">
+        <a href="/contact" class="block w-full mt-12 py-4 rounded-3xl bg-white text-black text-xs font-black tracking-[0.2em] text-center hover:bg-[#ff6b35] hover:text-white transition-all">
             OPEN CALENDAR
         </a>
     </div>

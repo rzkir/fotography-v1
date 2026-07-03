@@ -22,7 +22,9 @@ class JurnalCategory extends Model
 
     public function jurnals(): HasMany
     {
+        $userId = $this->attributes['user_id'] ?? auth()->id();
+
         return $this->hasMany(Jurnal::class, 'category_id', 'category_id')
-            ->whereColumn('jurnals.user_id', 'jurnal_categories.user_id');
+            ->where('jurnals.user_id', $userId);
     }
 }

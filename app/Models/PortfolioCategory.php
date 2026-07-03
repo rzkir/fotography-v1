@@ -22,7 +22,9 @@ class PortfolioCategory extends Model
 
     public function portfolios(): HasMany
     {
+        $userId = $this->attributes['user_id'] ?? auth()->id();
+
         return $this->hasMany(Portfolio::class, 'category_id', 'category_id')
-            ->whereColumn('portfolios.user_id', 'portfolio_categories.user_id');
+            ->where('portfolios.user_id', $userId);
     }
 }

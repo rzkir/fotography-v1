@@ -1,5 +1,6 @@
 import { slugify } from "./portofolio.service";
 import { openDialog } from "./dialog.service";
+import { bindCrudFormLoading, setButtonLoading } from "./spiner.service";
 
 function initCategoryIdSlugify(dialogId) {
     const titleInput = document.getElementById(`${dialogId}-title-input`);
@@ -43,6 +44,7 @@ function resetCategoryForm(form, dialog, mode = "create") {
     }
 
     if (submitBtn) {
+        setButtonLoading(submitBtn, false);
         submitBtn.textContent =
             mode === "edit" ? "Update Category" : "Save Category";
     }
@@ -100,6 +102,15 @@ function openCategoryDialog(dialogId, trigger) {
 }
 
 export function initCategoryDialog(dialogId) {
+    const form = document.getElementById(`${dialogId}-form`);
+
+    if (form) {
+        bindCrudFormLoading(form, {
+            savingText: "Saving category...",
+            updatingText: "Updating category...",
+        });
+    }
+
     initCategoryIdSlugify(dialogId);
 
     document

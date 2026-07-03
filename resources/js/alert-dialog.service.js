@@ -1,9 +1,14 @@
+import { setButtonLoading, showCrudOverlay } from "./spiner.service";
+
 let activeForm = null;
+let activeConfirmButton = null;
 
 function openAlertDialog(dialog, { title, description, confirmLabel, formId }) {
     const titleEl = dialog.querySelector('[data-alert-title]');
     const descriptionEl = dialog.querySelector('[data-alert-description]');
     const confirmBtn = dialog.querySelector('[data-alert-confirm]');
+
+    setButtonLoading(confirmBtn, false);
 
     if (title && titleEl) {
         titleEl.textContent = title;
@@ -18,6 +23,7 @@ function openAlertDialog(dialog, { title, description, confirmLabel, formId }) {
     }
 
     activeForm = formId ? document.getElementById(formId) : null;
+    activeConfirmButton = confirmBtn ?? null;
 
     dialog.classList.remove('hidden');
     dialog.classList.add('flex');
@@ -32,6 +38,7 @@ function closeAlertDialog(dialog) {
     dialog.classList.remove('flex');
     document.body.style.overflow = '';
     activeForm = null;
+    activeConfirmButton = null;
 }
 
 function initAlertDialog(dialog) {
@@ -46,11 +53,15 @@ function initAlertDialog(dialog) {
     });
 
     dialog.querySelector('[data-alert-confirm]')?.addEventListener('click', () => {
-        if (activeForm) {
-            activeForm.submit();
+        if (!activeForm) {
+            closeAlertDialog(dialog);
+
+            return;
         }
 
-        closeAlertDialog(dialog);
+        setButtonLoading(activeConfirmButton, true, 'Deleting...');
+        showCrudOverlay('Deleting...');
+        activeForm.submit();
     });
 
     document.addEventListener('keydown', (event) => {

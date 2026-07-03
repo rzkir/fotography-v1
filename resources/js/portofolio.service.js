@@ -1,3 +1,5 @@
+import { bindCrudFormLoading } from "./spiner.service";
+
 const IMAGE_EXTENSION_PATTERN =
     /\.(jpe?g|png|gif|webp|bmp|svg|heic|heif|avif|tiff?|ico|jfif|pjpeg|pjp|jxl|apng)$/i;
 
@@ -480,4 +482,13 @@ export function initPortfolioForm() {
 
     initSavedGalleryRemove();
     initContributors();
+
+    const form = document.getElementById("portfolio-form");
+
+    if (form) {
+        bindCrudFormLoading(form, {
+            savingText: "Saving project...",
+            updatingText: "Updating project...",
+        });
+    }
 }

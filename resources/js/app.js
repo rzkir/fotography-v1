@@ -4,6 +4,8 @@ import { initDialogs } from "./dialog.service";
 import { initJurnalForm } from "./jurnal.service";
 import { initPortfolioForm } from "./portofolio.service";
 import { initPageSkeletons } from "./skeleton.service";
+import { initFeaturesDialog } from "./features.blade.js";
+import { initTestimonialsDialog } from "./testimonials.service";
 
 document.addEventListener("DOMContentLoaded", () => {
     initPageSkeletons();
@@ -12,6 +14,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll("[data-category-form]").forEach((form) => {
         initCategoryDialog(form.id.replace("-form", ""));
+    });
+
+    document.querySelectorAll("[data-testimonial-form]").forEach((form) => {
+        initTestimonialsDialog(form.id.replace("-form", ""));
+    });
+
+    document.querySelectorAll("[data-feature-form]").forEach((form) => {
+        initFeaturesDialog(form.id.replace("-form", ""));
     });
 
     if (document.getElementById("portfolio-form")) {

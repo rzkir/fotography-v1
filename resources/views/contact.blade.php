@@ -178,7 +178,7 @@
             <section id="photographer" class="mb-40">
                 <div class="asymmetric-grid">
                     <div class="col-span-12 lg:col-span-5 mb-16 lg:mb-0">
-                        <div class="aspect-[3/4] overflow-hidden grayscale border border-zinc-900">
+                        <div class="aspect-3/4 overflow-hidden grayscale border border-zinc-900">
                             <img src="https://images.unsplash.com/photo-1552058544-f2b08422138a?auto=format&fit=crop&q=80&w=1200" alt="Lead Photographer" class="w-full h-full object-cover">
                         </div>
                     </div>

@@ -1,10 +1,20 @@
-import { initSlugify, initUpload } from './portofolio.service';
+import { initSlugify, initUpload } from "./portofolio.service";
+import { bindCrudFormLoading } from "./spiner.service";
 
 export function initJurnalForm() {
-    document.querySelectorAll('[data-upload-root]').forEach(initUpload);
+    document.querySelectorAll("[data-upload-root]").forEach(initUpload);
     initSlugify();
 
-    if (typeof window.initializeAllQuillEditors === 'function') {
+    const form = document.getElementById("jurnal-form");
+
+    if (form) {
+        bindCrudFormLoading(form, {
+            savingText: "Saving article...",
+            updatingText: "Updating article...",
+        });
+    }
+
+    if (typeof window.initializeAllQuillEditors === "function") {
         window.initializeAllQuillEditors();
     }
 }

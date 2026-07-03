@@ -41,6 +41,16 @@ class User extends Authenticatable
         return $this->hasMany(Jurnal::class);
     }
 
+    public function testimonials(): HasMany
+    {
+        return $this->hasMany(Testimonial::class);
+    }
+
+    public function features(): HasMany
+    {
+        return $this->hasMany(Feature::class);
+    }
+
     public function portfolioCategories(): HasMany
     {
         return $this->hasMany(PortfolioCategory::class);

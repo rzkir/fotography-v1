@@ -95,6 +95,50 @@
         </div>
 
         <div class="space-y-1">
+            <p class="group-title text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-black px-3 mb-4">Reputation</p>
+
+            <a
+                href="{{ route('dashboard.testimonials.index') }}"
+                id="nav-testimonials"
+                @class([
+                    'nav-item flex items-center gap-3 px-3 py-3 rounded-xl transition-all group',
+                    'bg-white/5 text-white font-semibold shadow-inner' => $active === 'testimonials',
+                    'text-zinc-400 hover:text-white hover:bg-white/5' => $active !== 'testimonials',
+                ])
+            >
+                <iconify-icon
+                    icon="lucide:star"
+                    @class([
+                        'text-xl shrink-0',
+                        'text-[#ff6b35]' => $active === 'testimonials',
+                        'group-hover:text-[#ff6b35]' => $active !== 'testimonials',
+                    ])
+                ></iconify-icon>
+                <span class="nav-text">Testimonials</span>
+            </a>
+
+            <a
+                href="{{ route('dashboard.features.index') }}"
+                id="nav-features"
+                @class([
+                    'nav-item flex items-center gap-3 px-3 py-3 rounded-xl transition-all group',
+                    'bg-white/5 text-white font-semibold shadow-inner' => $active === 'features',
+                    'text-zinc-400 hover:text-white hover:bg-white/5' => $active !== 'features',
+                ])
+            >
+                <iconify-icon
+                    icon="lucide:sparkles"
+                    @class([
+                        'text-xl shrink-0',
+                        'text-teal-400' => $active === 'features',
+                        'group-hover:text-teal-400' => $active !== 'features',
+                    ])
+                ></iconify-icon>
+                <span class="nav-text">Features</span>
+            </a>
+        </div>
+
+        <div class="space-y-1">
             <p class="group-title text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-black px-3 mb-4">Productivity</p>
 
             <div class="dropdown-container">

@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Dashboard\FeatureController;
 use App\Http\Controllers\Dashboard\JurnalCategoryController;
 use App\Http\Controllers\Dashboard\JurnalController;
 use App\Http\Controllers\Dashboard\PortfolioCategoryController;
 use App\Http\Controllers\Dashboard\PortfolioController;
+use App\Http\Controllers\Dashboard\TestimonialController;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +18,7 @@ Route::get('/', function () {
 });
 
 Route::get('/works', function () {
-    return view('works');
+    return view('works.index');
 });
 
 Route::get('/journal', function () {
@@ -89,6 +91,8 @@ Route::middleware('auth')->prefix('dashboard')->name('dashboard.')->group(functi
     Route::put('jurnal/category/{jurnalCategory}', [JurnalCategoryController::class, 'update'])->name('jurnal.category.update');
     Route::delete('jurnal/category/{jurnalCategory}', [JurnalCategoryController::class, 'destroy'])->name('jurnal.category.destroy');
     Route::resource('jurnal', JurnalController::class)->except(['show']);
+    Route::resource('testimonials', TestimonialController::class)->except(['show', 'create', 'edit']);
+    Route::resource('features', FeatureController::class)->except(['show', 'create', 'edit']);
 
     Route::get('profile', function (Request $request) {
         $user = $request->user();

@@ -31,8 +31,10 @@ class Jurnal extends Model
 
     public function jurnalCategory(): BelongsTo
     {
+        $userId = $this->attributes['user_id'] ?? auth()->id();
+
         return $this->belongsTo(JurnalCategory::class, 'category_id', 'category_id')
-            ->whereColumn('jurnal_categories.user_id', 'jurnals.user_id');
+            ->where('jurnal_categories.user_id', $userId);
     }
 
     /**

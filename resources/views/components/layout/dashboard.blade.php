@@ -187,7 +187,7 @@
                             PRESS <span class="text-[#ff6b35]">CTRL + B</span> TO TOGGLE SIDEBAR
                         </p>
                     </div>
-                    <div class="flex items-center gap-3 lg:gap-6 flex-shrink-0">
+                    <div class="flex items-center gap-3 lg:gap-6 shrink-0">
                         <div class="relative hidden md:block">
                             <input
                                 type="text"
@@ -223,6 +223,20 @@
                 </div>
             </section>
         </main>
+    </div>
+
+    <div
+        id="crud-loading-overlay"
+        class="fixed inset-0 z-300 hidden items-center justify-center bg-black/60 backdrop-blur-sm"
+        aria-live="polite"
+        aria-busy="true"
+    >
+        <div class="flex flex-col items-center gap-4 rounded-4xl border border-white/10 bg-[#181818] px-10 py-8 shadow-2xl">
+            <x-ui.spiner size="lg" />
+            <p data-crud-overlay-message class="text-xs font-black uppercase tracking-[0.2em] text-zinc-300">
+                Processing...
+            </p>
+        </div>
     </div>
 
     @stack('modals')
