@@ -25,7 +25,12 @@ class StoreJurnalRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/', Rule::unique('jurnals', 'slug')],
-            'category' => ['nullable', 'string', 'max:255'],
+            'category_id' => [
+                'nullable',
+                'string',
+                'max:255',
+                Rule::exists('jurnal_categories', 'category_id')->where('user_id', $this->user()->id),
+            ],
             'description' => ['nullable', 'string', 'max:500'],
             'content' => ['nullable', 'string'],
             'thumbnail' => ['nullable', ...$imageFile],

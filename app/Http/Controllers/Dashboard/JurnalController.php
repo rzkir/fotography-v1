@@ -18,6 +18,7 @@ class JurnalController extends Controller
     {
         $jurnals = auth()->user()
             ->jurnals()
+            ->with('jurnalCategory')
             ->latest()
             ->get();
 
@@ -84,7 +85,7 @@ class JurnalController extends Controller
         $attributes = [
             'title' => $request->string('title')->toString(),
             'slug' => $this->resolveSlug($request, $jurnal),
-            'category' => $request->input('category'),
+            'category_id' => $request->input('category_id'),
             'description' => $request->input('description'),
             'content' => $request->input('content'),
             'status' => $request->input('status'),

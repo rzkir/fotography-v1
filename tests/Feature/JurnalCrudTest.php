@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Jurnal;
+use App\Models\JurnalCategory;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -33,10 +34,14 @@ class JurnalCrudTest extends TestCase
     {
         Storage::fake('public');
         $user = User::factory()->create();
+        JurnalCategory::factory()->for($user)->create([
+            'title' => 'Craft & Technique',
+            'category_id' => 'craft-technique',
+        ]);
 
         $response = $this->actingAs($user)->post(route('dashboard.jurnal.store'), [
             'title' => 'The Alchemy of Chiaroscuro',
-            'category' => 'Craft & Technique',
+            'category_id' => 'craft-technique',
             'description' => 'Exploring the dramatic rebirth of chiaroscuro in modern digital portraiture.',
             'content' => 'Photography is, at its most fundamental level, the management of photons.',
             'status' => 'published',
@@ -52,7 +57,7 @@ class JurnalCrudTest extends TestCase
             'user_id' => $user->id,
             'title' => 'The Alchemy of Chiaroscuro',
             'slug' => 'the-alchemy-of-chiaroscuro',
-            'category' => 'Craft & Technique',
+            'category_id' => 'craft-technique',
             'status' => 'published',
         ]);
 
@@ -62,6 +67,10 @@ class JurnalCrudTest extends TestCase
     public function test_user_can_update_own_jurnal(): void
     {
         $user = User::factory()->create();
+        JurnalCategory::factory()->for($user)->create([
+            'title' => 'Theory / Color',
+            'category_id' => 'theory-color',
+        ]);
         $jurnal = Jurnal::factory()->for($user)->create([
             'title' => 'Old Title',
             'slug' => 'old-title',
@@ -70,7 +79,7 @@ class JurnalCrudTest extends TestCase
         $this->actingAs($user)
             ->put(route('dashboard.jurnal.update', $jurnal), [
                 'title' => 'Updated Title',
-                'category' => 'Theory / Color',
+                'category_id' => 'theory-color',
                 'description' => 'Updated description.',
                 'content' => 'Updated content body.',
                 'status' => 'draft',

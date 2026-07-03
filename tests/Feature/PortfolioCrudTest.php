@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Portfolio;
+use App\Models\PortfolioCategory;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -33,13 +34,17 @@ class PortfolioCrudTest extends TestCase
     {
         Storage::fake('public');
         $user = User::factory()->create();
+        PortfolioCategory::factory()->for($user)->create([
+            'title' => 'Fine Art Portrait',
+            'category_id' => 'fine-art-portrait',
+        ]);
 
         $response = $this->actingAs($user)->post(route('dashboard.portofolio.store'), [
             'title' => 'Midnight Soul',
             'subtitle' => 'soul',
             'client' => 'Personal Editorial',
             'year' => 2024,
-            'category' => 'Fine Art Portrait',
+            'category_id' => 'fine-art-portrait',
             'location' => 'Jakarta, ID',
             'hero_caption' => 'Shot 01 · f/2.0 · ISO 200',
             'quote' => 'In the darkness, the truth reveals itself.',

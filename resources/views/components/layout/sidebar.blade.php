@@ -7,7 +7,7 @@
 
 <aside id="sidebar" class="fixed left-0 top-0 h-full bg-[#0d0d0d] z-50 flex flex-col">
     <div class="p-6 lg:p-8 flex items-center gap-4 overflow-hidden">
-        <div class="w-10 h-10 bg-gradient-to-tr from-[#ff6b35] to-[#fb7185] rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-orange-500/20">
+        <div class="w-10 h-10 bg-linear-to-tr from-[#ff6b35] to-[#fb7185] rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-orange-500/20">
             <iconify-icon icon="lucide:camera" class="text-white text-2xl"></iconify-icon>
         </div>
         <a href="/" class="nav-text font-display font-black text-2xl tracking-tighter whitespace-nowrap">
@@ -65,13 +65,6 @@
                         ])
                     >
                         All Projects
-                    </a>
-                    <a
-                        id="nav-new-project"
-                        href="{{ route('dashboard.portofolio.create') }}"
-                        class="block py-2 text-sm text-zinc-500 hover:text-[#fb7185] transition-colors"
-                    >
-                        New Project
                     </a>
                     <a
                         id="nav-portfolio-categories"
@@ -133,13 +126,6 @@
                         All Articles
                     </a>
                     <a
-                        id="nav-new-article"
-                        href="{{ route('dashboard.jurnal.create') }}"
-                        class="block py-2 text-sm text-zinc-500 hover:text-white transition-colors"
-                    >
-                        New Article
-                    </a>
-                    <a
                         id="nav-journal-categories"
                         href="{{ route('dashboard.jurnal.category.index') }}"
                         @class([
@@ -167,12 +153,36 @@
             </a>
         </div>
 
-        <div class="promo-card mt-auto p-4 mx-1 rounded-2xl bg-gradient-to-br from-zinc-900 to-black border border-white/5 relative overflow-hidden group">
+        <div class="space-y-1">
+            <p class="group-title text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-black px-3 mb-4">Account</p>
+
+            <a
+                href="{{ route('dashboard.profile.index') }}"
+                id="nav-profile"
+                @class([
+                    'nav-item flex items-center gap-3 px-3 py-3 rounded-xl transition-all group',
+                    'bg-white/5 text-white font-semibold shadow-inner' => in_array($active, ['profile', 'profile-password']),
+                    'text-zinc-400 hover:text-white hover:bg-white/5' => ! in_array($active, ['profile', 'profile-password']),
+                ])
+            >
+                <iconify-icon
+                    icon="lucide:user"
+                    @class([
+                        'text-xl shrink-0',
+                        'text-[#fb7185]' => in_array($active, ['profile', 'profile-password']),
+                        'group-hover:text-[#fb7185]' => ! in_array($active, ['profile', 'profile-password']),
+                    ])
+                ></iconify-icon>
+                <span class="nav-text">Profile Settings</span>
+            </a>
+        </div>
+
+        <div class="promo-card mt-auto p-4 mx-1 rounded-2xl bg-linear-to-br from-zinc-900 to-black border border-white/5 relative overflow-hidden group">
             <div class="absolute -right-4 -top-4 w-20 h-20 bg-[#ff6b35]/10 rounded-full blur-2xl group-hover:bg-[#ff6b35]/20 transition-all"></div>
             <p class="text-[10px] font-bold text-zinc-500 mb-1">STORAGE</p>
             <p class="text-sm font-bold mb-3">82% Full (4.1 TB)</p>
             <div class="w-full h-1 bg-zinc-800 rounded-full overflow-hidden mb-4">
-                <div class="h-full bg-gradient-to-r from-[#ff6b35] to-[#fb7185] w-[82%]"></div>
+                <div class="h-full bg-linear-to-r from-[#ff6b35] to-[#fb7185] w-[82%]"></div>
             </div>
             <a id="nav-upgrade" href="/contact" class="block text-center py-2 bg-[#f5f2ed] text-[#0d0d0d] rounded-lg text-xs font-black hover:scale-[1.02] transition-transform">
                 UPGRADE PLAN

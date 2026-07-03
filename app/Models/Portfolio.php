@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Storage;
     'subtitle',
     'client',
     'year',
-    'category',
+    'category_id',
     'location',
     'hero_image',
     'hero_caption',
@@ -54,6 +54,23 @@ class Portfolio extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function portfolioCategory(): BelongsTo
+    {
+        return $this->belongsTo(PortfolioCategory::class, 'category_id', 'category_id')
+            ->whereColumn('portfolio_categories.user_id', 'portfolios.user_id');
+    }
+
+    /**
+     * @return array{title: string|null, categoryId: string|null}
+     */
+    public function categoryPayload(): array
+    {
+        return [
+            'title' => $this->portfolioCategory?->title,
+            'categoryId' => $this->category_id,
+        ];
     }
 
     public function heroImageUrl(): ?string

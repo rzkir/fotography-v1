@@ -152,8 +152,22 @@
             animation: page-content-enter 0.35s ease-out forwards;
         }
         @keyframes page-content-enter {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .dialog-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+        }
+        .dialog-panel {
+            position: relative;
+            z-index: 10;
+            background: #181818;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow:
+                0 0 0 1px rgba(0, 0, 0, 0.35),
+                0 28px 64px rgba(0, 0, 0, 0.7);
         }
     </style>
     <title>Noir/Studio - {{ $title }}</title>
@@ -211,6 +225,7 @@
         </main>
     </div>
 
+    @stack('modals')
     @stack('scripts')
     @vite(['resources/js/app.js'])
 

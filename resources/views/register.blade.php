@@ -62,6 +62,14 @@
                 <p class="font-serif italic text-zinc-400">Create your account for exclusive access</p>
             </div>
 
+            @if ($errors->any())
+                <div class="mb-8 p-4 border border-red-500/30 bg-red-500/10 rounded-xl text-center space-y-1">
+                    @foreach ($errors->all() as $error)
+                        <p class="text-sm text-red-400">{{ $error }}</p>
+                    @endforeach
+                </div>
+            @endif
+
             <form method="POST" action="/register" class="space-y-12">
                 @csrf
                 <div class="space-y-8">

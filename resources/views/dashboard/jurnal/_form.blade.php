@@ -19,12 +19,12 @@
             </div>
 
             <div class="space-y-2">
-                <label for="category" class="text-[10px] uppercase tracking-widest font-black text-zinc-500 px-1">Category</label>
+                <label for="category_id" class="text-[10px] uppercase tracking-widest font-black text-zinc-500 px-1">Category</label>
                 @if (($categories ?? collect())->isNotEmpty())
-                    <select name="category" id="category" class="input-field appearance-none cursor-pointer">
+                    <select name="category_id" id="category_id" class="input-field appearance-none cursor-pointer">
                         <option value="">Select category</option>
                         @foreach ($categories as $categoryOption)
-                            <option value="{{ $categoryOption->title }}" @selected(old('category', $jurnal?->category) === $categoryOption->title)>
+                            <option value="{{ $categoryOption->category_id }}" @selected(old('category_id', $jurnal?->category_id) === $categoryOption->category_id)>
                                 {{ $categoryOption->title }}
                             </option>
                         @endforeach
@@ -33,18 +33,10 @@
                         <a href="{{ route('dashboard.jurnal.category.index') }}" class="text-[#ff6b35] hover:underline">Manage categories</a>
                     </p>
                 @else
-                    <x-ui.input
-                        name="category"
-                        id="category"
-                        label=""
-                        :value="$jurnal?->category"
-                        placeholder="Craft & Technique"
-                    />
-                    <p class="text-[10px] text-zinc-600 px-1">
-                        <a href="{{ route('dashboard.jurnal.category.index') }}" class="text-[#ff6b35] hover:underline">Create categories</a> for easier selection
+                    <p class="text-sm text-zinc-500 px-1">
+                        <a href="{{ route('dashboard.jurnal.category.index') }}" class="text-[#ff6b35] hover:underline">Create categories</a> before assigning an article category.
                     </p>
                 @endif
-                <p class="text-[10px] text-zinc-600 px-1">e.g. Craft & Technique, Hardware / Gear, Lifestyle / Travel</p>
             </div>
 
             <x-ui.textarea

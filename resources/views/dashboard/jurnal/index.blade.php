@@ -42,7 +42,7 @@
                         <div class="absolute bottom-0 left-0 p-6 lg:p-8 w-full">
                             <div class="flex gap-2 mb-3 flex-wrap">
                                 <span class="px-3 py-1 bg-white/10 backdrop-blur-md rounded-full text-[10px] font-bold border border-white/10 uppercase">
-                                    {{ $jurnal->category ?? 'Uncategorized' }}
+                                    {{ $jurnal->jurnalCategory?->title ?? 'Uncategorized' }}
                                 </span>
                                 <span class="px-3 py-1 backdrop-blur-md rounded-full text-[10px] font-bold border {{ $statusConfig['tagClass'] }}">
                                     {{ $statusConfig['tag'] }}
@@ -82,10 +82,12 @@
         @endif
     </div>
 
-    <x-ui.alert-dialog
-        id="jurnal-delete-dialog"
-        title="Delete this article?"
-        description="This article and its thumbnail will be permanently removed. This action cannot be undone."
-        confirm-label="Delete Article"
-    />
+    @push('modals')
+        <x-ui.alert-dialog
+            id="jurnal-delete-dialog"
+            title="Delete this article?"
+            description="This article and its thumbnail will be permanently removed. This action cannot be undone."
+            confirm-label="Delete Article"
+        />
+    @endpush
 </x-layout.dashboard>

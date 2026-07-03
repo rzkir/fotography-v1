@@ -91,7 +91,7 @@ class PortfolioCategoryCrudTest extends TestCase
         ]);
 
         Portfolio::factory()->for($user)->create([
-            'category' => 'Documentary',
+            'category_id' => 'documentary',
         ]);
 
         $this->actingAs($user)

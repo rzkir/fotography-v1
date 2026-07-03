@@ -22,12 +22,7 @@ class JurnalFactory extends Factory
             'user_id' => User::factory(),
             'title' => Str::title($title),
             'slug' => Str::slug($title).'-'.fake()->unique()->numerify('###'),
-            'category' => fake()->randomElement([
-                'Craft & Technique',
-                'Hardware / Gear',
-                'Lifestyle / Travel',
-                'Theory / Color',
-            ]),
+            'category_id' => null,
             'description' => fake()->sentence(16),
             'content' => fake()->paragraphs(4, true),
             'status' => fake()->randomElement(['draft', 'published']),

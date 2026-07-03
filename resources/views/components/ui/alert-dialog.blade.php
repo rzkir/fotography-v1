@@ -18,15 +18,22 @@
 <div
     id="{{ $id }}"
     data-alert-dialog
-    class="fixed inset-0 z-[100] hidden items-center justify-center p-4"
+    class="fixed inset-0 z-[200] hidden items-center justify-center p-4"
     role="alertdialog"
     aria-modal="true"
     aria-labelledby="{{ $id }}-title"
     aria-describedby="{{ $id }}-description"
 >
-    <div data-alert-overlay class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    <div
+        data-alert-overlay
+        class="absolute inset-0"
+        style="background: rgba(0, 0, 0, 0.65); z-index: 0;"
+    ></div>
 
-    <div class="relative w-full max-w-md glass rounded-[2rem] p-8 shadow-2xl border border-white/10">
+    <div
+        class="w-full max-w-md rounded-[2rem] p-8"
+        style="position: relative; z-index: 10; background: #181818; border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35), 0 28px 64px rgba(0, 0, 0, 0.70);"
+    >
         <div class="flex items-start gap-4 mb-6">
             <div class="w-12 h-12 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center flex-shrink-0">
                 <iconify-icon icon="lucide:triangle-alert" class="text-xl text-red-400"></iconify-icon>
@@ -45,7 +52,7 @@
             <button
                 type="button"
                 data-alert-cancel
-                class="px-5 py-3 rounded-2xl glass glass-hover text-sm font-semibold opacity-70 hover:opacity-100 transition-all"
+                class="px-5 py-3 rounded-2xl border border-white/10 bg-white/5 text-sm font-semibold text-zinc-300 hover:bg-white/10 hover:text-white transition-all"
             >
                 {{ $cancelLabel }}
             </button>

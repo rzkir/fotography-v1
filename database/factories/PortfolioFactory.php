@@ -25,7 +25,7 @@ class PortfolioFactory extends Factory
             'subtitle' => fake()->optional()->word(),
             'client' => fake()->company(),
             'year' => (int) fake()->year(),
-            'category' => fake()->randomElement(['Fine Art Portrait', 'Fashion Editorial', 'Commercial', 'Documentary']),
+            'category_id' => null,
             'location' => fake()->city().', ID',
             'hero_caption' => 'Shot 01 · f/2.0 · ISO 200',
             'quote' => fake()->sentence(12),

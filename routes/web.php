@@ -5,6 +5,10 @@ use App\Http\Controllers\Dashboard\JurnalCategoryController;
 use App\Http\Controllers\Dashboard\JurnalController;
 use App\Http\Controllers\Dashboard\PortfolioCategoryController;
 use App\Http\Controllers\Dashboard\PortfolioController;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -35,7 +39,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->n
 Route::middleware('auth')->prefix('dashboard')->name('dashboard.')->group(function () {
     Route::get('/', function () {
         $user = auth()->user();
-        $portfolios = $user->portfolios()->latest()->take(3)->get();
+        $portfolios = $user->portfolios()->with('portfolioCategory')->latest()->take(3)->get();
         $projectCount = $user->portfolios()->count();
         $publishedCount = $user->portfolios()->where('is_published', true)->count();
 
@@ -85,4 +89,52 @@ Route::middleware('auth')->prefix('dashboard')->name('dashboard.')->group(functi
     Route::put('jurnal/category/{jurnalCategory}', [JurnalCategoryController::class, 'update'])->name('jurnal.category.update');
     Route::delete('jurnal/category/{jurnalCategory}', [JurnalCategoryController::class, 'destroy'])->name('jurnal.category.destroy');
     Route::resource('jurnal', JurnalController::class)->except(['show']);
+
+    Route::get('profile', function (Request $request) {
+        $user = $request->user();
+        $currentSessionId = $request->session()->getId();
+
+        $sessions = DB::table('sessions')
+            ->where('user_id', $user->id)
+            ->orderByDesc('last_activity')
+            ->get();
+
+        return view('dashboard.profile.index', [
+            'user' => $user,
+            'sessions' => $sessions,
+            'currentSessionId' => $currentSessionId,
+        ]);
+    })->name('profile.index');
+
+    Route::post('profile', function (Request $request): RedirectResponse {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email,'.$request->user()->id],
+        ]);
+
+        $request->user()->update($validated);
+
+        return back()->with('success', 'Profile updated.');
+    })->name('profile.update');
+
+    Route::get('profile/change-password', function () {
+        return view('dashboard.profile.change-password');
+    })->name('profile.password.edit');
+
+    Route::post('profile/change-password', function (Request $request): RedirectResponse {
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'confirmed', 'min:8'],
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($request->input('password')),
+        ]);
+
+        $request->session()->regenerate();
+
+        return redirect()
+            ->route('dashboard.profile.index')
+            ->with('success', 'Password updated.');
+    })->name('profile.password.update');
 });

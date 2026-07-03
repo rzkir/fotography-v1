@@ -102,7 +102,7 @@
                             <div class="absolute bottom-0 left-0 p-6 lg:p-8 w-full">
                                 <div class="flex gap-2 mb-3 flex-wrap">
                                     <span class="px-3 py-1 bg-white/10 backdrop-blur-md rounded-full text-[10px] font-bold border border-white/10 uppercase">
-                                        {{ $portfolio->category ?? 'General' }}
+                                        {{ $portfolio->portfolioCategory?->title ?? 'General' }}
                                     </span>
                                     <span class="px-3 py-1 backdrop-blur-md rounded-full text-[10px] font-bold border {{ $statusConfig['tagClass'] }}">
                                         {{ $statusConfig['tag'] }}

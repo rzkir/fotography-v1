@@ -28,7 +28,12 @@ class StorePortfolioRequest extends FormRequest
             'subtitle' => ['nullable', 'string', 'max:255'],
             'client' => ['nullable', 'string', 'max:255'],
             'year' => ['required', 'integer', 'min:1900', 'max:2100'],
-            'category' => ['nullable', 'string', 'max:255'],
+            'category_id' => [
+                'nullable',
+                'string',
+                'max:255',
+                Rule::exists('portfolio_categories', 'category_id')->where('user_id', $this->user()->id),
+            ],
             'location' => ['nullable', 'string', 'max:255'],
             'hero_image' => ['nullable', ...$imageFile],
             'hero_caption' => ['nullable', 'string', 'max:255'],

@@ -18,6 +18,7 @@ class PortfolioController extends Controller
     {
         $portfolios = auth()->user()
             ->portfolios()
+            ->with('portfolioCategory')
             ->latest()
             ->get();
 
@@ -92,7 +93,7 @@ class PortfolioController extends Controller
             'subtitle' => $request->input('subtitle'),
             'client' => $request->input('client'),
             'year' => (int) $request->input('year'),
-            'category' => $request->input('category'),
+            'category_id' => $request->input('category_id'),
             'location' => $request->input('location'),
             'hero_caption' => $request->input('hero_caption'),
             'quote' => $request->input('quote'),

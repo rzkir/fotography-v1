@@ -47,7 +47,7 @@ class PortfolioCategoryController extends Controller
 
         $inUse = auth()->user()
             ->portfolios()
-            ->where('category', $portfolioCategory->title)
+            ->where('category_id', $portfolioCategory->category_id)
             ->exists();
 
         if ($inUse) {

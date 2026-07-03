@@ -90,16 +90,18 @@
         @endif
     </div>
 
-    <x-ui.dialog.category
-        id="portfolio-category-dialog"
-        :store-route="route('dashboard.portofolio.category.store')"
-        :update-route="route('dashboard.portofolio.category.update', ['portfolioCategory' => '__ID__'])"
-    />
+    @push('modals')
+        <x-ui.dialog.category
+            id="portfolio-category-dialog"
+            :store-route="route('dashboard.portofolio.category.store')"
+            :update-route="route('dashboard.portofolio.category.update', ['portfolioCategory' => '__ID__'])"
+        />
 
-    <x-ui.alert-dialog
-        id="portfolio-category-delete-dialog"
-        title="Delete this category?"
-        description="This category will be permanently removed. This action cannot be undone."
-        confirm-label="Delete Category"
-    />
+        <x-ui.alert-dialog
+            id="portfolio-category-delete-dialog"
+            title="Delete this category?"
+            description="This category will be permanently removed. This action cannot be undone."
+            confirm-label="Delete Category"
+        />
+    @endpush
 </x-layout.dashboard>

@@ -1,5 +1,3 @@
-<?php
-
 export function openDialog(dialog) {
     dialog.classList.remove('hidden');
     dialog.classList.add('flex');

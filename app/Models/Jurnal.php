@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
     'user_id',
     'title',
     'slug',
-    'category',
+    'category_id',
     'description',
     'content',
     'thumbnail',
@@ -27,6 +27,23 @@ class Jurnal extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function jurnalCategory(): BelongsTo
+    {
+        return $this->belongsTo(JurnalCategory::class, 'category_id', 'category_id')
+            ->whereColumn('jurnal_categories.user_id', 'jurnals.user_id');
+    }
+
+    /**
+     * @return array{title: string|null, categoryId: string|null}
+     */
+    public function categoryPayload(): array
+    {
+        return [
+            'title' => $this->jurnalCategory?->title,
+            'categoryId' => $this->category_id,
+        ];
     }
 
     public function thumbnailUrl(): ?string

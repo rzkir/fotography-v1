@@ -91,7 +91,7 @@ class JurnalCategoryCrudTest extends TestCase
         ]);
 
         Jurnal::factory()->for($user)->create([
-            'category' => 'Lifestyle / Travel',
+            'category_id' => 'lifestyle-travel',
         ]);
 
         $this->actingAs($user)

@@ -47,7 +47,7 @@ class JurnalCategoryController extends Controller
 
         $inUse = auth()->user()
             ->jurnals()
-            ->where('category', $jurnalCategory->title)
+            ->where('category_id', $jurnalCategory->category_id)
             ->exists();
 
         if ($inUse) {

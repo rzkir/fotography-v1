@@ -1,9 +1,11 @@
-import { slugify } from './portofolio.service';
-import { openDialog } from './dialog.service';
+import { slugify } from "./portofolio.service";
+import { openDialog } from "./dialog.service";
 
 function initCategoryIdSlugify(dialogId) {
     const titleInput = document.getElementById(`${dialogId}-title-input`);
-    const categoryIdInput = document.getElementById(`${dialogId}-category-id-input`);
+    const categoryIdInput = document.getElementById(
+        `${dialogId}-category-id-input`,
+    );
 
     if (!titleInput || !categoryIdInput) {
         return;
@@ -11,42 +13,46 @@ function initCategoryIdSlugify(dialogId) {
 
     let categoryIdTouched = Boolean(categoryIdInput.value);
 
-    categoryIdInput.addEventListener('input', () => {
+    categoryIdInput.addEventListener("input", () => {
         categoryIdTouched = true;
     });
 
-    titleInput.addEventListener('input', () => {
+    titleInput.addEventListener("input", () => {
         if (!categoryIdTouched) {
             categoryIdInput.value = slugify(titleInput.value);
         }
     });
 }
 
-function resetCategoryForm(form, dialog, mode = 'create') {
-    const titleEl = dialog.querySelector('[data-dialog-title]');
-    const methodInput = form.querySelector('[data-category-method]');
-    const submitBtn = form.querySelector('[data-category-submit]');
+function resetCategoryForm(form, dialog, mode = "create") {
+    const titleEl = dialog.querySelector("[data-dialog-title]");
+    const methodInput = form.querySelector("[data-category-method]");
+    const submitBtn = form.querySelector("[data-category-submit]");
     const titleInput = document.getElementById(`${dialog.id}-title-input`);
-    const categoryIdInput = document.getElementById(`${dialog.id}-category-id-input`);
+    const categoryIdInput = document.getElementById(
+        `${dialog.id}-category-id-input`,
+    );
 
     form.reset();
     form.action = form.dataset.storeRoute;
-    methodInput.value = 'POST';
+    methodInput.value = "POST";
 
     if (titleEl) {
-        titleEl.textContent = mode === 'edit' ? 'Edit Category' : 'New Category';
+        titleEl.textContent =
+            mode === "edit" ? "Edit Category" : "New Category";
     }
 
     if (submitBtn) {
-        submitBtn.textContent = mode === 'edit' ? 'Update Category' : 'Save Category';
+        submitBtn.textContent =
+            mode === "edit" ? "Update Category" : "Save Category";
     }
 
     if (titleInput) {
-        titleInput.value = '';
+        titleInput.value = "";
     }
 
     if (categoryIdInput) {
-        categoryIdInput.value = '';
+        categoryIdInput.value = "";
     }
 }
 
@@ -58,33 +64,35 @@ function openCategoryDialog(dialogId, trigger) {
         return;
     }
 
-    const mode = trigger.dataset.categoryMode ?? 'create';
+    const mode = trigger.dataset.categoryMode ?? "create";
     resetCategoryForm(form, dialog, mode);
 
-    if (mode === 'edit') {
+    if (mode === "edit") {
         const titleInput = document.getElementById(`${dialogId}-title-input`);
-        const categoryIdInput = document.getElementById(`${dialogId}-category-id-input`);
-        const methodInput = form.querySelector('[data-category-method]');
-        const titleEl = dialog.querySelector('[data-dialog-title]');
-        const submitBtn = form.querySelector('[data-category-submit]');
+        const categoryIdInput = document.getElementById(
+            `${dialogId}-category-id-input`,
+        );
+        const methodInput = form.querySelector("[data-category-method]");
+        const titleEl = dialog.querySelector("[data-dialog-title]");
+        const submitBtn = form.querySelector("[data-category-submit]");
 
         form.action = trigger.dataset.categoryUpdateUrl;
-        methodInput.value = 'PUT';
+        methodInput.value = "PUT";
 
         if (titleEl) {
-            titleEl.textContent = 'Edit Category';
+            titleEl.textContent = "Edit Category";
         }
 
         if (submitBtn) {
-            submitBtn.textContent = 'Update Category';
+            submitBtn.textContent = "Update Category";
         }
 
         if (titleInput) {
-            titleInput.value = trigger.dataset.categoryTitle ?? '';
+            titleInput.value = trigger.dataset.categoryTitle ?? "";
         }
 
         if (categoryIdInput) {
-            categoryIdInput.value = trigger.dataset.categorySlug ?? '';
+            categoryIdInput.value = trigger.dataset.categorySlug ?? "";
         }
     }
 
@@ -94,9 +102,11 @@ function openCategoryDialog(dialogId, trigger) {
 export function initCategoryDialog(dialogId) {
     initCategoryIdSlugify(dialogId);
 
-    document.querySelectorAll(`[data-category-open="${dialogId}"]`).forEach((trigger) => {
-        trigger.addEventListener('click', () => {
-            openCategoryDialog(dialogId, trigger);
+    document
+        .querySelectorAll(`[data-category-open="${dialogId}"]`)
+        .forEach((trigger) => {
+            trigger.addEventListener("click", () => {
+                openCategoryDialog(dialogId, trigger);
+            });
         });
-    });
 }
