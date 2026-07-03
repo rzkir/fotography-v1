@@ -43,22 +43,26 @@
     }
 
     $teamOptions = $teams ?? collect();
+    $teamOptionData = $teamOptions->mapWithKeys(fn ($team): array => [
+        $team->id => [
+            'photo' => $team->pictureUrl(),
+            'biography' => $team->biography,
+        ],
+    ]);
     $teamMembersRaw = old('team_members');
 
     if ($teamMembersRaw === null && $portfolio?->relationLoaded('teams')) {
         $teamMembersRaw = $portfolio->teams->map(fn ($team): array => [
             'team_id' => $team->id,
-            'description' => $team->pivot->description ?? '',
         ])->values()->all();
     }
 
     $teamMembers = collect($teamMembersRaw ?? [])->map(fn (array $member): array => [
         'team_id' => $member['team_id'] ?? '',
-        'description' => $member['description'] ?? '',
     ])->values()->all();
 
     if ($teamMembers === []) {
-        $teamMembers = [['team_id' => '', 'description' => '']];
+        $teamMembers = [['team_id' => '']];
     }
 @endphp
 
@@ -453,36 +457,39 @@
                             </div>
 
                             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                @if ($selectedTeam?->pictureUrl())
-                                    <div class="aspect-square rounded-xl overflow-hidden border border-white/10">
+                                <div class="aspect-square rounded-xl overflow-hidden border border-white/10 bg-zinc-900 flex items-center justify-center" data-team-photo>
+                                    @if ($selectedTeam?->pictureUrl())
                                         <img src="{{ $selectedTeam->pictureUrl() }}" alt="{{ $selectedTeam->name }}" class="w-full h-full object-cover">
-                                    </div>
-                                @else
-                                    <div class="aspect-square rounded-xl border border-white/10 bg-zinc-900 flex items-center justify-center">
+                                    @else
                                         <iconify-icon icon="lucide:user-round" class="text-3xl text-zinc-700"></iconify-icon>
-                                    </div>
-                                @endif
+                                    @endif
+                                </div>
 
                                 <div class="lg:col-span-2 space-y-4">
                                     <div class="space-y-2">
                                         <label class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Team Member</label>
-                                        <select name="team_members[{{ $index }}][team_id]" data-field="team_id" class="input-field appearance-none cursor-pointer">
+                                        <select name="team_members[{{ $index }}][team_id]" data-field="team_id" data-team-select class="input-field appearance-none cursor-pointer">
                                             <option value="">Select team member</option>
                                             @foreach ($teamOptions as $teamOption)
-                                                <option value="{{ $teamOption->id }}" @selected((string) ($member['team_id'] ?? '') === (string) $teamOption->id)>
+                                                <option
+                                                    value="{{ $teamOption->id }}"
+                                                    @selected((string) ($member['team_id'] ?? '') === (string) $teamOption->id)
+                                                >
                                                     {{ $teamOption->name }} — {{ $teamOption->job }} ({{ $teamOption->number }} projects)
                                                 </option>
                                             @endforeach
                                         </select>
                                     </div>
-                                    <x-ui.textarea
-                                        name="team_members[{{ $index }}][description]"
-                                        label="Project Notes"
-                                        :value="$member['description']"
-                                        rows="3"
-                                        placeholder="Brief contribution notes for this project..."
-                                        data-field="description"
-                                    />
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Biography</label>
+                                        <p
+                                            data-team-biography
+                                            @class([
+                                                'text-sm text-zinc-400 leading-relaxed rounded-xl border border-white/5 bg-white/[0.02] p-4 min-h-[5rem]',
+                                                'opacity-40 italic' => blank($selectedTeam?->biography),
+                                            ])
+                                        >{{ filled($selectedTeam?->biography) ? $selectedTeam->biography : 'No biography added yet. Edit the team profile to add one.' }}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -499,28 +506,34 @@
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            <div class="aspect-square rounded-xl border border-white/10 bg-zinc-900 flex items-center justify-center">
+                            <div class="aspect-square rounded-xl border border-white/10 bg-zinc-900 flex items-center justify-center overflow-hidden" data-team-photo>
                                 <iconify-icon icon="lucide:user-round" class="text-3xl text-zinc-700"></iconify-icon>
                             </div>
 
                             <div class="lg:col-span-2 space-y-4">
                                 <div class="space-y-2">
                                     <label class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Team Member</label>
-                                    <select data-field="team_id" class="input-field appearance-none cursor-pointer">
+                                    <select data-field="team_id" data-team-select class="input-field appearance-none cursor-pointer">
                                         <option value="">Select team member</option>
                                         @foreach ($teamOptions as $teamOption)
-                                            <option value="{{ $teamOption->id }}">{{ $teamOption->name }} — {{ $teamOption->job }} ({{ $teamOption->number }} projects)</option>
+                                            <option value="{{ $teamOption->id }}">
+                                                {{ $teamOption->name }} — {{ $teamOption->job }} ({{ $teamOption->number }} projects)
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="space-y-2">
-                                    <label class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Project Notes</label>
-                                    <textarea data-field="description" rows="3" class="input-field resize-none" placeholder="Brief contribution notes for this project..."></textarea>
+                                    <label class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Biography</label>
+                                    <p data-team-biography class="text-sm text-zinc-400 leading-relaxed rounded-xl border border-white/5 bg-white/2 p-4 min-h-20 opacity-40 italic">Select a team member to preview their biography.</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </template>
+            @endif
+
+            @if ($teamOptions->isNotEmpty())
+                <script type="application/json" id="team-member-options-data">@json($teamOptionData)</script>
             @endif
         </div>
     </div>

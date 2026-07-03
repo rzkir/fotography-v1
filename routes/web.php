@@ -9,6 +9,7 @@ use App\Http\Controllers\Dashboard\PortfolioController;
 use App\Http\Controllers\Dashboard\TeamController;
 use App\Http\Controllers\Dashboard\TestimonialController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\JournalController;
 use App\Http\Controllers\WorkController;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,9 +23,9 @@ Route::get('/works', [WorkController::class, 'index'])->name('works.index');
 
 Route::get('/works/{portfolio:slug}', [WorkController::class, 'show'])->name('works.show');
 
-Route::get('/journal', function () {
-    return view('journal');
-});
+Route::get('/journal', [JournalController::class, 'index'])->name('journal.index');
+
+Route::get('/journal/{jurnal:slug}', [JournalController::class, 'show'])->name('journal.show');
 
 Route::get('/contact', function () {
     return view('contact');

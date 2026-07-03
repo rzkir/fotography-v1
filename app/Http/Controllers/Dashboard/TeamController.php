@@ -81,6 +81,7 @@ class TeamController extends Controller
         $attributes = [
             'name' => $request->string('name')->toString(),
             'job' => $request->string('job')->toString(),
+            'biography' => $request->filled('biography') ? $request->string('biography')->toString() : null,
             'social_media' => $this->buildSocialMedia($request),
         ];
 

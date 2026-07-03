@@ -82,7 +82,7 @@ class Portfolio extends Model
             return $this->teams->map(fn (Team $team): array => [
                 'name' => $team->name,
                 'job' => $team->job,
-                'description' => $team->pivot->description,
+                'description' => $team->biography ?: $team->pivot->description,
                 'photo_url' => $team->pictureUrl(),
                 'social_media' => $team->social_media ?? [],
             ]);
@@ -127,7 +127,15 @@ class Portfolio extends Model
 
     public function heroImageUrl(): ?string
     {
-        return $this->hero_image ? Storage::disk('public')->url($this->hero_image) : null;
+        if (! filled($this->hero_image)) {
+            return null;
+        }
+
+        if (str_starts_with($this->hero_image, 'http://') || str_starts_with($this->hero_image, 'https://')) {
+            return $this->hero_image;
+        }
+
+        return Storage::disk('public')->url($this->hero_image);
     }
 
     public function galleryImageUrls(): array

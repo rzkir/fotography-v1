@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Team;
+use App\Rules\ImageFile;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -33,7 +34,8 @@ class StoreTeamRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'job' => ['required', 'string', 'max:255'],
-            'picture' => ['nullable', 'image', 'max:5120'],
+            'biography' => ['nullable', 'string'],
+            'picture' => ['nullable', ...ImageFile::rules(5120)],
             'social_media' => ['nullable', 'array'],
             'social_media.*.type' => ['required_with:social_media', 'string', Rule::in(Team::SOCIAL_TYPES)],
             'social_media.*.label' => ['nullable', 'string', 'max:255'],

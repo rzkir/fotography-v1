@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
     'user_id',
     'name',
     'job',
+    'biography',
     'number',
     'picture',
     'social_media',

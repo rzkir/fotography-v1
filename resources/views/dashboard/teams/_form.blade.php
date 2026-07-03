@@ -31,6 +31,13 @@
 
             <x-ui.input name="name" label="Name" :value="$team?->name" placeholder="Evan W." required />
             <x-ui.input name="job" label="Job Title" :value="$team?->job" placeholder="Lead Photographer" required />
+            <x-ui.textarea
+                name="biography"
+                label="Biography"
+                :value="$team?->biography"
+                rows="5"
+                placeholder="Brief background shown on portfolio project pages..."
+            />
         </div>
 
         <div class="space-y-6">

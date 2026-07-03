@@ -284,11 +284,68 @@ export function initTeamMembers() {
         removeSelector: "[data-remove-team-member]",
         labelSelector: ".team-member-label",
         labelPrefix: "Contributor",
-        fields: [
-            { key: "team_id", namePrefix: "team_members" },
-            { key: "description", namePrefix: "team_members" },
-        ],
+        fields: [{ key: "team_id", namePrefix: "team_members" }],
     });
+
+    initTeamMemberPreviews();
+}
+
+function initTeamMemberPreviews() {
+    const list = document.getElementById("team-members-list");
+    const dataElement = document.getElementById("team-member-options-data");
+
+    if (!list || !dataElement) {
+        return;
+    }
+
+    let teamOptions = {};
+
+    try {
+        teamOptions = JSON.parse(dataElement.textContent || "{}");
+    } catch {
+        return;
+    }
+
+    const updateItemPreview = (item) => {
+        const select = item.querySelector("[data-team-select]");
+        const photoContainer = item.querySelector("[data-team-photo]");
+        const bioPreview = item.querySelector("[data-team-biography]");
+
+        if (!select || !photoContainer || !bioPreview) {
+            return;
+        }
+
+        const teamData = teamOptions[select.value] ?? null;
+        const photo = teamData?.photo || "";
+        const biography = teamData?.biography || "";
+
+        if (photo) {
+            photoContainer.innerHTML = `<img src="${photo}" alt="" class="w-full h-full object-cover">`;
+        } else {
+            photoContainer.innerHTML =
+                '<iconify-icon icon="lucide:user-round" class="text-3xl text-zinc-700"></iconify-icon>';
+        }
+
+        if (biography) {
+            bioPreview.textContent = biography;
+            bioPreview.classList.remove("opacity-40", "italic");
+        } else if (select.value) {
+            bioPreview.textContent =
+                "No biography added yet. Edit the team profile to add one.";
+            bioPreview.classList.add("opacity-40", "italic");
+        } else {
+            bioPreview.textContent = "Select a team member to preview their biography.";
+            bioPreview.classList.add("opacity-40", "italic");
+        }
+    };
+
+    list.addEventListener("change", (event) => {
+        if (event.target.matches("[data-team-select]")) {
+            updateItemPreview(event.target.closest("[data-team-member-item]"));
+        }
+    });
+
+    list.querySelectorAll("[data-team-member-item]").forEach(updateItemPreview);
 }
 
 export function initPortfolioForm() {

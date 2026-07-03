@@ -247,33 +247,21 @@ class PortfolioController extends Controller
     {
         $oldTeamIds = $portfolio->teams()->pluck('teams.id');
 
-        $syncData = [];
-
-        foreach ($request->input('team_members', []) as $member) {
-            $teamId = $member['team_id'] ?? null;
-
-            if (! filled($teamId)) {
-                continue;
-            }
-
-            $belongsToUser = Team::query()
+        $teamIds = collect($request->input('team_members', []))
+            ->pluck('team_id')
+            ->filter()
+            ->filter(fn ($teamId): bool => Team::query()
                 ->where('user_id', auth()->id())
                 ->whereKey($teamId)
-                ->exists();
+                ->exists())
+            ->unique()
+            ->values()
+            ->all();
 
-            if (! $belongsToUser) {
-                continue;
-            }
-
-            $syncData[$teamId] = [
-                'description' => filled($member['description'] ?? null) ? $member['description'] : null,
-            ];
-        }
-
-        $portfolio->teams()->sync($syncData);
+        $portfolio->teams()->sync($teamIds);
 
         $affectedTeamIds = $oldTeamIds
-            ->merge(array_keys($syncData))
+            ->merge($teamIds)
             ->unique()
             ->values()
             ->all();

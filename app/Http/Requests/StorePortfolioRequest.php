@@ -65,7 +65,6 @@ class StorePortfolioRequest extends FormRequest
                 'integer',
                 Rule::exists('teams', 'id')->where(fn ($query) => $query->where('user_id', $this->user()->id)),
             ],
-            'team_members.*.description' => ['nullable', 'string'],
             'testimonial_quote' => ['nullable', 'string'],
             'status' => ['required', Rule::in(['draft', 'published', 'archived'])],
             'is_published' => ['nullable', 'boolean'],

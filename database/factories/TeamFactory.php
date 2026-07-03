@@ -19,6 +19,7 @@ class TeamFactory extends Factory
             'user_id' => User::factory(),
             'name' => fake()->name(),
             'job' => fake()->jobTitle(),
+            'biography' => fake()->paragraph(),
             'number' => 0,
             'picture' => null,
             'social_media' => [

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Portfolio;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -37,6 +38,7 @@ class TeamCrudTest extends TestCase
         $response = $this->actingAs($user)->post(route('dashboard.teams.store'), [
             'name' => 'Evan W.',
             'job' => 'Lead Photographer',
+            'biography' => 'Award-winning photographer with 10 years of experience.',
             'picture' => UploadedFile::fake()->image('evan.jpg'),
             'social_media' => [
                 [
@@ -60,11 +62,30 @@ class TeamCrudTest extends TestCase
             'user_id' => $user->id,
             'name' => 'Evan W.',
             'job' => 'Lead Photographer',
+            'biography' => 'Award-winning photographer with 10 years of experience.',
         ]);
 
         $this->assertNotNull($team->picture);
         $this->assertCount(2, $team->social_media);
         $this->assertSame('instagram', $team->social_media[0]['type']);
+    }
+
+    public function test_user_can_create_team_member_with_heic_picture(): void
+    {
+        Storage::fake('public');
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->post(route('dashboard.teams.store'), [
+            'name' => 'Evan W.',
+            'job' => 'Lead Photographer',
+            'picture' => UploadedFile::fake()->create('evan.heic', 100, 'image/heic'),
+        ]);
+
+        $team = Team::query()->first();
+
+        $response->assertRedirect(route('dashboard.teams.edit', $team));
+        $this->assertNotNull($team->picture);
+        $this->assertStringEndsWith('.heic', $team->picture);
     }
 
     public function test_user_can_update_own_team_member(): void
@@ -139,10 +160,25 @@ class TeamCrudTest extends TestCase
             'year' => 2024,
             'status' => 'draft',
             'team_members' => [
-                ['team_id' => $team->id, 'description' => 'Lead shoot'],
+                ['team_id' => $team->id],
             ],
         ]);
 
         $this->assertSame(1, $team->fresh()->number);
+    }
+
+    public function test_portfolio_uses_team_biography_for_contributors(): void
+    {
+        $user = User::factory()->create();
+        $team = Team::factory()->for($user)->create([
+            'biography' => 'Lead photographer specializing in editorial work.',
+        ]);
+        $portfolio = Portfolio::factory()->for($user)->create();
+
+        $portfolio->teams()->attach($team->id);
+
+        $contributor = $portfolio->load('teams')->contributorsForDisplay()->first();
+
+        $this->assertSame('Lead photographer specializing in editorial work.', $contributor['description']);
     }
 }
