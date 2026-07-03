@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\Feature;
+use App\Models\Portfolio;
+use App\Models\Team;
 use App\Models\Testimonial;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -48,5 +50,36 @@ class HomeTest extends TestCase
             ->assertSee('Marcello Verdi')
             ->assertSee('Creative Director, Vogue IT')
             ->assertSee('The level of detail was unlike anything we experienced.');
+    }
+
+    public function test_home_page_displays_portfolios_from_top_teams_by_number(): void
+    {
+        $user = User::factory()->create();
+
+        $topTeam = Team::factory()->for($user)->create([
+            'name' => 'Ava Sterling',
+            'number' => 5,
+        ]);
+        $lowerTeam = Team::factory()->for($user)->create([
+            'name' => 'Low Rank',
+            'number' => 1,
+        ]);
+
+        $featuredPortfolio = Portfolio::factory()->for($user)->create([
+            'title' => 'Midnight Soul',
+            'is_published' => true,
+        ]);
+        $otherPortfolio = Portfolio::factory()->for($user)->create([
+            'title' => 'Hidden Draft',
+            'is_published' => false,
+        ]);
+
+        $featuredPortfolio->teams()->attach($topTeam->id);
+        $otherPortfolio->teams()->attach($lowerTeam->id);
+
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('Midnight Soul')
+            ->assertDontSee('Hidden Draft');
     }
 }

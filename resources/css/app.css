@@ -57,7 +57,7 @@ html.noir-site {
     position: absolute;
     width: 150%;
     height: 1px;
-    background: rgba(245, 242, 237, 0.1);
+    background: rgba(245, 242, 237, 0.05);
     transform: rotate(-15deg);
     left: -25%;
     z-index: 0;

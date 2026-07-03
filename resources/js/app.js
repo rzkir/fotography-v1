@@ -1,4 +1,5 @@
 import { initAlertDialogs } from "./hooks/alert-dialog";
+import { initAnimations } from "./hooks/animation";
 import { initCategoryDialog } from "./category.service";
 import { initDialogs } from "./hooks/dialog";
 import { initPaginationRoots } from "./hooks/pagination";
@@ -17,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initAlertDialogs();
     initDialogs();
     initPaginationRoots();
+    initAnimations();
 
     if (document.querySelector("[data-journal-index]")) {
         initJournalIndex();

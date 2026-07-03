@@ -63,7 +63,7 @@
             </div>
         </div>
     </div>
-    <div class="mt-32 pt-12 border-t border-zinc-900 text-center">
+    <div class="mt-10 pt-12 border-t border-zinc-900 text-center">
         <p class="text-[10px] font-bold text-zinc-800 uppercase tracking-[1em]">© Noir Studio — Handcrafted Excellence</p>
     </div>
 </footer>

@@ -7,57 +7,59 @@
         <!-- NavigationBar Component -->
         <x-layout.header />
 
-        <main class="relative z-10">
+        <main class="relative z-0">
             <!-- Hero Section -->
-            <header class="pt-40 px-12 pb-32">
+            <section class="pt-40 px-6 md:px-12" data-aos-hero>
                 <div class="asymmetric-grid">
-                    <div class="col-span-12 lg:col-span-7 flex flex-col justify-center pr-12">
+                    <div class="col-span-12 lg:col-span-7 relative z-10 flex flex-col justify-center lg:pr-12">
                         <div class="mb-12 relative">
-                            <span class="absolute -top-12 left-0 text-[10px] font-bold tracking-[0.5em] text-zinc-500 uppercase">Est. 2016 — Fine Art Portfolio</span>
-                            <h1 class="text-8xl lg:text-[13rem] font-display font-black leading-[0.8] tracking-tighter uppercase mb-6">Beyond<br/>Vision</h1>
-                            <p class="font-serif italic text-4xl lg:text-6xl text-zinc-400 leading-tight ml-24">The art of capturing what stays <span class="text-[#f5f2ed] border-b border-zinc-700">unseen</span>.</p>
+                            <span class="absolute -top-12 left-0 text-xs font-bold tracking-[0.5em] text-zinc-500 uppercase" data-aos="fade-down" data-aos-offset="0">Est. 2016 — Fine Art Portfolio</span>
+                            <h1 class="text-6xl sm:text-8xl lg:text-[13rem] font-display font-black leading-[0.8] tracking-tighter uppercase mb-6" data-aos="fade-right" data-aos-offset="0">Beyond<br/>Vision</h1>
+                            <p class="font-serif italic text-2xl sm:text-4xl lg:text-6xl text-zinc-400 leading-tight" data-aos="fade-right" data-aos-delay="100" data-aos-offset="0">The art of capturing what stays <span class="inline-block text-[#f5f2ed] border-b border-zinc-700" data-aos="fade-up" data-aos-delay="180" data-aos-offset="0">unseen</span>.</p>
                         </div>
-                        <div class="ml-24 max-w-xl space-y-8">
-                            <p class="text-zinc-500 font-light leading-relaxed">I am a visionary photographer pushing the boundaries of portraiture. Through minimal lighting and cinematic composition, I reveal the raw essence of every subject.</p>
+                        <div class="max-w-xl space-y-8">
+                            <p class="text-zinc-500 font-light leading-relaxed" data-aos="fade-right" data-aos-delay="200" data-aos-offset="0">I am a visionary photographer pushing the boundaries of portraiture. Through minimal lighting and cinematic composition, I reveal the raw essence of every subject.</p>
                             <div class="flex flex-wrap gap-4 text-[10px] font-bold uppercase tracking-widest text-zinc-400">
-                                <span class="px-4 py-2 border border-zinc-800 rounded-full">Studio Sessions</span>
-                                <span class="px-4 py-2 border border-zinc-800 rounded-full">Editorial Shoots</span>
-                                <span class="px-4 py-2 border border-zinc-800 rounded-full">Fashion Photography</span>
-                                <span class="px-4 py-2 border border-zinc-800 rounded-full">Fine Art Portraits</span>
-                                <span class="px-4 py-2 border border-zinc-800 rounded-full">Commercial Work</span>
+                                <span class="inline-block px-4 py-2 border border-zinc-800 rounded-full" data-aos="fade-up" data-aos-delay="250" data-aos-offset="0">Studio Sessions</span>
+                                <span class="inline-block px-4 py-2 border border-zinc-800 rounded-full" data-aos="fade-up" data-aos-delay="300" data-aos-offset="0">Editorial Shoots</span>
+                                <span class="inline-block px-4 py-2 border border-zinc-800 rounded-full" data-aos="fade-up" data-aos-delay="350" data-aos-offset="0">Fashion Photography</span>
+                                <span class="inline-block px-4 py-2 border border-zinc-800 rounded-full" data-aos="fade-up" data-aos-delay="400" data-aos-offset="0">Fine Art Portraits</span>
+                                <span class="inline-block px-4 py-2 border border-zinc-800 rounded-full" data-aos="fade-up" data-aos-delay="450" data-aos-offset="0">Commercial Work</span>
                             </div>
                             <div class="flex items-center space-x-8 pt-4">
-                                <a href="#works" id="hero-primary-cta" class="group flex items-center space-x-4">
+                                <a href="#works" id="hero-primary-cta" class="group flex items-center space-x-4" data-aos="fade-up" data-aos-delay="500" data-aos-offset="0">
                                     <div class="w-16 h-16 rounded-full border border-zinc-700 flex items-center justify-center group-hover:bg-white group-hover:border-white transition-all duration-500">
                                         <iconify-icon icon="lucide:arrow-up-right" class="text-2xl group-hover:text-black transition-colors"></iconify-icon>
                                     </div>
-                                    <span class="text-xs font-bold uppercase tracking-[0.2em]">Selected Works</span>
+                                    <span class="inline-block text-xs font-bold uppercase tracking-[0.2em]" data-aos="fade-up" data-aos-delay="550" data-aos-offset="0">Selected Works</span>
                                 </a>
                                 <div class="flex flex-col">
-                                    <span class="text-[10px] text-zinc-500 uppercase tracking-widest mb-1">Based in Jakarta</span>
-                                    <span class="text-sm font-medium">Available Globally / 2024</span>
+                                    <span class="inline-block text-xs text-zinc-500 uppercase tracking-widest mb-1" data-aos="fade-left" data-aos-delay="600" data-aos-offset="0">Based in Jakarta</span>
+                                    <span class="inline-block text-sm font-medium" data-aos="fade-left" data-aos-delay="700" data-aos-offset="0">Available Globally / 2024</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-span-12 lg:col-span-5 relative mt-24 lg:mt-0">
+                    <div class="col-span-12 lg:col-span-5 relative z-0 mt-24 lg:mt-0">
                         <div class="relative aspect-3/4 overflow-hidden rounded-sm group">
-                            <img src="https://images.unsplash.com/photo-1509460913899-515f1df34fed?auto=format&fit=crop&q=80&w=1200" alt="Dramatic Portrait" class="w-full h-full object-cover grayscale transition-all duration-[2s] group-hover:scale-110 mask-image">
-                            <div class="absolute bottom-8 right-8 text-right">
-                                <span class="block text-xs font-bold uppercase tracking-widest text-white/50">Model: Sophia K.</span>
-                                <span class="block text-xs font-bold uppercase tracking-widest text-white/50">Series: Midnight Soul</span>
+                            <div class="absolute inset-0" data-aos="fade-left" data-aos-delay="150" data-aos-offset="0">
+                                <img src="{{ asset('assets/hero.avif') }}" alt="Dramatic Portrait" class="h-full w-full object-cover grayscale mask-image transition-transform duration-[2s] group-hover:scale-110">
+                            </div>
+                            <div class="absolute bottom-8 right-8 z-10 text-right">
+                                <span class="inline-block text-xs font-bold uppercase tracking-widest text-white/50" data-aos="fade-up" data-aos-delay="400" data-aos-offset="0">Model: Sophia K.</span>
+                                <span class="inline-block text-xs font-bold uppercase tracking-widest text-white/50" data-aos="fade-up" data-aos-delay="450" data-aos-offset="0">Series: Midnight Soul</span>
                             </div>
                         </div>
-                        <div class="absolute -top-12 -left-12 w-48 h-48 bg-zinc-900 flex items-center justify-center text-center p-8 rounded-full border border-zinc-800 xl:flex">
-                            <p class="text-[10px] font-bold leading-tight uppercase tracking-widest">Shot on 35mm Analog Film</p>
+                        <div class="absolute -top-12 -left-12 w-48 h-48 bg-zinc-900 hidden xl:flex items-center justify-center text-center p-8 rounded-full border border-zinc-800">
+                            <p class="text-xs font-bold leading-tight uppercase tracking-widest" data-aos="zoom-in" data-aos-delay="350" data-aos-offset="0">Shot on 35mm Analog Film</p>
                         </div>
                     </div>
                 </div>
-            </header>
+            </section>
 
             @if($features->isNotEmpty())
-                <section class="py-32 border-y border-zinc-900">
-                    <div class="max-w-7xl mx-auto px-6 md:px-12">
+                <section class="py-20 px-6 md:px-12">
+                    <div class="container mx-auto">
                         <div @class([
                             'grid gap-12 text-center',
                             'grid-cols-2' => $features->count() > 1,
@@ -68,8 +70,8 @@
                         ])>
                             @foreach($features as $feature)
                                 <div class="space-y-2">
-                                    <h3 class="text-5xl font-display font-black">{{ $feature->number }}+</h3>
-                                    <p class="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-500">{{ $feature->title }}</p>
+                                    <h3 class="text-5xl font-display font-black" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">{{ $feature->number }}+</h3>
+                                    <p class="text-xs font-bold uppercase tracking-[0.4em] text-zinc-500" data-aos="fade-up" data-aos-delay="{{ ($loop->index * 100) + 50 }}">{{ $feature->title }}</p>
                                 </div>
                             @endforeach
                         </div>
@@ -78,77 +80,53 @@
             @endif
 
             <!-- Portfolio Grid -->
-            <section id="works" class="py-32 px-12">
-                <div class="flex flex-col lg:flex-row justify-between items-end mb-24 gap-8">
+            <section id="works" class="py-20 px-6 md:px-12">
+                <div class="flex flex-col lg:flex-row justify-between items-end mb-12 gap-8">
                     <div class="max-w-2xl">
-                        <span class="text-[10px] font-bold tracking-[0.5em] text-zinc-500 uppercase block mb-4">Portfolio Showcase</span>
-                        <h2 class="text-7xl font-display font-black uppercase tracking-tighter">Curated<br/><span class="font-serif italic capitalize text-zinc-400">Collection</span></h2>
+                        <span class="text-xs font-bold tracking-[0.5em] text-zinc-500 uppercase block mb-4" data-aos="fade-up">Portfolio Showcase</span>
+                        <h2 class="text-7xl font-display font-black uppercase tracking-tighter" data-aos="fade-up" data-aos-delay="100">Curated<br/><span class="font-serif italic capitalize text-zinc-400">Collection</span></h2>
                     </div>
-                    <a href="#" id="view-all-portfolio" class="text-xs font-bold uppercase tracking-[0.3em] border-b border-zinc-800 pb-2 hover:border-white transition-all">View Full Archive</a>
+                    <a href="{{ route('works.index') }}" id="view-all-portfolio" class="text-xs font-bold uppercase tracking-widest border-b border-zinc-800 hover:border-white transition-all" data-aos="fade-left" data-aos-delay="150">View Full Archive</a>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <div class="project-card group relative aspect-3/4 overflow-hidden bg-zinc-900">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-black/60 flex flex-col justify-end p-8 project-overlay">
-                            <span class="text-[10px] font-bold uppercase text-zinc-400 mb-2">Editorial</span>
-                            <h3 class="text-2xl font-display font-black uppercase">Ethereal Echoes</h3>
+                    @forelse ($portfolios as $index => $portfolio)
+                        <a
+                            href="{{ route('works.show', $portfolio) }}"
+                            class="project-card group relative aspect-3/4 overflow-hidden bg-zinc-900 block {{ $index % 2 === 1 ? 'lg:mt-12' : '' }}"
+                        >
+                            @if ($portfolio->heroImageUrl())
+                                <img
+                                    src="{{ $portfolio->heroImageUrl() }}"
+                                    alt="{{ $portfolio->title }}"
+                                    class="h-full w-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110"
+                                    data-aos="fade-up"
+                                    data-aos-delay="{{ $index * 100 }}"
+                                >
+                            @else
+                                <div class="flex h-full w-full items-center justify-center bg-zinc-900" data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
+                                    <iconify-icon icon="lucide:image" class="text-4xl text-zinc-700"></iconify-icon>
+                                </div>
+                            @endif
+                            <div class="absolute inset-0 flex flex-col justify-end bg-black/60 p-8 project-overlay">
+                                <span class="mb-2 text-xs font-bold uppercase text-zinc-400" data-aos="fade-up" data-aos-delay="{{ ($index * 100) + 50 }}">
+                                    {{ $portfolio->portfolioCategory?->title ?? 'Project' }}
+                                </span>
+                                <h3 class="text-2xl font-display font-black uppercase" data-aos="fade-up" data-aos-delay="{{ ($index * 100) + 100 }}">
+                                    {{ $portfolio->title }}
+                                </h3>
+                            </div>
+                        </a>
+                    @empty
+                        <div class="col-span-full py-16 text-center">
+                            <p class="text-sm text-zinc-500">No published projects yet.</p>
                         </div>
-                    </div>
-                    <div class="project-card group relative aspect-3/4 overflow-hidden bg-zinc-900 lg:mt-12">
-                        <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-black/60 flex flex-col justify-end p-8 project-overlay">
-                            <span class="text-[10px] font-bold uppercase text-zinc-400 mb-2">Street</span>
-                            <h3 class="text-2xl font-display font-black uppercase">Urban Silence</h3>
-                        </div>
-                    </div>
-                    <div class="project-card group relative aspect-3/4 overflow-hidden bg-zinc-900">
-                        <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-black/60 flex flex-col justify-end p-8 project-overlay">
-                            <span class="text-[10px] font-bold uppercase text-zinc-400 mb-2">Portrait</span>
-                            <h3 class="text-2xl font-display font-black uppercase">Golden Hour Soul</h3>
-                        </div>
-                    </div>
-                    <div class="project-card group relative aspect-3/4 overflow-hidden bg-zinc-900 lg:mt-12">
-                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-black/60 flex flex-col justify-end p-8 project-overlay">
-                            <span class="text-[10px] font-bold uppercase text-zinc-400 mb-2">Minimalist</span>
-                            <h3 class="text-2xl font-display font-black uppercase">The Minimalist</h3>
-                        </div>
-                    </div>
-                    <div class="project-card group relative aspect-3/4 overflow-hidden bg-zinc-900">
-                        <img src="https://images.unsplash.com/photo-1523950103971-5cf00677a26c?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-black/60 flex flex-col justify-end p-8 project-overlay">
-                            <span class="text-[10px] font-bold uppercase text-zinc-400 mb-2">Fashion</span>
-                            <h3 class="text-2xl font-display font-black uppercase">Fashion Forward</h3>
-                        </div>
-                    </div>
-                    <div class="project-card group relative aspect-3/4 overflow-hidden bg-zinc-900 lg:mt-12">
-                        <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-black/60 flex flex-col justify-end p-8 project-overlay">
-                            <span class="text-[10px] font-bold uppercase text-zinc-400 mb-2">Landscape</span>
-                            <h3 class="text-2xl font-display font-black uppercase">Nature's Mirror</h3>
-                        </div>
-                    </div>
-                    <div class="project-card group relative aspect-3/4 overflow-hidden bg-zinc-900">
-                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-black/60 flex flex-col justify-end p-8 project-overlay">
-                            <span class="text-[10px] font-bold uppercase text-zinc-400 mb-2">Studio</span>
-                            <h3 class="text-2xl font-display font-black uppercase">Studio Noir</h3>
-                        </div>
-                    </div>
-                    <div class="project-card group relative aspect-3/4 overflow-hidden bg-zinc-900 lg:mt-12">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-black/60 flex flex-col justify-end p-8 project-overlay">
-                            <span class="text-[10px] font-bold uppercase text-zinc-400 mb-2">Portrait</span>
-                            <h3 class="text-2xl font-display font-black uppercase">Timeless Beauty</h3>
-                        </div>
-                    </div>
+                    @endforelse
                 </div>
             </section>
 
             <!-- Marquee Section -->
-            <section class="py-32 overflow-hidden border-t border-zinc-900">
-                <div class="marquee-text flex space-x-24 items-center">
+            <section class="py-20 overflow-hidden border-t border-zinc-900">
+                <div class="marquee-text flex space-x-12 items-center">
                     <span class="text-9xl font-display font-black text-transparent stroke-zinc-800 uppercase" style="-webkit-text-stroke: 1px #27272a;">Portrait</span>
                     <span class="text-9xl font-display font-black uppercase">Editorial</span>
                     <span class="text-9xl font-display font-black text-transparent stroke-zinc-800 uppercase" style="-webkit-text-stroke: 1px #27272a;">Fashion</span>
@@ -161,37 +139,37 @@
             </section>
 
             <!-- About Section -->
-            <section class="py-32 px-12 bg-zinc-900/30">
+            <section class="py-20 px-6 md:px-12 bg-zinc-900/30">
                 <div class="asymmetric-grid">
                     <div class="col-span-12 lg:col-span-5">
-                        <span class="text-[10px] font-bold tracking-[0.5em] text-zinc-500 uppercase block mb-8">About the Artist</span>
-                        <h2 class="text-6xl font-display font-black leading-[0.9] uppercase mb-12">The Eye<br/>Behind<br/>The Lens</h2>
+                        <span class="text-xs font-bold tracking-[0.5em] text-zinc-500 uppercase block mb-8" data-aos="fade-up">About the Artist</span>
+                        <h2 class="text-6xl font-display font-black leading-[0.9] uppercase mb-12" data-aos="fade-up" data-aos-delay="100">The Eye<br/>Behind<br/>The Lens</h2>
                         <div class="space-y-6 text-zinc-400 font-light leading-relaxed">
-                            <p>Noir/Studio was founded on the belief that photography should not just record a person, but interpret their story. My approach is rooted in 8+ years of professional exploration, focusing on the intersection of fine art and editorial storytelling.</p>
-                            <p>I specialize in capturing raw, authentic moments using a minimalists lens, often working with high-contrast shadows to bring out the depth of human expression.</p>
-                            <a href="#" id="about-session-cta" class="inline-flex items-center space-x-4 pt-8 group">
+                            <p data-aos="fade-up" data-aos-delay="200">Noir/Studio was founded on the belief that photography should not just record a person, but interpret their story. My approach is rooted in 8+ years of professional exploration, focusing on the intersection of fine art and editorial storytelling.</p>
+                            <p data-aos="fade-up" data-aos-delay="300">I specialize in capturing raw, authentic moments using a minimalists lens, often working with high-contrast shadows to bring out the depth of human expression.</p>
+                            <a href="#" id="about-session-cta" class="inline-flex items-center space-x-4 pt-8 group" data-aos="fade-up" data-aos-delay="400">
                                 <div class="w-12 h-12 rounded-full border border-zinc-700 flex items-center justify-center group-hover:bg-white transition-all">
                                     <iconify-icon icon="lucide:arrow-right" class="group-hover:text-black"></iconify-icon>
                                 </div>
-                                <span class="text-[10px] font-bold uppercase tracking-widest">Book A Session</span>
+                                <span class="text-xs font-bold uppercase tracking-widest">Book A Session</span>
                             </a>
                         </div>
                     </div>
                     <div class="col-span-12 lg:col-span-6 lg:col-start-7 mt-20 lg:mt-0 grid grid-cols-2 gap-8">
                         <div class="aspect-square bg-zinc-900 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover grayscale">
+                            <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover grayscale" data-aos="fade-left" data-aos-delay="200">
                         </div>
                         <div class="aspect-square bg-zinc-900 overflow-hidden mt-12">
-                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover grayscale">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover grayscale" data-aos="fade-left" data-aos-delay="300">
                         </div>
                     </div>
                 </div>
             </section>
 
             @if($testimonials->isNotEmpty())
-                <section class="py-32 px-6 md:px-12" id="testimonials-slider" aria-label="Client Testimonials">
-                    <div class="max-w-4xl mx-auto text-center">
-                        <span class="text-[10px] font-bold tracking-[0.5em] text-zinc-500 uppercase block mb-12">Client Testimonials</span>
+                <section class="py-20 px-6 md:px-12" id="testimonials-slider" aria-label="Client Testimonials">
+                    <div class="container mx-auto text-center">
+                        <span class="text-xs font-bold tracking-[0.5em] text-zinc-500 uppercase block mb-12" data-aos="fade-up">Client Testimonials</span>
 
                         <div class="relative">
                             <div class="overflow-hidden">
@@ -199,10 +177,10 @@
                                     @foreach($testimonials as $testimonial)
                                         <article class="w-full shrink-0 space-y-8 px-4" data-testimonial-slide>
                                             <iconify-icon icon="mdi:format-quote-close" class="text-6xl text-zinc-800"></iconify-icon>
-                                            <p class="text-2xl sm:text-3xl font-serif italic text-zinc-300 leading-relaxed">"{{ $testimonial->message }}"</p>
+                                            <p class="text-2xl sm:text-3xl font-serif italic text-zinc-300 leading-relaxed" @if($loop->first) data-aos="fade-up" data-aos-delay="100" @endif>"{{ $testimonial->message }}"</p>
                                             <div class="flex flex-col items-center">
-                                                <span class="text-sm font-bold uppercase tracking-widest">{{ $testimonial->name }}</span>
-                                                <span class="text-[10px] text-zinc-600 uppercase tracking-widest">{{ $testimonial->jobs }}, {{ $testimonial->company }}</span>
+                                                <span class="text-sm font-bold uppercase tracking-widest" @if($loop->first) data-aos="fade-up" data-aos-delay="200" @endif>{{ $testimonial->name }}</span>
+                                                <span class="text-[10px] text-zinc-600 uppercase tracking-widest" @if($loop->first) data-aos="fade-up" data-aos-delay="250" @endif>{{ $testimonial->jobs }}, {{ $testimonial->company }}</span>
                                             </div>
                                         </article>
                                     @endforeach
