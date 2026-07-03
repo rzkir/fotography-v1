@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePortfolioRequest;
 use App\Http\Requests\UpdatePortfolioRequest;
 use App\Models\Portfolio;
+use App\Models\Team;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -28,8 +29,9 @@ class PortfolioController extends Controller
     public function create(): View
     {
         $categories = auth()->user()->portfolioCategories()->orderBy('title')->get();
+        $teams = auth()->user()->teams()->orderBy('name')->get();
 
-        return view('dashboard.portofolio.create', compact('categories'));
+        return view('dashboard.portofolio.create', compact('categories', 'teams'));
     }
 
     public function store(StorePortfolioRequest $request): RedirectResponse
@@ -37,6 +39,8 @@ class PortfolioController extends Controller
         $portfolio = auth()->user()->portfolios()->create(
             $this->buildPortfolioAttributes($request)
         );
+
+        $this->syncTeamMembers($portfolio, $request);
 
         return redirect()
             ->route('dashboard.portofolio.edit', $portfolio)
@@ -48,10 +52,13 @@ class PortfolioController extends Controller
         $this->authorizePortfolio($portofolio);
 
         $categories = auth()->user()->portfolioCategories()->orderBy('title')->get();
+        $teams = auth()->user()->teams()->orderBy('name')->get();
+        $portofolio->load('teams');
 
         return view('dashboard.portofolio.edit', [
             'portfolio' => $portofolio,
             'categories' => $categories,
+            'teams' => $teams,
         ]);
     }
 
@@ -63,6 +70,8 @@ class PortfolioController extends Controller
             $this->buildPortfolioAttributes($request, $portofolio)
         );
 
+        $this->syncTeamMembers($portofolio, $request);
+
         return redirect()
             ->route('dashboard.portofolio.edit', $portofolio)
             ->with('success', 'Portfolio project updated successfully.');
@@ -72,8 +81,12 @@ class PortfolioController extends Controller
     {
         $this->authorizePortfolio($portofolio);
 
+        $teamIds = $portofolio->teams()->pluck('teams.id')->all();
+
         $this->deletePortfolioFiles($portofolio);
         $portofolio->delete();
+
+        Team::recalculateNumbers($teamIds);
 
         return redirect()
             ->route('dashboard.portofolio.index')
@@ -102,7 +115,7 @@ class PortfolioController extends Controller
             'metrics' => $this->buildMetrics($request),
             'technical_specs' => $this->buildTechnicalSpecs($request),
             'timeline' => $this->buildTimeline($request),
-            'contributors' => $this->buildContributors($request, $portfolio),
+            'contributors' => null,
             'testimonial' => $this->buildTestimonial($request),
             'status' => $request->input('status'),
             'is_published' => $request->boolean('is_published'),
@@ -230,58 +243,42 @@ class PortfolioController extends Controller
             ->all();
     }
 
-    /**
-     * @return list<array{name: string, job: string, description: string|null, social_media: string|null, path?: string, image?: string}>
-     */
-    private function buildContributors(Request $request, ?Portfolio $portfolio = null): array
+    private function syncTeamMembers(Portfolio $portfolio, Request $request): void
     {
-        $contributors = [];
+        $oldTeamIds = $portfolio->teams()->pluck('teams.id');
 
-        foreach ($request->input('contributors', []) as $index => $contributor) {
-            $hasFile = $request->hasFile("contributors.{$index}.image");
-            $hasExisting = filled($contributor['existing_image'] ?? null);
-            $hasText = filled($contributor['name'] ?? null)
-                || filled($contributor['job'] ?? null)
-                || filled($contributor['description'] ?? null)
-                || filled($contributor['social_media'] ?? null);
+        $syncData = [];
 
-            if (! $hasFile && ! $hasExisting && ! $hasText) {
+        foreach ($request->input('team_members', []) as $member) {
+            $teamId = $member['team_id'] ?? null;
+
+            if (! filled($teamId)) {
                 continue;
             }
 
-            $imagePath = $contributor['existing_image'] ?? null;
+            $belongsToUser = Team::query()
+                ->where('user_id', auth()->id())
+                ->whereKey($teamId)
+                ->exists();
 
-            if ($hasFile) {
-                if ($imagePath && ! str_starts_with($imagePath, 'http')) {
-                    Storage::disk('public')->delete($imagePath);
-                }
-
-                $imagePath = $request->file("contributors.{$index}.image")->store('portfolios/contributors', 'public');
+            if (! $belongsToUser) {
+                continue;
             }
 
-            $item = [
-                'name' => $contributor['name'] ?? '',
-                'job' => $contributor['job'] ?? '',
-                'description' => $contributor['description'] ?? null,
-                'social_media' => $contributor['social_media'] ?? null,
+            $syncData[$teamId] = [
+                'description' => filled($member['description'] ?? null) ? $member['description'] : null,
             ];
-
-            if ($imagePath) {
-                if (str_starts_with($imagePath, 'http')) {
-                    $item['image'] = $imagePath;
-                } else {
-                    $item['path'] = $imagePath;
-                }
-            }
-
-            $contributors[] = $item;
         }
 
-        if ($portfolio !== null) {
-            $this->deleteRemovedContributorFiles($portfolio, $contributors);
-        }
+        $portfolio->teams()->sync($syncData);
 
-        return $contributors;
+        $affectedTeamIds = $oldTeamIds
+            ->merge(array_keys($syncData))
+            ->unique()
+            ->values()
+            ->all();
+
+        Team::recalculateNumbers($affectedTeamIds);
     }
 
     /**
@@ -338,12 +335,6 @@ class PortfolioController extends Controller
                 Storage::disk('public')->delete($image['path']);
             }
         }
-
-        foreach ($portfolio->contributors ?? [] as $contributor) {
-            if (! empty($contributor['path'])) {
-                Storage::disk('public')->delete($contributor['path']);
-            }
-        }
     }
 
     /**
@@ -353,19 +344,6 @@ class PortfolioController extends Controller
     {
         $newPaths = collect($newGallery)->pluck('path')->filter()->all();
         $oldPaths = collect($portfolio->gallery_images ?? [])->pluck('path')->filter()->all();
-
-        foreach (array_diff($oldPaths, $newPaths) as $path) {
-            Storage::disk('public')->delete($path);
-        }
-    }
-
-    /**
-     * @param  list<array<string, mixed>>  $newContributors
-     */
-    private function deleteRemovedContributorFiles(Portfolio $portfolio, array $newContributors): void
-    {
-        $newPaths = collect($newContributors)->pluck('path')->filter()->all();
-        $oldPaths = collect($portfolio->contributors ?? [])->pluck('path')->filter()->all();
 
         foreach (array_diff($oldPaths, $newPaths) as $path) {
             Storage::disk('public')->delete($path);

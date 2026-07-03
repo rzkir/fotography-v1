@@ -15,7 +15,7 @@
 
     <form id="portfolio-form" method="POST" action="{{ route('dashboard.portofolio.store') }}" enctype="multipart/form-data" class="space-y-6">
         @csrf
-        @include('dashboard.portofolio._form', ['categories' => $categories ?? collect()])
+        @include('dashboard.portofolio._form', ['categories' => $categories ?? collect(), 'teams' => $teams ?? collect()])
 
         <div class="flex justify-end gap-4">
             <a href="{{ route('dashboard.portofolio.index') }}" class="px-8 py-4 rounded-xl border border-white/5 text-sm font-bold hover:bg-white/5 transition-all">

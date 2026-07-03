@@ -1,3 +1,6 @@
+@php
+    $placeholderImage = 'https://images.unsplash.com/photo-1509460913899-515f1df34fed?auto=format&fit=crop&q=80&w=1600';
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -46,6 +49,10 @@
         .project-card:hover {
             transform: translateY(-8px);
         }
+        .project-card:hover .overlay-text {
+            opacity: 1;
+            transform: translateY(0);
+        }
         .filter-btn {
             position: relative;
             transition: all 0.3s ease;
@@ -68,6 +75,10 @@
             border-color: #d4d4d8;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
+        .portfolio-item.hidden-by-filter,
+        .portfolio-item.hidden-by-load-more {
+            display: none;
+        }
     </style>
     <title>Noir/Studio - Works & Services</title>
 </head>
@@ -81,7 +92,6 @@
         <x-layout.header />
 
         <main class="relative pt-48 px-6 md:px-12 lg:px-20 z-10 pb-32">
-            <!-- Header -->
             <header class="mb-32">
                 <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-12">
                     <div class="max-w-3xl">
@@ -93,152 +103,153 @@
                         <div class="flex space-x-12">
                             <div class="flex flex-col">
                                 <span class="text-[10px] text-zinc-600 uppercase tracking-widest">Total Projects</span>
-                                <span class="text-2xl font-bold">150+</span>
+                                <span class="text-2xl font-bold">{{ $totalProjects }}{{ $totalProjects >= 100 ? '+' : '' }}</span>
                             </div>
                             <div class="flex flex-col">
-                                <span class="text-[10px] text-zinc-600 uppercase tracking-widest">Countries</span>
-                                <span class="text-2xl font-bold">12</span>
+                                <span class="text-[10px] text-zinc-600 uppercase tracking-widest">Locations</span>
+                                <span class="text-2xl font-bold">{{ $uniqueLocations > 0 ? $uniqueLocations : '—' }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </header>
 
-            <!-- Featured Projects -->
-            <section class="mb-40">
-                <div class="flex items-center space-x-4 mb-12">
-                    <div class="w-12 h-[1px] bg-zinc-800"></div>
-                    <h2 class="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-500">Featured Projects</h2>
-                </div>
-                <div class="grid lg:grid-cols-2 gap-12">
-                    <div class="group relative aspect-[16/10] overflow-hidden rounded-sm bg-zinc-900">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=1600" alt="Featured 1" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent p-12 flex flex-col justify-end">
-                            <div class="flex justify-between items-end">
-                                <div class="space-y-4">
-                                    <span class="text-xs font-bold uppercase tracking-[0.3em] text-white/60">Campaign / 2024</span>
-                                    <h3 class="text-4xl lg:text-5xl font-display font-black uppercase tracking-tighter">The Ethereal Bloom</h3>
-                                    <p class="text-zinc-400 max-w-sm text-sm">Commercial beauty campaign for international cosmetics brand. Focused on organic textures and soft lighting.</p>
-                                </div>
-                                <div class="text-right">
-                                    <span class="block text-[10px] text-zinc-500 uppercase">Client</span>
-                                    <span class="font-bold">Bloom Paris</span>
-                                </div>
-                            </div>
-                        </div>
+            @if($featuredPortfolios->isNotEmpty())
+                <section class="mb-40">
+                    <div class="flex items-center space-x-4 mb-12">
+                        <div class="w-12 h-[1px] bg-zinc-800"></div>
+                        <h2 class="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-500">Featured Projects</h2>
                     </div>
-                    <div class="group relative aspect-[16/10] overflow-hidden rounded-sm bg-zinc-900">
-                        <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=1600" alt="Featured 2" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent p-12 flex flex-col justify-end">
-                            <div class="flex justify-between items-end">
-                                <div class="space-y-4">
-                                    <span class="text-xs font-bold uppercase tracking-[0.3em] text-white/60">Editorial / 2023</span>
-                                    <h3 class="text-4xl lg:text-5xl font-display font-black uppercase tracking-tighter">Concrete Silence</h3>
-                                    <p class="text-zinc-400 max-w-sm text-sm">Urban fashion editorial exploring the intersection of brutalist architecture and soft fabrics.</p>
+                    <div class="grid lg:grid-cols-2 gap-12">
+                        @foreach($featuredPortfolios as $portfolio)
+                            @php
+                                $excerpt = $portfolio->quote
+                                    ?? collect($portfolio->content_sections)->first()['description'] ?? null;
+                            @endphp
+                            <a href="{{ route('works.show', $portfolio) }}" class="group relative aspect-[16/10] overflow-hidden rounded-sm bg-zinc-900 block">
+                                <img
+                                    src="{{ $portfolio->heroImageUrl() ?? $placeholderImage }}"
+                                    alt="{{ $portfolio->title }}"
+                                    class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000"
+                                >
+                                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent p-12 flex flex-col justify-end">
+                                    <div class="flex justify-between items-end">
+                                        <div class="space-y-4">
+                                            <span class="text-xs font-bold uppercase tracking-[0.3em] text-white/60">
+                                                {{ $portfolio->portfolioCategory?->title ?? 'Project' }} / {{ $portfolio->year }}
+                                            </span>
+                                            <h3 class="text-4xl lg:text-5xl font-display font-black uppercase tracking-tighter">{{ $portfolio->title }}</h3>
+                                            @if(filled($excerpt))
+                                                <p class="text-zinc-400 max-w-sm text-sm line-clamp-2">{{ Str::limit($excerpt, 120) }}</p>
+                                            @endif
+                                        </div>
+                                        @if(filled($portfolio->client))
+                                            <div class="text-right">
+                                                <span class="block text-[10px] text-zinc-500 uppercase">Client</span>
+                                                <span class="font-bold">{{ $portfolio->client }}</span>
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
-                                <div class="text-right">
-                                    <span class="block text-[10px] text-zinc-500 uppercase">Client</span>
-                                    <span class="font-bold">Vogue Italia</span>
-                                </div>
-                            </div>
-                        </div>
+                            </a>
+                        @endforeach
                     </div>
-                </div>
-            </section>
+                </section>
+            @endif
 
-            <!-- Service Tags -->
-            <section class="mb-20 bg-zinc-900/50 py-20 px-12 border-y border-zinc-900">
-                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
-                    <div class="space-y-4">
-                        <h4 class="text-xs font-bold uppercase tracking-widest text-zinc-200">Fine Art</h4>
-                        <p class="text-sm text-zinc-500 leading-relaxed">Eksplorasi emosi melalui cahaya minimalis dan komposisi dramatis.</p>
+            @if($categories->isNotEmpty())
+                <section class="mb-20 bg-zinc-900/50 py-20 px-6 md:px-12 border-y border-zinc-900">
+                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
+                        @foreach($categories as $category)
+                            <div class="space-y-4">
+                                <h4 class="text-xs font-bold uppercase tracking-widest text-zinc-200">{{ $category->title }}</h4>
+                                <p class="text-sm text-zinc-500 leading-relaxed">
+                                    {{ $category->published_count }} {{ Str::plural('project', $category->published_count) }} dalam kategori ini.
+                                </p>
+                            </div>
+                        @endforeach
                     </div>
-                    <div class="space-y-4">
-                        <h4 class="text-xs font-bold uppercase tracking-widest text-zinc-200">Editorial</h4>
-                        <p class="text-sm text-zinc-500 leading-relaxed">Narasi visual untuk publikasi mode dan seni kelas dunia.</p>
-                    </div>
-                    <div class="space-y-4">
-                        <h4 class="text-xs font-bold uppercase tracking-widest text-zinc-200">Commercial</h4>
-                        <p class="text-sm text-zinc-500 leading-relaxed">Visual berdampak tinggi yang dirancai untuk memperkuat identitas brand.</p>
-                    </div>
-                    <div class="space-y-4">
-                        <h4 class="text-xs font-bold uppercase tracking-widest text-zinc-200">Product</h4>
-                        <p class="text-sm text-zinc-500 leading-relaxed">Detail makro dan pencahayaan presisi untuk produk mewah.</p>
-                    </div>
-                </div>
-            </section>
+                </section>
+            @endif
 
-            <!-- Portfolio Grid -->
             <section class="mb-24">
                 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8 border-b border-zinc-900 pb-12 mb-16">
-                    <div class="flex flex-wrap gap-x-8 gap-y-4 text-[10px] font-bold uppercase tracking-[0.2em]">
-                        <button class="filter-btn active hover:text-white">All Work</button>
-                        <button class="filter-btn text-zinc-500 hover:text-white">Portrait</button>
-                        <button class="filter-btn text-zinc-500 hover:text-white">Editorial</button>
-                        <button class="filter-btn text-zinc-500 hover:text-white">Fashion</button>
-                        <button class="filter-btn text-zinc-500 hover:text-white">Lifestyle</button>
-                        <button class="filter-btn text-zinc-500 hover:text-white">Fine Art</button>
-                        <button class="filter-btn text-zinc-500 hover:text-white">Commercial</button>
-                        <button class="filter-btn text-zinc-500 hover:text-white">Product</button>
-                    </div>
+                    @if($categories->isNotEmpty())
+                        <div class="flex flex-wrap gap-x-8 gap-y-4 text-[10px] font-bold uppercase tracking-[0.2em]" id="category-filters">
+                            <button type="button" class="filter-btn active hover:text-white" data-category="all">All Work</button>
+                            @foreach($categories as $category)
+                                <button type="button" class="filter-btn text-zinc-500 hover:text-white" data-category="{{ $category->category_id }}">{{ $category->title }}</button>
+                            @endforeach
+                        </div>
+                    @endif
                     <div class="flex items-center space-x-8">
                         <div class="flex items-center space-x-3">
                             <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-600">Sort By</span>
-                            <select class="bg-transparent border-none text-[10px] font-bold uppercase tracking-widest text-white outline-none cursor-pointer">
-                                <option class="bg-zinc-900">Latest</option>
-                                <option class="bg-zinc-900">Popular</option>
-                            </select>
-                        </div>
-                        <div class="flex items-center space-x-3">
-                            <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-600">Price Range</span>
-                            <select class="bg-transparent border-none text-[10px] font-bold uppercase tracking-widest text-white outline-none cursor-pointer">
-                                <option class="bg-zinc-900">All Levels</option>
-                                <option class="bg-zinc-900">Premium</option>
+                            <select id="sort-select" class="bg-transparent border-none text-[10px] font-bold uppercase tracking-widest text-white outline-none cursor-pointer">
+                                <option value="latest" class="bg-zinc-900">Latest</option>
+                                <option value="oldest" class="bg-zinc-900">Oldest</option>
+                                <option value="title" class="bg-zinc-900">Title A–Z</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
-                <div class="portfolio-grid">
-                    <a href="#" class="project-card col-span-12 md:col-span-6 lg:col-span-8 group relative aspect-[16/9] overflow-hidden bg-zinc-900">
-                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=1400" alt="P1" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000">
-                        <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-12">
-                            <div class="overlay-text opacity-0 transform translate-y-4 transition-all duration-500">
-                                <div class="flex justify-between items-center mb-4">
-                                    <span class="text-xs font-bold uppercase tracking-[0.3em] text-zinc-400">Portrait / 2.4K views</span>
-                                    <span class="text-xs text-zinc-500">2024</span>
+                @if($gridPortfolios->isNotEmpty())
+                    <div class="portfolio-grid" id="portfolio-grid">
+                        @foreach($gridPortfolios as $index => $portfolio)
+                            <a
+                                href="{{ route('works.show', $portfolio) }}"
+                                class="project-card portfolio-item group relative overflow-hidden bg-zinc-900 {{ $index % 2 === 0 ? 'col-span-12 md:col-span-6 lg:col-span-8 aspect-[16/9]' : 'col-span-12 md:col-span-6 lg:col-span-4 aspect-[3/4]' }}"
+                                data-category="{{ $portfolio->category_id ?? 'uncategorized' }}"
+                                data-year="{{ $portfolio->year }}"
+                                data-title="{{ strtolower($portfolio->title) }}"
+                                data-index="{{ $index }}"
+                            >
+                                <img
+                                    src="{{ $portfolio->heroImageUrl() ?? $placeholderImage }}"
+                                    alt="{{ $portfolio->title }}"
+                                    class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000"
+                                >
+                                <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end {{ $index % 2 === 0 ? 'p-12' : 'p-10' }}">
+                                    <div class="overlay-text opacity-0 transform translate-y-4 transition-all duration-500">
+                                        <div class="flex justify-between items-center mb-4">
+                                            <span class="text-xs font-bold uppercase tracking-[0.3em] text-zinc-400">
+                                                {{ $portfolio->portfolioCategory?->title ?? 'Project' }}
+                                            </span>
+                                            <span class="text-xs text-zinc-500">{{ $portfolio->year }}</span>
+                                        </div>
+                                        <h3 class="{{ $index % 2 === 0 ? 'text-4xl lg:text-6xl' : 'text-4xl' }} font-display font-black uppercase tracking-tighter">{{ $portfolio->title }}</h3>
+                                        @if(filled($portfolio->client))
+                                            <p class="text-sm text-zinc-400 mt-4">Client: {{ $portfolio->client }}</p>
+                                        @elseif(filled($portfolio->location))
+                                            <p class="text-sm text-zinc-400 mt-4">{{ $portfolio->location }}</p>
+                                        @endif
+                                    </div>
                                 </div>
-                                <h3 class="text-4xl lg:text-6xl font-display font-black uppercase tracking-tighter">Aura of Silence</h3>
-                                <p class="text-sm text-zinc-400 mt-4">Model: Sophia K.</p>
-                            </div>
+                            </a>
+                        @endforeach
+                    </div>
+
+                    @if($gridPortfolios->count() > 4)
+                        <div class="mt-24 text-center">
+                            <button type="button" id="load-more-btn" class="px-12 py-5 border border-zinc-800 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-white hover:text-black transition-all duration-500">
+                                Load More Projects
+                            </button>
                         </div>
-                    </a>
-
-                    <a href="#" class="project-card col-span-12 md:col-span-6 lg:col-span-4 group relative aspect-[3/4] overflow-hidden bg-zinc-900">
-                        <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=1000" alt="P2" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000">
-                        <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-10">
-                            <div class="overlay-text opacity-0 transform translate-y-4 transition-all duration-500">
-                                <div class="flex justify-between items-center mb-4">
-                                    <span class="text-xs font-bold uppercase tracking-[0.3em] text-zinc-400">Editorial / 1.8K views</span>
-                                    <span class="text-xs text-zinc-500">2023</span>
-                                </div>
-                                <h3 class="text-4xl font-display font-black uppercase tracking-tighter">Street Ethos</h3>
-                                <p class="text-sm text-zinc-400 mt-4">Model: Julian M.</p>
-                            </div>
-                        </div>
-                    </a>
-
-                    <!-- ... more project cards ... -->
-                </div>
-
-                <div class="mt-24 text-center">
-                    <button class="px-12 py-5 border border-zinc-800 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-white hover:text-black transition-all duration-500">Load More Projects</button>
-                </div>
+                    @endif
+                @elseif($portfolios->isEmpty())
+                    <div class="text-center py-24 border border-zinc-900 rounded-sm">
+                        <iconify-icon icon="lucide:image-off" class="text-4xl text-zinc-700 mb-6"></iconify-icon>
+                        <h3 class="text-2xl font-display font-black uppercase mb-2">No Published Projects Yet</h3>
+                        <p class="text-zinc-500 text-sm max-w-md mx-auto">Portfolio akan muncul di sini setelah dipublikasikan dari dashboard.</p>
+                    </div>
+                @else
+                    <p class="text-center text-zinc-500 text-sm py-12">Semua proyek ditampilkan di bagian Featured di atas.</p>
+                @endif
             </section>
 
-            <!-- Pricing Section -->
             <section class="py-40 bg-white text-black">
-                <div class="max-w-7xl mx-auto px-12">
+                <div class="max-w-7xl mx-auto px-6 md:px-12">
                     <div class="mb-24 text-center">
                         <span class="text-[10px] font-bold uppercase tracking-[0.5em] text-zinc-500 block mb-6">Investment & Value</span>
                         <h2 class="text-6xl md:text-8xl font-display font-black tracking-tighter uppercase">Pricing Tiers</h2>
@@ -257,7 +268,7 @@
                                     <li>— Online Gallery Access</li>
                                 </ul>
                             </div>
-                            <button class="mt-12 w-full py-4 border border-black text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-black hover:text-white transition-all">Request Booking</button>
+                            <a href="/contact" class="mt-12 w-full py-4 border border-black text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-black hover:text-white transition-all text-center block">Request Booking</a>
                         </div>
 
                         <div class="price-card p-12 flex flex-col justify-between h-full border-2 border-black rounded-sm" style="background: #f8f8f8;">
@@ -277,7 +288,7 @@
                                     <li>— 48h Preview Access</li>
                                 </ul>
                             </div>
-                            <button class="mt-12 w-full py-4 bg-black text-white text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all">Request Booking</button>
+                            <a href="/contact" class="mt-12 w-full py-4 bg-black text-white text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all text-center block">Request Booking</a>
                         </div>
 
                         <div class="price-card p-12 flex flex-col justify-between h-full rounded-sm bg-white border border-zinc-200">
@@ -294,15 +305,14 @@
                                     <li>— Physical Print Box</li>
                                 </ul>
                             </div>
-                            <button class="mt-12 w-full py-4 border border-black text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-black hover:text-white transition-all">Inquire Now</button>
+                            <a href="/contact" class="mt-12 w-full py-4 border border-black text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-black hover:text-white transition-all text-center block">Inquire Now</a>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Commission Process -->
             <section class="py-40 border-t border-zinc-900">
-                <div class="max-w-7xl mx-auto px-12">
+                <div class="max-w-7xl mx-auto px-6 md:px-12">
                     <div class="grid lg:grid-cols-12 gap-24">
                         <div class="lg:col-span-5">
                             <span class="text-[10px] font-bold tracking-[0.5em] text-zinc-500 uppercase block mb-8">The Workflow</span>
@@ -346,7 +356,7 @@
             </section>
 
             <div class="mt-32 text-center pb-40">
-                <a href="#" class="inline-flex flex-col items-center group">
+                <a href="/contact" class="inline-flex flex-col items-center group">
                     <span class="text-[10px] font-bold uppercase tracking-[0.4em] mb-4 text-zinc-500">Ready to work together?</span>
                     <span class="text-4xl md:text-6xl font-display font-black uppercase border-b-2 border-zinc-800 pb-2 group-hover:text-zinc-400 group-hover:border-zinc-500 transition-all">Start a Commission</span>
                 </a>
@@ -355,5 +365,85 @@
 
         <x-layout.footer />
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const grid = document.getElementById('portfolio-grid');
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            const sortSelect = document.getElementById('sort-select');
+            const filterButtons = document.querySelectorAll('#category-filters .filter-btn');
+            const perPage = 4;
+            let visibleCount = perPage;
+            let activeCategory = 'all';
+
+            const getItems = () => Array.from(grid?.querySelectorAll('.portfolio-item') ?? []);
+
+            const applyFilters = () => {
+                const items = getItems();
+                let shown = 0;
+
+                items.forEach((item) => {
+                    const matchesCategory = activeCategory === 'all' || item.dataset.category === activeCategory;
+                    const withinLimit = shown < visibleCount;
+
+                    if (matchesCategory && withinLimit) {
+                        item.classList.remove('hidden-by-filter', 'hidden-by-load-more');
+                        shown++;
+                    } else if (!matchesCategory) {
+                        item.classList.add('hidden-by-filter');
+                        item.classList.remove('hidden-by-load-more');
+                    } else {
+                        item.classList.remove('hidden-by-filter');
+                        item.classList.add('hidden-by-load-more');
+                    }
+                });
+
+                if (loadMoreBtn) {
+                    const totalMatching = items.filter((item) => activeCategory === 'all' || item.dataset.category === activeCategory).length;
+                    loadMoreBtn.classList.toggle('hidden', shown >= totalMatching);
+                }
+            };
+
+            const sortItems = () => {
+                if (!grid) return;
+
+                const items = getItems();
+                const sortBy = sortSelect?.value ?? 'latest';
+
+                items.sort((a, b) => {
+                    if (sortBy === 'latest') return Number(b.dataset.year) - Number(a.dataset.year);
+                    if (sortBy === 'oldest') return Number(a.dataset.year) - Number(b.dataset.year);
+                    return a.dataset.title.localeCompare(b.dataset.title);
+                });
+
+                items.forEach((item) => grid.appendChild(item));
+            };
+
+            filterButtons.forEach((button) => {
+                button.addEventListener('click', () => {
+                    filterButtons.forEach((btn) => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    activeCategory = button.dataset.category;
+                    visibleCount = perPage;
+                    applyFilters();
+                });
+            });
+
+            sortSelect?.addEventListener('change', () => {
+                sortItems();
+                applyFilters();
+            });
+
+            loadMoreBtn?.addEventListener('click', () => {
+                visibleCount += perPage;
+                applyFilters();
+            });
+
+            if (grid) {
+                sortItems();
+                applyFilters();
+            }
+        });
+    </script>
 </body>
 </html>

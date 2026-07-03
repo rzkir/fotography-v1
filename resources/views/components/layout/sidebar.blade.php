@@ -136,6 +136,26 @@
                 ></iconify-icon>
                 <span class="nav-text">Features</span>
             </a>
+
+            <a
+                href="{{ route('dashboard.teams.index') }}"
+                id="nav-teams"
+                @class([
+                    'nav-item flex items-center gap-3 px-3 py-3 rounded-xl transition-all group',
+                    'bg-white/5 text-white font-semibold shadow-inner' => $active === 'teams',
+                    'text-zinc-400 hover:text-white hover:bg-white/5' => $active !== 'teams',
+                ])
+            >
+                <iconify-icon
+                    icon="lucide:users"
+                    @class([
+                        'text-xl shrink-0',
+                        'text-blue-400' => $active === 'teams',
+                        'group-hover:text-blue-400' => $active !== 'teams',
+                    ])
+                ></iconify-icon>
+                <span class="nav-text">Team</span>
+            </a>
         </div>
 
         <div class="space-y-1">

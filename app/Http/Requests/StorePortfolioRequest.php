@@ -59,13 +59,13 @@ class StorePortfolioRequest extends FormRequest
             'timeline' => ['nullable', 'array'],
             'timeline.*.title' => ['nullable', 'string', 'max:255'],
             'timeline.*.text' => ['nullable', 'string'],
-            'contributors' => ['nullable', 'array'],
-            'contributors.*.name' => ['nullable', 'string', 'max:255'],
-            'contributors.*.job' => ['nullable', 'string', 'max:255'],
-            'contributors.*.description' => ['nullable', 'string'],
-            'contributors.*.social_media' => ['nullable', 'string', 'max:255'],
-            'contributors.*.image' => ['nullable', ...$imageFile],
-            'contributors.*.existing_image' => ['nullable', 'string'],
+            'team_members' => ['nullable', 'array'],
+            'team_members.*.team_id' => [
+                'required',
+                'integer',
+                Rule::exists('teams', 'id')->where(fn ($query) => $query->where('user_id', $this->user()->id)),
+            ],
+            'team_members.*.description' => ['nullable', 'string'],
             'testimonial_quote' => ['nullable', 'string'],
             'status' => ['required', Rule::in(['draft', 'published', 'archived'])],
             'is_published' => ['nullable', 'boolean'],
@@ -79,6 +79,15 @@ class StorePortfolioRequest extends FormRequest
                 'slug' => Str::slug($this->input('slug')),
             ]);
         }
+
+        $teamMembers = collect($this->input('team_members', []))
+            ->filter(fn (array $member): bool => filled($member['team_id'] ?? null))
+            ->values()
+            ->all();
+
+        $this->merge([
+            'team_members' => $teamMembers === [] ? null : $teamMembers,
+        ]);
     }
 
     /**

@@ -4,6 +4,7 @@ import { initDialogs } from "./dialog.service";
 import { initJurnalForm } from "./jurnal.service";
 import { initPortfolioForm } from "./portofolio.service";
 import { initPageSkeletons } from "./skeleton.service";
+import { initTeamForm } from "./teams.service";
 import { initFeaturesDialog } from "./features.blade.js";
 import { initTestimonialsDialog } from "./testimonials.service";
 
@@ -30,5 +31,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (document.getElementById("jurnal-form")) {
         initJurnalForm();
+    }
+
+    if (document.getElementById("team-form")) {
+        initTeamForm();
     }
 });

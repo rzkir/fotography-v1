@@ -32,7 +32,7 @@
             <form id="portfolio-form" method="POST" action="{{ route('dashboard.portofolio.update', $portfolio) }}" enctype="multipart/form-data" class="space-y-6">
                 @csrf
                 @method('PUT')
-                @include('dashboard.portofolio._form', ['portfolio' => $portfolio, 'categories' => $categories])
+                @include('dashboard.portofolio._form', ['portfolio' => $portfolio, 'categories' => $categories, 'teams' => $teams])
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="card-photography rounded-[2rem] p-6 flex flex-col items-center text-center">

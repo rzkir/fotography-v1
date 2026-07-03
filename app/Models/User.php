@@ -51,6 +51,11 @@ class User extends Authenticatable
         return $this->hasMany(Feature::class);
     }
 
+    public function teams(): HasMany
+    {
+        return $this->hasMany(Team::class);
+    }
+
     public function portfolioCategories(): HasMany
     {
         return $this->hasMany(PortfolioCategory::class);

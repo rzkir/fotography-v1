@@ -6,20 +6,21 @@ use App\Http\Controllers\Dashboard\JurnalCategoryController;
 use App\Http\Controllers\Dashboard\JurnalController;
 use App\Http\Controllers\Dashboard\PortfolioCategoryController;
 use App\Http\Controllers\Dashboard\PortfolioController;
+use App\Http\Controllers\Dashboard\TeamController;
 use App\Http\Controllers\Dashboard\TestimonialController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\WorkController;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('home');
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/works', function () {
-    return view('works.index');
-});
+Route::get('/works', [WorkController::class, 'index'])->name('works.index');
+
+Route::get('/works/{portfolio:slug}', [WorkController::class, 'show'])->name('works.show');
 
 Route::get('/journal', function () {
     return view('journal');
@@ -93,6 +94,7 @@ Route::middleware('auth')->prefix('dashboard')->name('dashboard.')->group(functi
     Route::resource('jurnal', JurnalController::class)->except(['show']);
     Route::resource('testimonials', TestimonialController::class)->except(['show', 'create', 'edit']);
     Route::resource('features', FeatureController::class)->except(['show', 'create', 'edit']);
+    Route::resource('teams', TeamController::class)->except(['show']);
 
     Route::get('profile', function (Request $request) {
         $user = $request->user();

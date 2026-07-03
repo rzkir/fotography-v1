@@ -42,40 +42,24 @@
         $timelineItems = [['title' => '', 'text' => '']];
     }
 
-    $contributorsRaw = old('contributors');
-    if ($contributorsRaw === null) {
-        $contributorsRaw = collect($portfolio?->contributors ?? [])->map(fn (array $contributor): array => [
-            'name' => $contributor['name'] ?? '',
-            'job' => $contributor['job'] ?? ($contributor['role'] ?? ''),
-            'description' => $contributor['description'] ?? ($contributor['bio'] ?? ''),
-            'social_media' => $contributor['social_media'] ?? '',
-            'existing_image' => $contributor['path'] ?? ($contributor['image'] ?? ''),
+    $teamOptions = $teams ?? collect();
+    $teamMembersRaw = old('team_members');
+
+    if ($teamMembersRaw === null && $portfolio?->relationLoaded('teams')) {
+        $teamMembersRaw = $portfolio->teams->map(fn ($team): array => [
+            'team_id' => $team->id,
+            'description' => $team->pivot->description ?? '',
         ])->values()->all();
     }
-    $contributors = collect($contributorsRaw)->map(fn (array $contributor): array => [
-        'name' => $contributor['name'] ?? '',
-        'job' => $contributor['job'] ?? '',
-        'description' => $contributor['description'] ?? '',
-        'social_media' => $contributor['social_media'] ?? '',
-        'existing_image' => $contributor['existing_image'] ?? '',
+
+    $teamMembers = collect($teamMembersRaw ?? [])->map(fn (array $member): array => [
+        'team_id' => $member['team_id'] ?? '',
+        'description' => $member['description'] ?? '',
     ])->values()->all();
 
-    if ($contributors === []) {
-        $contributors = [['name' => '', 'job' => '', 'description' => '', 'social_media' => '', 'existing_image' => '']];
+    if ($teamMembers === []) {
+        $teamMembers = [['team_id' => '', 'description' => '']];
     }
-
-    $contributorImageUrl = function (array $contributor): ?string {
-        $existing = $contributor['existing_image'] ?? null;
-        if (! filled($existing)) {
-            return null;
-        }
-
-        if (str_starts_with($existing, 'http')) {
-            return $existing;
-        }
-
-        return \Illuminate\Support\Facades\Storage::disk('public')->url($existing);
-    };
 @endphp
 
 <div class="card-photography rounded-[3rem] p-6 lg:p-10 relative overflow-hidden">
@@ -433,165 +417,111 @@
                 </h4>
                 <button
                     type="button"
-                    id="add-contributor"
+                    id="add-team-member"
                     class="px-4 py-2 rounded-xl border border-white/5 text-xs font-black hover:bg-white/5 transition-all flex items-center gap-2"
+                    @disabled($teamOptions->isEmpty())
                 >
                     <iconify-icon icon="lucide:plus"></iconify-icon>
-                    Add Contributor
+                    Add Team Member
                 </button>
             </div>
 
-            <div id="contributors-list" class="space-y-4">
-                @foreach ($contributors as $index => $contributor)
-                    @php $previewUrl = $contributorImageUrl($contributor); @endphp
-                    <div class="contributor-item card-photography rounded-2xl p-6 space-y-4" data-contributor-item>
+            @if ($teamOptions->isEmpty())
+                <div class="card-photography rounded-2xl p-6 text-sm text-zinc-500">
+                    No studio team members yet.
+                    <a href="{{ route('dashboard.teams.create') }}" class="text-[#ff6b35] hover:underline font-bold">Create a team profile</a> before assigning contributors to this project.
+                </div>
+            @else
+                <div id="team-members-list" class="space-y-4">
+                    @foreach ($teamMembers as $index => $member)
+                        @php
+                            $selectedTeam = $teamOptions->firstWhere('id', (int) ($member['team_id'] ?? 0));
+                        @endphp
+                        <div class="team-member-item card-photography rounded-2xl p-6 space-y-4" data-team-member-item>
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] uppercase tracking-widest font-bold opacity-40 team-member-label">Contributor {{ $index + 1 }}</span>
+                                <button
+                                    type="button"
+                                    data-remove-team-member
+                                    @class([
+                                        'text-[10px] uppercase tracking-widest font-bold opacity-40 hover:opacity-100 hover:text-red-400 transition-colors',
+                                        'hidden' => count($teamMembers) === 1,
+                                    ])
+                                >
+                                    Remove
+                                </button>
+                            </div>
+
+                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                @if ($selectedTeam?->pictureUrl())
+                                    <div class="aspect-square rounded-xl overflow-hidden border border-white/10">
+                                        <img src="{{ $selectedTeam->pictureUrl() }}" alt="{{ $selectedTeam->name }}" class="w-full h-full object-cover">
+                                    </div>
+                                @else
+                                    <div class="aspect-square rounded-xl border border-white/10 bg-zinc-900 flex items-center justify-center">
+                                        <iconify-icon icon="lucide:user-round" class="text-3xl text-zinc-700"></iconify-icon>
+                                    </div>
+                                @endif
+
+                                <div class="lg:col-span-2 space-y-4">
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Team Member</label>
+                                        <select name="team_members[{{ $index }}][team_id]" data-field="team_id" class="input-field appearance-none cursor-pointer">
+                                            <option value="">Select team member</option>
+                                            @foreach ($teamOptions as $teamOption)
+                                                <option value="{{ $teamOption->id }}" @selected((string) ($member['team_id'] ?? '') === (string) $teamOption->id)>
+                                                    {{ $teamOption->name }} — {{ $teamOption->job }} ({{ $teamOption->number }} projects)
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <x-ui.textarea
+                                        name="team_members[{{ $index }}][description]"
+                                        label="Project Notes"
+                                        :value="$member['description']"
+                                        rows="3"
+                                        placeholder="Brief contribution notes for this project..."
+                                        data-field="description"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <template id="team-member-template">
+                    <div class="team-member-item card-photography rounded-2xl p-6 space-y-4" data-team-member-item>
                         <div class="flex items-center justify-between">
-                            <span class="text-[10px] uppercase tracking-widest font-bold opacity-40 contributor-label">Contributor {{ $index + 1 }}</span>
-                            <button
-                                type="button"
-                                data-remove-contributor
-                                @class([
-                                    'text-[10px] uppercase tracking-widest font-bold opacity-40 hover:opacity-100 hover:text-red-400 transition-colors',
-                                    'hidden' => count($contributors) === 1,
-                                ])
-                            >
+                            <span class="text-[10px] uppercase tracking-widest font-bold opacity-40 team-member-label">Contributor</span>
+                            <button type="button" data-remove-team-member class="text-[10px] uppercase tracking-widest font-bold opacity-40 hover:opacity-100 hover:text-red-400 transition-colors">
                                 Remove
                             </button>
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            <div class="space-y-2 relative" data-contributor-image-root>
-                                <p class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Photo</p>
-                                <input
-                                    type="file"
-                                    id="contributor-image-{{ $index }}"
-                                    name="contributors[{{ $index }}][image]"
-                                    accept="image/*,.heic,.heif,.avif,.jpg,.jpeg,.png,.gif,.webp,.bmp,.svg,.tiff,.tif,.ico,.jfif,.jxl,.apng"
-                                    tabindex="-1"
-                                    class="absolute h-px w-px overflow-hidden opacity-0"
-                                    style="clip: rect(0, 0, 0, 0); white-space: nowrap;"
-                                    data-field="image"
-                                    data-contributor-image-input
-                                >
-                                <div
-                                    data-contributor-preview-wrap
-                                    @class(['hidden' => ! $previewUrl])
-                                >
-                                    @if ($previewUrl)
-                                        <div class="relative aspect-square rounded-xl overflow-hidden border border-white/10 group">
-                                            <img src="{{ $previewUrl }}" alt="{{ $contributor['name'] ?: 'Contributor' }}" class="w-full h-full object-cover" data-contributor-preview-img>
-                                            <button
-                                                type="button"
-                                                data-remove-contributor-image
-                                                class="absolute top-2 right-2 w-7 h-7 bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                                            >
-                                                <iconify-icon icon="lucide:x" class="text-xs"></iconify-icon>
-                                            </button>
-                                        </div>
-                                    @endif
-                                </div>
-                                <div
-                                    data-contributor-dropzone
-                                    @class([
-                                        'relative flex flex-col items-center justify-center gap-2 p-6 card-photography rounded-xl border-dashed border-white/10 cursor-pointer hover:border-[#ff6b35]/30 transition-colors aspect-square overflow-hidden',
-                                        'hidden' => filled($previewUrl),
-                                    ])
-                                >
-                                    <label for="contributor-image-{{ $index }}" data-contributor-image-trigger class="absolute inset-0 z-10 cursor-pointer" aria-label="Upload contributor photo"></label>
-                                    <div class="pointer-events-none flex flex-col items-center justify-center gap-2">
-                                        <iconify-icon icon="lucide:user-round" class="text-2xl opacity-30"></iconify-icon>
-                                        <span class="text-[10px] opacity-40 font-medium text-center">Upload photo</span>
-                                    </div>
-                                </div>
-                                <input
-                                    type="hidden"
-                                    name="contributors[{{ $index }}][existing_image]"
-                                    value="{{ $contributor['existing_image'] }}"
-                                    data-field="existing_image"
-                                >
+                            <div class="aspect-square rounded-xl border border-white/10 bg-zinc-900 flex items-center justify-center">
+                                <iconify-icon icon="lucide:user-round" class="text-3xl text-zinc-700"></iconify-icon>
                             </div>
 
                             <div class="lg:col-span-2 space-y-4">
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <x-ui.input
-                                        name="contributors[{{ $index }}][name]"
-                                        label="Name"
-                                        :value="$contributor['name']"
-                                        placeholder="Evan W."
-                                    />
-                                    <x-ui.input
-                                        name="contributors[{{ $index }}][job]"
-                                        label="Job"
-                                        :value="$contributor['job']"
-                                        placeholder="Lead Photographer"
-                                    />
-                                </div>
-                                <x-ui.input
-                                    name="contributors[{{ $index }}][social_media]"
-                                    label="Social Media"
-                                    :value="$contributor['social_media']"
-                                    placeholder="@username or https://instagram.com/..."
-                                />
-                                <x-ui.textarea
-                                    name="contributors[{{ $index }}][description]"
-                                    label="Description"
-                                    :value="$contributor['description']"
-                                    rows="3"
-                                    placeholder="Brief bio or contribution notes..."
-                                />
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-
-            <template id="contributor-template">
-                <div class="contributor-item card-photography rounded-2xl p-6 space-y-4" data-contributor-item>
-                    <div class="flex items-center justify-between">
-                        <span class="text-[10px] uppercase tracking-widest font-bold opacity-40 contributor-label">Contributor</span>
-                        <button type="button" data-remove-contributor class="text-[10px] uppercase tracking-widest font-bold opacity-40 hover:opacity-100 hover:text-red-400 transition-colors">
-                            Remove
-                        </button>
-                    </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="space-y-2 relative" data-contributor-image-root>
-                            <p class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Photo</p>
-                            <input type="file" accept="image/*,.heic,.heif,.avif,.jpg,.jpeg,.png,.gif,.webp,.bmp,.svg,.tiff,.tif,.ico,.jfif,.jxl,.apng" tabindex="-1" class="absolute h-px w-px overflow-hidden opacity-0" style="clip: rect(0, 0, 0, 0); white-space: nowrap;" data-field="image" data-contributor-image-input>
-                            <div class="hidden" data-contributor-preview-wrap></div>
-                            <div data-contributor-dropzone class="relative flex flex-col items-center justify-center gap-2 p-6 card-photography rounded-xl border-dashed border-white/10 cursor-pointer hover:border-[#ff6b35]/30 transition-colors aspect-square overflow-hidden">
-                                <label data-contributor-image-trigger class="absolute inset-0 z-10 cursor-pointer" aria-label="Upload contributor photo"></label>
-                                <div class="pointer-events-none flex flex-col items-center justify-center gap-2">
-                                    <iconify-icon icon="lucide:user-round" class="text-2xl opacity-30"></iconify-icon>
-                                    <span class="text-[10px] opacity-40 font-medium text-center">Upload photo</span>
-                                </div>
-                            </div>
-                            <input type="hidden" value="" data-field="existing_image">
-                        </div>
-
-                        <div class="lg:col-span-2 space-y-4">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div class="space-y-2">
-                                    <label class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Name</label>
-                                    <input type="text" data-field="name" class="input-field" placeholder="Evan W.">
+                                    <label class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Team Member</label>
+                                    <select data-field="team_id" class="input-field appearance-none cursor-pointer">
+                                        <option value="">Select team member</option>
+                                        @foreach ($teamOptions as $teamOption)
+                                            <option value="{{ $teamOption->id }}">{{ $teamOption->name }} — {{ $teamOption->job }} ({{ $teamOption->number }} projects)</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                                 <div class="space-y-2">
-                                    <label class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Job</label>
-                                    <input type="text" data-field="job" class="input-field" placeholder="Lead Photographer">
+                                    <label class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Project Notes</label>
+                                    <textarea data-field="description" rows="3" class="input-field resize-none" placeholder="Brief contribution notes for this project..."></textarea>
                                 </div>
-                            </div>
-                            <div class="space-y-2">
-                                <label class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Social Media</label>
-                                <input type="text" data-field="social_media" class="input-field" placeholder="@username or https://instagram.com/...">
-                            </div>
-                            <div class="space-y-2">
-                                <label class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Description</label>
-                                <textarea data-field="description" rows="3" class="input-field resize-none" placeholder="Brief bio or contribution notes..."></textarea>
                             </div>
                         </div>
                     </div>
-                </div>
-            </template>
+                </template>
+            @endif
         </div>
     </div>
 

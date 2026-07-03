@@ -275,161 +275,19 @@ export function initSavedGalleryRemove() {
     });
 }
 
-export function initContributors() {
-    const list = document.getElementById("contributors-list");
-    const template = document.getElementById("contributor-template");
-    const addButton = document.getElementById("add-contributor");
-
-    if (!list || !template || !addButton) {
-        return;
-    }
-
-    const showContributorDropzone = (item) => {
-        const previewWrap = item.querySelector(
-            "[data-contributor-preview-wrap]",
-        );
-        const dropzone = item.querySelector("[data-contributor-dropzone]");
-        const existingInput = item.querySelector(
-            '[data-field="existing_image"]',
-        );
-        const fileInput = item.querySelector("[data-contributor-image-input]");
-
-        if (previewWrap) {
-            previewWrap.classList.add("hidden");
-            previewWrap.innerHTML = "";
-        }
-
-        if (dropzone) {
-            dropzone.classList.remove("hidden");
-        }
-
-        if (existingInput) {
-            existingInput.value = "";
-        }
-
-        if (fileInput) {
-            fileInput.value = "";
-        }
-    };
-
-    const showContributorPreview = (item, src, alt = "Contributor") => {
-        const previewWrap = item.querySelector(
-            "[data-contributor-preview-wrap]",
-        );
-        const dropzone = item.querySelector("[data-contributor-dropzone]");
-
-        if (!previewWrap) {
-            return;
-        }
-
-        previewWrap.innerHTML = `
-            <div class="relative aspect-square rounded-xl overflow-hidden border border-white/10 group">
-                <img src="${src}" alt="${alt}" class="w-full h-full object-cover" data-contributor-preview-img>
-                <button type="button" data-remove-contributor-image class="absolute top-2 right-2 w-7 h-7 bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <iconify-icon icon="lucide:x" class="text-xs"></iconify-icon>
-                </button>
-            </div>
-        `;
-        previewWrap.classList.remove("hidden");
-
-        if (dropzone) {
-            dropzone.classList.add("hidden");
-        }
-    };
-
-    const reindexContributors = () => {
-        const items = list.querySelectorAll("[data-contributor-item]");
-
-        items.forEach((item, index) => {
-            const label = item.querySelector(".contributor-label");
-            if (label) {
-                label.textContent = `Contributor ${index + 1}`;
-            }
-
-            item.querySelectorAll("[data-field]").forEach((field) => {
-                const key = field.dataset.field;
-
-                if (key === "image") {
-                    const inputId = `contributor-image-${index}`;
-                    field.id = inputId;
-                    field.name = `contributors[${index}][image]`;
-
-                    const trigger = item.querySelector(
-                        "[data-contributor-image-trigger]",
-                    );
-                    if (trigger) {
-                        trigger.setAttribute("for", inputId);
-                    }
-                } else {
-                    field.name = `contributors[${index}][${key}]`;
-                }
-            });
-
-            const removeBtn = item.querySelector("[data-remove-contributor]");
-            if (removeBtn) {
-                removeBtn.classList.toggle("hidden", items.length === 1);
-            }
-        });
-    };
-
-    addButton.addEventListener("click", () => {
-        const clone = template.content.cloneNode(true);
-        list.appendChild(clone);
-        reindexContributors();
-    });
-
-    list.addEventListener("click", (event) => {
-        const removeContributorBtn = event.target.closest(
-            "[data-remove-contributor]",
-        );
-        if (removeContributorBtn) {
-            const items = list.querySelectorAll("[data-contributor-item]");
-
-            if (items.length <= 1) {
-                return;
-            }
-
-            removeContributorBtn.closest("[data-contributor-item]")?.remove();
-            reindexContributors();
-
-            return;
-        }
-
-        const removeImageBtn = event.target.closest(
-            "[data-remove-contributor-image]",
-        );
-        if (removeImageBtn) {
-            const item = removeImageBtn.closest("[data-contributor-item]");
-            if (item) {
-                showContributorDropzone(item);
-            }
-        }
-    });
-
-    list.addEventListener("change", (event) => {
-        const input = event.target.closest("[data-contributor-image-input]");
-
-        if (!input?.files?.[0]) {
-            return;
-        }
-
-        const file = input.files[0];
-        const item = input.closest("[data-contributor-item]");
-
-        if (!item || !isImageFile(file)) {
-            input.value = "";
-
-            return;
-        }
-
-        const existingInput = item.querySelector(
-            '[data-field="existing_image"]',
-        );
-        if (existingInput) {
-            existingInput.value = "";
-        }
-
-        showContributorPreview(item, URL.createObjectURL(file), file.name);
+export function initTeamMembers() {
+    initRepeatableList({
+        listId: "team-members-list",
+        templateId: "team-member-template",
+        addButtonId: "add-team-member",
+        itemSelector: "[data-team-member-item]",
+        removeSelector: "[data-remove-team-member]",
+        labelSelector: ".team-member-label",
+        labelPrefix: "Contributor",
+        fields: [
+            { key: "team_id", namePrefix: "team_members" },
+            { key: "description", namePrefix: "team_members" },
+        ],
     });
 }
 
@@ -481,7 +339,7 @@ export function initPortfolioForm() {
     });
 
     initSavedGalleryRemove();
-    initContributors();
+    initTeamMembers();
 
     const form = document.getElementById("portfolio-form");
 

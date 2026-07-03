@@ -63,6 +63,16 @@
             transform: translateY(10px);
             transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
+        .testimonial-track {
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .testimonial-dot {
+            transition: all 0.4s ease;
+        }
+        .testimonial-dot.active {
+            width: 2rem;
+            background-color: #f5f2ed;
+        }
     </style>
     <title>Noir/Studio - Fine Art Portfolio</title>
 </head>
@@ -123,29 +133,27 @@
                 </div>
             </header>
 
-            <!-- Stats Section -->
-            <section class="py-32 border-y border-zinc-900">
-                <div class="max-w-7xl mx-auto px-12">
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-12 text-center">
-                        <div class="space-y-2">
-                            <h3 class="text-5xl font-display font-black">450+</h3>
-                            <p class="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-500">Happy Clients</p>
-                        </div>
-                        <div class="space-y-2">
-                            <h3 class="text-5xl font-display font-black">2,000+</h3>
-                            <p class="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-500">Projects Done</p>
-                        </div>
-                        <div class="space-y-2">
-                            <h3 class="text-5xl font-display font-black">8+</h3>
-                            <p class="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-500">Years Excellence</p>
-                        </div>
-                        <div class="space-y-2">
-                            <h3 class="text-5xl font-display font-black">15+</h3>
-                            <p class="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-500">Exhibitions</p>
+            @if($features->isNotEmpty())
+                <section class="py-32 border-y border-zinc-900">
+                    <div class="max-w-7xl mx-auto px-6 md:px-12">
+                        <div @class([
+                            'grid gap-12 text-center',
+                            'grid-cols-2' => $features->count() > 1,
+                            'grid-cols-1' => $features->count() === 1,
+                            'lg:grid-cols-4' => $features->count() >= 4,
+                            'lg:grid-cols-3' => $features->count() === 3,
+                            'lg:grid-cols-2' => $features->count() === 2,
+                        ])>
+                            @foreach($features as $feature)
+                                <div class="space-y-2">
+                                    <h3 class="text-5xl font-display font-black">{{ $feature->number }}+</h3>
+                                    <p class="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-500">{{ $feature->title }}</p>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            @endif
 
             <!-- Portfolio Grid -->
             <section id="works" class="py-32 px-12">
@@ -258,34 +266,139 @@
                 </div>
             </section>
 
-            <!-- Testimonials Section -->
-            <section class="py-32 px-12">
-                <div class="max-w-4xl mx-auto text-center">
-                    <span class="text-[10px] font-bold tracking-[0.5em] text-zinc-500 uppercase block mb-12">Client Testimonials</span>
-                    <div class="space-y-24">
-                        <div class="space-y-8">
-                            <iconify-icon icon="mdi:format-quote-close" class="text-6xl text-zinc-800"></iconify-icon>
-                            <p class="text-3xl font-serif italic text-zinc-300">"The level of detail and artistic direction was unlike anything we've experienced. Noir Studio truly captured the soul of our campaign."</p>
-                            <div class="flex flex-col items-center">
-                                <span class="text-sm font-bold uppercase tracking-widest">Marcello Verdi</span>
-                                <span class="text-[10px] text-zinc-600 uppercase tracking-widest">Creative Director, Vogue IT</span>
+            @if($testimonials->isNotEmpty())
+                <section class="py-32 px-6 md:px-12" id="testimonials-slider" aria-label="Client Testimonials">
+                    <div class="max-w-4xl mx-auto text-center">
+                        <span class="text-[10px] font-bold tracking-[0.5em] text-zinc-500 uppercase block mb-12">Client Testimonials</span>
+
+                        <div class="relative">
+                            <div class="overflow-hidden">
+                                <div id="testimonial-track" class="testimonial-track flex">
+                                    @foreach($testimonials as $testimonial)
+                                        <article class="w-full shrink-0 space-y-8 px-4" data-testimonial-slide>
+                                            <iconify-icon icon="mdi:format-quote-close" class="text-6xl text-zinc-800"></iconify-icon>
+                                            <p class="text-2xl sm:text-3xl font-serif italic text-zinc-300 leading-relaxed">"{{ $testimonial->message }}"</p>
+                                            <div class="flex flex-col items-center">
+                                                <span class="text-sm font-bold uppercase tracking-widest">{{ $testimonial->name }}</span>
+                                                <span class="text-[10px] text-zinc-600 uppercase tracking-widest">{{ $testimonial->jobs }}, {{ $testimonial->company }}</span>
+                                            </div>
+                                        </article>
+                                    @endforeach
+                                </div>
                             </div>
-                        </div>
-                        <div class="space-y-8">
-                            <iconify-icon icon="mdi:format-quote-close" class="text-6xl text-zinc-800"></iconify-icon>
-                            <p class="text-3xl font-serif italic text-zinc-300">"Daring, raw, and incredibly professional. The final frames exceeded our expectations and set a new standard for our brand imagery."</p>
-                            <div class="flex flex-col items-center">
-                                <span class="text-sm font-bold uppercase tracking-widest">Elena Rossi</span>
-                                <span class="text-[10px] text-zinc-600 uppercase tracking-widest">Founder, Rose & Thorne</span>
-                            </div>
+
+                            @if($testimonials->count() > 1)
+                                <div class="flex items-center justify-center gap-8 mt-16">
+                                    <button
+                                        type="button"
+                                        id="testimonial-prev"
+                                        class="w-12 h-12 rounded-full border border-zinc-800 flex items-center justify-center text-zinc-400 hover:bg-white hover:text-black hover:border-white transition-all"
+                                        aria-label="Previous testimonial"
+                                    >
+                                        <iconify-icon icon="lucide:arrow-left" class="text-xl"></iconify-icon>
+                                    </button>
+
+                                    <div class="flex items-center gap-2" id="testimonial-dots" role="tablist" aria-label="Testimonial slides">
+                                        @foreach($testimonials as $index => $testimonial)
+                                            <button
+                                                type="button"
+                                                class="testimonial-dot h-1.5 w-1.5 rounded-full bg-zinc-700 {{ $index === 0 ? 'active' : '' }}"
+                                                data-slide="{{ $index }}"
+                                                aria-label="Go to testimonial {{ $index + 1 }}"
+                                                aria-selected="{{ $index === 0 ? 'true' : 'false' }}"
+                                                role="tab"
+                                            ></button>
+                                        @endforeach
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        id="testimonial-next"
+                                        class="w-12 h-12 rounded-full border border-zinc-800 flex items-center justify-center text-zinc-400 hover:bg-white hover:text-black hover:border-white transition-all"
+                                        aria-label="Next testimonial"
+                                    >
+                                        <iconify-icon icon="lucide:arrow-right" class="text-xl"></iconify-icon>
+                                    </button>
+                                </div>
+                            @endif
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            @endif
 
             <!-- Footer Component -->
             <x-layout.footer />
         </main>
     </div>
+
+    @if($testimonials->isNotEmpty() && $testimonials->count() > 1)
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const slider = document.getElementById('testimonials-slider');
+                const track = document.getElementById('testimonial-track');
+                const prevBtn = document.getElementById('testimonial-prev');
+                const nextBtn = document.getElementById('testimonial-next');
+                const dots = Array.from(document.querySelectorAll('.testimonial-dot'));
+                const total = dots.length;
+                let current = 0;
+                let autoplayTimer;
+
+                const goTo = (index) => {
+                    current = (index + total) % total;
+                    track.style.transform = `translateX(-${current * 100}%)`;
+
+                    dots.forEach((dot, i) => {
+                        dot.classList.toggle('active', i === current);
+                        dot.setAttribute('aria-selected', i === current ? 'true' : 'false');
+                    });
+                };
+
+                const startAutoplay = () => {
+                    stopAutoplay();
+                    autoplayTimer = setInterval(() => goTo(current + 1), 6000);
+                };
+
+                const stopAutoplay = () => {
+                    if (autoplayTimer) {
+                        clearInterval(autoplayTimer);
+                    }
+                };
+
+                prevBtn?.addEventListener('click', () => {
+                    goTo(current - 1);
+                    startAutoplay();
+                });
+
+                nextBtn?.addEventListener('click', () => {
+                    goTo(current + 1);
+                    startAutoplay();
+                });
+
+                dots.forEach((dot) => {
+                    dot.addEventListener('click', () => {
+                        goTo(Number(dot.dataset.slide));
+                        startAutoplay();
+                    });
+                });
+
+                slider?.addEventListener('mouseenter', stopAutoplay);
+                slider?.addEventListener('mouseleave', startAutoplay);
+
+                document.addEventListener('keydown', (event) => {
+                    if (!slider) return;
+                    if (event.key === 'ArrowLeft') {
+                        goTo(current - 1);
+                        startAutoplay();
+                    }
+                    if (event.key === 'ArrowRight') {
+                        goTo(current + 1);
+                        startAutoplay();
+                    }
+                });
+
+                startAutoplay();
+            });
+        </script>
+    @endif
 </body>
 </html>
