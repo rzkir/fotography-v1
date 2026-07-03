@@ -29,7 +29,7 @@ Route::get('/journal/{jurnal:slug}', [JournalController::class, 'show'])->name('
 
 Route::get('/contact', function () {
     return view('contact');
-});
+})->name('contact');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');

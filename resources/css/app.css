@@ -3,6 +3,7 @@
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
+@source '../views/**/*.blade.php';
 
 @theme {
     --font-sans:
@@ -11,7 +12,38 @@
         "Noto Color Emoji";
 }
 
-@import url("https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800,900&f[]=satoshi@400,700&display=swap");
+:root {
+    --bg-color: #0d0d0d;
+    --accent-color: #f5f2ed;
+}
+
+html.noir-site {
+    scroll-behavior: smooth;
+}
+
+.noir-site {
+    background-color: var(--bg-color);
+    color: var(--accent-color);
+    font-family: "Satoshi", sans-serif;
+    overflow-x: hidden;
+}
+
+.noir-site input::placeholder,
+.noir-site textarea::placeholder {
+    color: rgba(245, 242, 237, 0.3);
+}
+
+.noir-site ::-webkit-scrollbar {
+    width: 4px;
+}
+
+.noir-site ::-webkit-scrollbar-track {
+    background: #0d0d0d;
+}
+
+.noir-site ::-webkit-scrollbar-thumb {
+    background: #27272a;
+}
 
 .font-display {
     font-family: "Cabinet Grotesk", sans-serif;
@@ -25,8 +57,9 @@
     position: absolute;
     width: 150%;
     height: 1px;
-    background: rgba(245, 242, 237, 0.05);
+    background: rgba(245, 242, 237, 0.1);
     transform: rotate(-15deg);
+    left: -25%;
     z-index: 0;
     pointer-events: none;
 }
@@ -86,6 +119,10 @@
     transition: all 0.3s ease;
 }
 
+.filter-btn.active {
+    color: #f5f2ed;
+}
+
 .filter-btn.active::after {
     content: "";
     position: absolute;
@@ -105,6 +142,133 @@
 .price-card:hover {
     border-color: #d4d4d8;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.portfolio-item.hidden-by-filter,
+.portfolio-item.hidden-by-load-more {
+    display: none;
+}
+
+.article-hidden {
+    display: none !important;
+}
+
+.article-card:hover .article-image {
+    transform: scale(1.05);
+    filter: grayscale(0%);
+}
+
+.article-image {
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    filter: grayscale(100%);
+}
+
+.content-spacing {
+    line-height: 1.8;
+    letter-spacing: 0.01em;
+}
+
+.toc-link {
+    transition: all 0.3s ease;
+}
+
+.toc-link:hover {
+    padding-left: 8px;
+    color: #f5f2ed;
+}
+
+.article-content h2 {
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-size: 2.25rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    margin-bottom: 2.5rem;
+    scroll-margin-top: 8rem;
+}
+
+.article-content p {
+    font-size: 1.125rem;
+    color: rgb(161 161 170);
+    font-weight: 300;
+    margin-bottom: 2rem;
+}
+
+.article-content blockquote {
+    margin: 6rem 0;
+    border-top: 1px solid rgb(39 39 42);
+    border-bottom: 1px solid rgb(39 39 42);
+    padding: 4rem 0;
+    text-align: center;
+}
+
+.article-content blockquote p {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 2.25rem;
+    line-height: 1.3;
+    color: rgb(212 212 216);
+    margin-bottom: 0;
+}
+
+.article-content figure {
+    margin: 5rem 0;
+}
+
+.article-content figure img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-radius: 0.125rem;
+    filter: grayscale(100%);
+    transition: filter 2s ease;
+}
+
+.article-content figure:hover img {
+    filter: grayscale(0%);
+}
+
+.article-content figcaption {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgb(82 82 91);
+    border-left: 2px solid rgb(39 39 42);
+    padding-left: 1rem;
+    margin-top: 1.5rem;
+}
+
+.article-content section {
+    margin-bottom: 6rem;
+}
+
+.scroll-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.lightbox-hover {
+    cursor: zoom-in;
+}
+
+.testimonial-track {
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.testimonial-dot {
+    transition: all 0.4s ease;
+}
+
+.testimonial-dot.active {
+    width: 2rem;
+    background-color: #f5f2ed;
 }
 
 .marquee-text {
@@ -137,6 +301,7 @@
     width: 100%;
     outline: none;
     transition: border-color 0.3s ease;
+    color: var(--accent-color);
 }
 
 .custom-input:focus {

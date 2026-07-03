@@ -13,64 +13,8 @@
     $heroUrl = $portfolio->heroImageUrl();
     $placeholderImage = 'https://images.unsplash.com/photo-1509460913899-515f1df34fed?auto=format&fit=crop&q=80&w=2400';
 @endphp
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,600&family=Epilogue:wght@700;900&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        @import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800,900&f[]=satoshi@400,700&display=swap');
-        :root {
-            --bg-color: #0d0d0d;
-            --accent-color: #f5f2ed;
-        }
-        body {
-            background-color: var(--bg-color);
-            color: var(--accent-color);
-            font-family: 'Satoshi', sans-serif;
-            overflow-x: hidden;
-        }
-        .font-display { font-family: 'Cabinet Grotesk', sans-serif; }
-        .font-serif { font-family: 'Cormorant Garamond', serif; }
-        .asymmetric-grid {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 24px;
-        }
-        .diagonal-line {
-            position: absolute;
-            width: 150%;
-            height: 1px;
-            background: rgba(245, 242, 237, 0.1);
-            transform: rotate(-15deg);
-            top: 50%;
-            left: -25%;
-            z-index: 0;
-            pointer-events: none;
-        }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #0d0d0d; }
-        ::-webkit-scrollbar-thumb { background: #27272a; }
-        .scroll-reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .scroll-reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .lightbox-hover { cursor: zoom-in; }
-    </style>
-    <title>Noir/Studio — {{ $portfolio->title }}</title>
-</head>
-<body>
-    <div class="min-h-screen relative overflow-hidden">
+<x-layout.public :title="'Noir/Studio — '.$portfolio->title">
+    <div class="min-h-screen relative overflow-hidden" data-works-detail>
         <div class="diagonal-line"></div>
 
         <x-layout.header />
@@ -453,19 +397,4 @@
 
         <x-layout.footer />
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const reveals = document.querySelectorAll('.scroll-reveal');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    }
-                });
-            }, { threshold: 0.1 });
-            reveals.forEach(reveal => observer.observe(reveal));
-        });
-    </script>
-</body>
-</html>
+</x-layout.public>

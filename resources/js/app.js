@@ -1,17 +1,38 @@
-import { initAlertDialogs } from "./alert-dialog.service";
+import { initAlertDialogs } from "./hooks/alert-dialog";
 import { initCategoryDialog } from "./category.service";
-import { initDialogs } from "./dialog.service";
+import { initDialogs } from "./hooks/dialog";
+import { initPaginationRoots } from "./hooks/pagination";
+import { initJournalIndex } from "./journal.page";
 import { initJurnalForm } from "./jurnal.service";
 import { initPortfolioForm } from "./portofolio.service";
-import { initPageSkeletons } from "./skeleton.service";
+import { initPageSkeletons } from "./hooks/skeleton";
 import { initTeamForm } from "./teams.service";
 import { initFeaturesDialog } from "./features.blade.js";
 import { initTestimonialsDialog } from "./testimonials.service";
+import { initHomePage, initWorksDetail } from "./home.page";
+import { initWorksIndex } from "./works.page";
 
 document.addEventListener("DOMContentLoaded", () => {
     initPageSkeletons();
     initAlertDialogs();
     initDialogs();
+    initPaginationRoots();
+
+    if (document.querySelector("[data-journal-index]")) {
+        initJournalIndex();
+    }
+
+    if (document.querySelector("[data-works-index]")) {
+        initWorksIndex();
+    }
+
+    if (document.querySelector("[data-works-detail]")) {
+        initWorksDetail();
+    }
+
+    if (document.querySelector("[data-home-page]")) {
+        initHomePage();
+    }
 
     document.querySelectorAll("[data-category-form]").forEach((form) => {
         initCategoryDialog(form.id.replace("-form", ""));

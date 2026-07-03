@@ -1,4 +1,4 @@
-import { bindCrudFormLoading } from "./spiner.service";
+import { bindCrudFormLoading } from "./hooks/spiner";
 
 const IMAGE_EXTENSION_PATTERN =
     /\.(jpe?g|png|gif|webp|bmp|svg|heic|heif|avif|tiff?|ico|jfif|pjpeg|pjp|jxl|apng)$/i;

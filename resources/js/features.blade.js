@@ -1,5 +1,5 @@
-import { openDialog } from "./dialog.service";
-import { bindCrudFormLoading, setButtonLoading } from "./spiner.service";
+import { openDialog } from "./hooks/dialog";
+import { bindCrudFormLoading, setButtonLoading } from "./hooks/spiner";
 
 function resetFeatureForm(form, dialog, mode = "create") {
     const titleEl = dialog.querySelector("[data-dialog-title]");

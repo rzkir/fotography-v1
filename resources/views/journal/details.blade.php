@@ -10,109 +10,7 @@
     $shareText = urlencode($jurnal->title);
     $sidebarRelated = $relatedJurnals->first();
 @endphp
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,600&family=Epilogue:wght@700;900&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        @import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800,900&f[]=satoshi@400,700&display=swap');
-        :root {
-            --bg-color: #0d0d0d;
-            --accent-color: #f5f2ed;
-        }
-        body {
-            background-color: var(--bg-color);
-            color: var(--accent-color);
-            font-family: 'Satoshi', sans-serif;
-            overflow-x: hidden;
-        }
-        .font-display { font-family: 'Cabinet Grotesk', sans-serif; }
-        .font-serif { font-family: 'Cormorant Garamond', serif; }
-        .asymmetric-grid {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 24px;
-        }
-        .diagonal-line {
-            position: absolute;
-            width: 150%;
-            height: 1px;
-            background: rgba(245, 242, 237, 0.05);
-            transform: rotate(-15deg);
-            left: -25%;
-            z-index: 0;
-            pointer-events: none;
-        }
-        .content-spacing { line-height: 1.8; letter-spacing: 0.01em; }
-        .toc-link:hover { padding-left: 8px; color: #f5f2ed; }
-        .toc-link { transition: all 0.3s ease; }
-        .article-content h2 {
-            font-family: 'Cabinet Grotesk', sans-serif;
-            font-size: 2.25rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: -0.02em;
-            margin-bottom: 2.5rem;
-            scroll-margin-top: 8rem;
-        }
-        .article-content p {
-            font-size: 1.125rem;
-            color: rgb(161 161 170);
-            font-weight: 300;
-            margin-bottom: 2rem;
-        }
-        .article-content blockquote {
-            margin: 6rem 0;
-            border-top: 1px solid rgb(39 39 42);
-            border-bottom: 1px solid rgb(39 39 42);
-            padding: 4rem 0;
-            text-align: center;
-        }
-        .article-content blockquote p {
-            font-family: 'Cormorant Garamond', serif;
-            font-style: italic;
-            font-size: 2.25rem;
-            line-height: 1.3;
-            color: rgb(212 212 216);
-            margin-bottom: 0;
-        }
-        .article-content figure {
-            margin: 5rem 0;
-        }
-        .article-content figure img {
-            width: 100%;
-            aspect-ratio: 16 / 10;
-            object-fit: cover;
-            border-radius: 0.125rem;
-            filter: grayscale(100%);
-            transition: filter 2s ease;
-        }
-        .article-content figure:hover img {
-            filter: grayscale(0%);
-        }
-        .article-content figcaption {
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: rgb(82 82 91);
-            border-left: 2px solid rgb(39 39 42);
-            padding-left: 1rem;
-            margin-top: 1.5rem;
-        }
-        .article-content section {
-            margin-bottom: 6rem;
-        }
-    </style>
-    <title>Noir/Studio — {{ $jurnal->title }}</title>
-</head>
-<body>
+<x-layout.public :title="'Noir/Studio — '.$jurnal->title">
     <div class="min-h-screen relative overflow-hidden bg-[#0d0d0d]">
         <div class="diagonal-line" style="top: 15%"></div>
         <div class="diagonal-line" style="top: 55%"></div>
@@ -310,5 +208,4 @@
 
         <x-layout.footer />
     </div>
-</body>
-</html>
+</x-layout.public>

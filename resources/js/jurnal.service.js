@@ -1,5 +1,5 @@
 import { initSlugify, initUpload } from "./portofolio.service";
-import { bindCrudFormLoading } from "./spiner.service";
+import { bindCrudFormLoading } from "./hooks/spiner";
 
 export function initJurnalForm() {
     document.querySelectorAll("[data-upload-root]").forEach(initUpload);

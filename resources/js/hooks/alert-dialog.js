@@ -1,4 +1,4 @@
-import { setButtonLoading, showCrudOverlay } from "./spiner.service";
+import { setButtonLoading, showCrudOverlay } from "./spiner";
 
 let activeForm = null;
 let activeConfirmButton = null;

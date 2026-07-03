@@ -1,58 +1,4 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,600&family=Epilogue:wght@700;900&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        @import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800,900&f[]=satoshi@400,700&display=swap');
-        :root {
-            --bg-color: #0d0d0d;
-            --accent-color: #f5f2ed;
-        }
-        body {
-            background-color: var(--bg-color);
-            color: var(--accent-color);
-            font-family: 'Satoshi', sans-serif;
-            overflow-x: hidden;
-        }
-        .font-display {
-            font-family: 'Cabinet Grotesk', sans-serif;
-        }
-        .font-serif {
-            font-family: 'Cormorant Garamond', serif;
-        }
-        .diagonal-line {
-            position: absolute;
-            width: 150%;
-            height: 1px;
-            background: rgba(245, 242, 237, 0.05);
-            transform: rotate(-15deg);
-            top: 50%;
-            left: -25%;
-            z-index: 0;
-            pointer-events: none;
-        }
-        .custom-input {
-            background: transparent;
-            border-bottom: 1px solid #27272a;
-            padding: 1rem 0;
-            width: 100%;
-            outline: none;
-            transition: border-color 0.3s ease;
-            color: var(--accent-color);
-        }
-        .custom-input:focus {
-            border-color: #f5f2ed;
-        }
-    </style>
-    <title>Noir/Studio - Login</title>
-</head>
-<body>
+<x-layout.public title="Noir/Studio - Login" :with-scripts="false">
     <div class="min-h-screen relative overflow-hidden bg-[#0d0d0d] flex items-center justify-center">
         <div class="diagonal-line"></div>
         <main class="relative z-10 w-full container px-12">
@@ -92,5 +38,4 @@
 
         <x-layout.footer />
     </div>
-</body>
-</html>
+</x-layout.public>

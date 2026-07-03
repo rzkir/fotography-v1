@@ -1,6 +1,6 @@
 import { slugify } from "./portofolio.service";
-import { openDialog } from "./dialog.service";
-import { bindCrudFormLoading, setButtonLoading } from "./spiner.service";
+import { openDialog } from "./hooks/dialog";
+import { bindCrudFormLoading, setButtonLoading } from "./hooks/spiner";
 
 function initCategoryIdSlugify(dialogId) {
     const titleInput = document.getElementById(`${dialogId}-title-input`);
