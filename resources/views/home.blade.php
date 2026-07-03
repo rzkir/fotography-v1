@@ -27,11 +27,11 @@
                                 <span class="inline-block px-4 py-2 border border-zinc-800 rounded-full" data-aos="fade-up" data-aos-delay="450" data-aos-offset="0">Commercial Work</span>
                             </div>
                             <div class="flex items-center space-x-8 pt-4">
-                                <a href="#works" id="hero-primary-cta" class="group flex items-center space-x-4" data-aos="fade-up" data-aos-delay="500" data-aos-offset="0">
+                                <a href="#team" id="hero-primary-cta" class="group flex items-center space-x-4" data-aos="fade-up" data-aos-delay="500" data-aos-offset="0">
                                     <div class="w-16 h-16 rounded-full border border-zinc-700 flex items-center justify-center group-hover:bg-white group-hover:border-white transition-all duration-500">
                                         <iconify-icon icon="lucide:arrow-up-right" class="text-2xl group-hover:text-black transition-colors"></iconify-icon>
                                     </div>
-                                    <span class="inline-block text-xs font-bold uppercase tracking-[0.2em]" data-aos="fade-up" data-aos-delay="550" data-aos-offset="0">Selected Works</span>
+                                    <span class="inline-block text-xs font-bold uppercase tracking-[0.2em]" data-aos="fade-up" data-aos-delay="550" data-aos-offset="0">Studio Team</span>
                                 </a>
                                 <div class="flex flex-col">
                                     <span class="inline-block text-xs text-zinc-500 uppercase tracking-widest mb-1" data-aos="fade-left" data-aos-delay="600" data-aos-offset="0">Based in Jakarta</span>
@@ -79,50 +79,62 @@
                 </section>
             @endif
 
-            <!-- Portfolio Grid -->
-            <section id="works" class="py-20 px-6 md:px-12">
-                <div class="flex flex-col lg:flex-row justify-between items-end mb-12 gap-8">
-                    <div class="max-w-2xl">
-                        <span class="text-xs font-bold tracking-[0.5em] text-zinc-500 uppercase block mb-4" data-aos="fade-up">Portfolio Showcase</span>
-                        <h2 class="text-7xl font-display font-black uppercase tracking-tighter" data-aos="fade-up" data-aos-delay="100">Curated<br/><span class="font-serif italic capitalize text-zinc-400">Collection</span></h2>
+            @if($teams->isNotEmpty())
+                <!-- Featured Team -->
+                <section id="team" class="py-20 px-6 md:px-12">
+                    <div class="flex flex-col lg:flex-row justify-between items-end mb-12 gap-8">
+                        <div class="max-w-2xl">
+                            <span class="text-xs font-bold tracking-[0.5em] text-zinc-500 uppercase block mb-4" data-aos="fade-up">The Collective</span>
+                            <h2 class="text-7xl font-display font-black uppercase tracking-tighter" data-aos="fade-up" data-aos-delay="100">Studio<br/><span class="font-serif italic capitalize text-zinc-400">Team</span></h2>
+                        </div>
+                        <a href="{{ route('contact') }}#team" id="view-all-team" class="text-xs font-bold uppercase tracking-widest border-b border-zinc-800 hover:border-white transition-all" data-aos="fade-left" data-aos-delay="150">Meet The Crew</a>
                     </div>
-                    <a href="{{ route('works.index') }}" id="view-all-portfolio" class="text-xs font-bold uppercase tracking-widest border-b border-zinc-800 hover:border-white transition-all" data-aos="fade-left" data-aos-delay="150">View Full Archive</a>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    @forelse ($portfolios as $index => $portfolio)
-                        <a
-                            href="{{ route('works.show', $portfolio) }}"
-                            class="project-card group relative aspect-3/4 overflow-hidden bg-zinc-900 block {{ $index % 2 === 1 ? 'lg:mt-12' : '' }}"
-                        >
-                            @if ($portfolio->heroImageUrl())
-                                <img
-                                    src="{{ $portfolio->heroImageUrl() }}"
-                                    alt="{{ $portfolio->title }}"
-                                    class="h-full w-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110"
-                                    data-aos="fade-up"
-                                    data-aos-delay="{{ $index * 100 }}"
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        @foreach ($teams as $index => $team)
+                            @php
+                                $featuredPortfolio = $team->portfolios->first();
+                            @endphp
+                            @if ($featuredPortfolio)
+                                <a
+                                    href="{{ route('works.show', $featuredPortfolio) }}"
+                                    class="project-card group relative aspect-3/4 overflow-hidden bg-zinc-900 block {{ $index % 2 === 1 ? 'lg:mt-12' : '' }}"
                                 >
                             @else
-                                <div class="flex h-full w-full items-center justify-center bg-zinc-900" data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
-                                    <iconify-icon icon="lucide:image" class="text-4xl text-zinc-700"></iconify-icon>
-                                </div>
+                                <article class="project-card group relative aspect-3/4 overflow-hidden bg-zinc-900 block {{ $index % 2 === 1 ? 'lg:mt-12' : '' }}">
                             @endif
-                            <div class="absolute inset-0 flex flex-col justify-end bg-black/60 p-8 project-overlay">
-                                <span class="mb-2 text-xs font-bold uppercase text-zinc-400" data-aos="fade-up" data-aos-delay="{{ ($index * 100) + 50 }}">
-                                    {{ $portfolio->portfolioCategory?->title ?? 'Project' }}
-                                </span>
-                                <h3 class="text-2xl font-display font-black uppercase" data-aos="fade-up" data-aos-delay="{{ ($index * 100) + 100 }}">
-                                    {{ $portfolio->title }}
-                                </h3>
-                            </div>
-                        </a>
-                    @empty
-                        <div class="col-span-full py-16 text-center">
-                            <p class="text-sm text-zinc-500">No published projects yet.</p>
-                        </div>
-                    @endforelse
-                </div>
-            </section>
+                                @if ($team->pictureUrl())
+                                    <img
+                                        src="{{ $team->pictureUrl() }}"
+                                        alt="{{ $team->name }}"
+                                        class="h-full w-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110"
+                                        data-aos="fade-up"
+                                        data-aos-delay="{{ $index * 100 }}"
+                                    >
+                                @else
+                                    <div class="flex h-full w-full items-center justify-center bg-zinc-900" data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
+                                        <iconify-icon icon="lucide:user-round" class="text-4xl text-zinc-700"></iconify-icon>
+                                    </div>
+                                @endif
+                                <div class="absolute inset-0 flex flex-col justify-end bg-black/60 p-8 project-overlay">
+                                    <span class="mb-2 text-xs font-bold uppercase text-zinc-400" data-aos="fade-up" data-aos-delay="{{ ($index * 100) + 50 }}">
+                                        {{ $team->number }} {{ Str::plural('project', $team->number) }}
+                                    </span>
+                                    <h3 class="text-2xl font-display font-black uppercase" data-aos="fade-up" data-aos-delay="{{ ($index * 100) + 100 }}">
+                                        {{ $team->name }}
+                                    </h3>
+                                    <p class="mt-2 text-[10px] font-bold uppercase tracking-widest text-zinc-500" data-aos="fade-up" data-aos-delay="{{ ($index * 100) + 150 }}">
+                                        {{ $team->job }}
+                                    </p>
+                                </div>
+                            @if ($featuredPortfolio)
+                                </a>
+                            @else
+                                </article>
+                            @endif
+                        @endforeach
+                    </div>
+                </section>
+            @endif
 
             <!-- Marquee Section -->
             <section class="py-20 overflow-hidden border-t border-zinc-900">

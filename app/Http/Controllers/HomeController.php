@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Feature;
-use App\Models\Portfolio;
 use App\Models\Team;
 use App\Models\Testimonial;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class HomeController extends Controller
@@ -21,53 +21,53 @@ class HomeController extends Controller
             ->latest()
             ->get();
 
-        $portfolios = $this->featuredPortfoliosFromTopTeams();
+        $teams = $this->featuredTeams();
 
-        return view('home', compact('features', 'testimonials', 'portfolios'));
+        return view('home', compact('features', 'testimonials', 'teams'));
     }
 
     /**
-     * @return Collection<int, Portfolio>
+     * @return Collection<int, Team>
      */
-    private function featuredPortfoliosFromTopTeams(): Collection
+    private function featuredTeams(): Collection
     {
-        $portfolios = collect();
+        $teams = collect();
         $usedPortfolioIds = [];
+        $usedTeamNames = [];
 
         Team::query()
-            ->orderByDesc('number')
-            ->orderByDesc('id')
             ->with(['portfolios' => fn ($query) => $query
                 ->where('is_published', true)
-                ->with('portfolioCategory')
                 ->latest()])
-            ->limit(8)
+            ->orderByDesc('number')
+            ->orderByDesc('id')
             ->get()
-            ->each(function (Team $team) use ($portfolios, &$usedPortfolioIds): void {
-                $portfolio = $team->portfolios->first();
-
-                if ($portfolio === null || in_array($portfolio->id, $usedPortfolioIds, true)) {
+            ->each(function (Team $team) use ($teams, &$usedPortfolioIds, &$usedTeamNames): void {
+                if ($teams->count() >= 8) {
                     return;
                 }
 
-                $usedPortfolioIds[] = $portfolio->id;
-                $portfolios->push($portfolio);
+                $normalizedName = Str::lower(trim($team->name));
+
+                if (in_array($normalizedName, $usedTeamNames, true)) {
+                    return;
+                }
+
+                $featuredPortfolio = $team->portfolios->first();
+
+                if ($featuredPortfolio !== null && in_array($featuredPortfolio->id, $usedPortfolioIds, true)) {
+                    return;
+                }
+
+                $usedTeamNames[] = $normalizedName;
+
+                if ($featuredPortfolio !== null) {
+                    $usedPortfolioIds[] = $featuredPortfolio->id;
+                }
+
+                $teams->push($team);
             });
 
-        if ($portfolios->count() < 8) {
-            Portfolio::query()
-                ->where('is_published', true)
-                ->with('portfolioCategory')
-                ->when($usedPortfolioIds !== [], fn ($query) => $query->whereNotIn('id', $usedPortfolioIds))
-                ->latest()
-                ->limit(8 - $portfolios->count())
-                ->get()
-                ->each(function (Portfolio $portfolio) use ($portfolios, &$usedPortfolioIds): void {
-                    $usedPortfolioIds[] = $portfolio->id;
-                    $portfolios->push($portfolio);
-                });
-        }
-
-        return $portfolios;
+        return $teams;
     }
 }
