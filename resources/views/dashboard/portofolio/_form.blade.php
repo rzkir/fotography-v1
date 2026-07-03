@@ -78,31 +78,51 @@
     };
 @endphp
 
-<div class="glass rounded-[3rem] p-6 lg:p-10 relative overflow-hidden">
-    <div class="absolute -top-24 -right-24 w-64 h-64 bg-white/[0.02] rounded-full blur-[80px]"></div>
+<div class="card-photography rounded-[3rem] p-6 lg:p-10 relative overflow-hidden">
+    <div class="absolute -top-24 -right-24 w-64 h-64 bg-[#ff6b35]/5 rounded-full blur-[80px]"></div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-8">
         <div class="space-y-6">
-            <h3 class="text-lg font-bold flex items-center gap-2 mb-4">
-                <iconify-icon icon="lucide:file-text" class="text-[#f5f2ed]/40"></iconify-icon>
+            <h3 class="text-lg font-display font-black flex items-center gap-2 mb-4">
+                <iconify-icon icon="lucide:file-text" class="text-[#ff6b35]"></iconify-icon>
                 Basic Information
             </h3>
 
-            <x-input name="title" id="title" label="Project Title" :value="$portfolio?->title" placeholder="Midnight Soul" required />
+            <x-ui.input name="title" id="title" label="Project Title" :value="$portfolio?->title" placeholder="Midnight Soul" required />
             <div class="space-y-2">
-                <x-input name="slug" id="slug" label="Slug" :value="$portfolio?->slug" placeholder="midnight-soul" />
+                <x-ui.input name="slug" id="slug" label="Slug" :value="$portfolio?->slug" placeholder="midnight-soul" />
                 <p class="text-[10px] text-[#f5f2ed]/30 px-1">Auto-generated from title. Edit manually if needed.</p>
             </div>
-            <x-input name="subtitle" label="Subtitle (Italic)" :value="$portfolio?->subtitle" placeholder="soul" />
-            <x-input name="client" label="Client" :value="$portfolio?->client" placeholder="Personal Editorial" />
-            <x-input name="year" label="Year" type="number" :value="$portfolio?->year ?? date('Y')" required />
+            <x-ui.input name="subtitle" label="Subtitle (Italic)" :value="$portfolio?->subtitle" placeholder="soul" />
+            <x-ui.input name="client" label="Client" :value="$portfolio?->client" placeholder="Personal Editorial" />
+            <x-ui.input name="year" label="Year" type="number" :value="$portfolio?->year ?? date('Y')" required />
 
             <div class="grid grid-cols-2 gap-4">
-                <x-input name="category" label="Category" :value="$portfolio?->category" placeholder="Fine Art Portrait" />
-                <x-input name="location" label="Location" :value="$portfolio?->location" placeholder="Jakarta, ID" />
+            <div class="space-y-2">
+                <label for="category" class="text-[10px] uppercase tracking-widest font-black text-zinc-500 px-1">Category</label>
+                @if (($categories ?? collect())->isNotEmpty())
+                    <select name="category" id="category" class="input-field appearance-none cursor-pointer">
+                        <option value="">Select category</option>
+                        @foreach ($categories as $categoryOption)
+                            <option value="{{ $categoryOption->title }}" @selected(old('category', $portfolio?->category) === $categoryOption->title)>
+                                {{ $categoryOption->title }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <p class="text-[10px] text-zinc-600 px-1">
+                        <a href="{{ route('dashboard.portofolio.category.index') }}" class="text-[#ff6b35] hover:underline">Manage categories</a>
+                    </p>
+                @else
+                    <x-ui.input name="category" label="" :value="$portfolio?->category" placeholder="Fine Art Portrait" />
+                    <p class="text-[10px] text-zinc-600 px-1">
+                        <a href="{{ route('dashboard.portofolio.category.index') }}" class="text-[#ff6b35] hover:underline">Create categories</a> for easier selection
+                    </p>
+                @endif
+            </div>
+                <x-ui.input name="location" label="Location" :value="$portfolio?->location" placeholder="Jakarta, ID" />
             </div>
 
-            <x-textarea name="quote" label="Conceptual Quote" :value="$portfolio?->quote" rows="3" placeholder="In the darkness, the truth of the soul reveals itself..." />
+            <x-ui.textarea name="quote" label="Conceptual Quote" :value="$portfolio?->quote" rows="3" placeholder="In the darkness, the truth of the soul reveals itself..." />
 
             <div class="space-y-2">
                 <label for="status" class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Status</label>
@@ -122,21 +142,21 @@
         </div>
 
         <div class="space-y-6">
-            <h3 class="text-lg font-bold flex items-center gap-2 mb-4">
-                <iconify-icon icon="lucide:image" class="text-[#f5f2ed]/40"></iconify-icon>
+            <h3 class="text-lg font-display font-black flex items-center gap-2 mb-4">
+                <iconify-icon icon="lucide:image" class="text-[#ff6b35]"></iconify-icon>
                 Hero & Gallery
             </h3>
 
-            <x-upload
+            <x-ui.upload
                 name="hero_image"
                 id="hero_image"
                 label="Hero Image"
                 :preview="$portfolio?->heroImageUrl()"
                 hint="Main case study banner · 21:9 recommended"
             />
-            <x-input name="hero_caption" label="Hero Caption" :value="$portfolio?->hero_caption" placeholder="Shot 01: The Gaze · f/2.0 · ISO 200" />
+            <x-ui.input name="hero_caption" label="Hero Caption" :value="$portfolio?->hero_caption" placeholder="Shot 01: The Gaze · f/2.0 · ISO 200" />
 
-            <x-upload
+            <x-ui.upload
                 name="gallery_images[]"
                 id="gallery_images"
                 label="Gallery Images"
@@ -168,14 +188,14 @@
 
     <div class="mt-12 pt-8 border-t border-white/5">
         <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-bold flex items-center gap-2">
-                <iconify-icon icon="lucide:book-open" class="text-[#f5f2ed]/40"></iconify-icon>
+            <h3 class="text-lg font-display font-black flex items-center gap-2">
+                <iconify-icon icon="lucide:book-open" class="text-[#ff6b35]"></iconify-icon>
                 Conceptual Framework
             </h3>
             <button
                 type="button"
                 id="add-content-section"
-                class="px-4 py-2 glass rounded-xl text-xs font-bold glass-hover flex items-center gap-2"
+                class="px-4 py-2 rounded-xl border border-white/5 text-xs font-black hover:bg-white/5 transition-all flex items-center gap-2"
             >
                 <iconify-icon icon="lucide:plus"></iconify-icon>
                 Add Section
@@ -184,7 +204,7 @@
 
         <div id="content-sections-list" class="space-y-4">
             @foreach ($contentSections as $index => $section)
-                <div class="content-section-item glass rounded-2xl p-6 space-y-4" data-section-item>
+                <div class="content-section-item card-photography rounded-2xl p-6 space-y-4" data-section-item>
                     <div class="flex items-center justify-between">
                         <span class="text-[10px] uppercase tracking-widest font-bold opacity-40 section-label">Section {{ $index + 1 }}</span>
                         <button
@@ -198,13 +218,13 @@
                             Remove
                         </button>
                     </div>
-                    <x-input
+                    <x-ui.input
                         name="content_sections[{{ $index }}][title]"
                         label="Title"
                         :value="$section['title']"
                         placeholder="Concept Overview"
                     />
-                    <x-textarea
+                    <x-ui.textarea
                         name="content_sections[{{ $index }}][description]"
                         label="Description"
                         :value="$section['description']"
@@ -216,7 +236,7 @@
         </div>
 
         <template id="content-section-template">
-            <div class="content-section-item glass rounded-2xl p-6 space-y-4" data-section-item>
+            <div class="content-section-item card-photography rounded-2xl p-6 space-y-4" data-section-item>
                 <div class="flex items-center justify-between">
                     <span class="text-[10px] uppercase tracking-widest font-bold opacity-40 section-label">Section</span>
                     <button type="button" data-remove-section class="text-[10px] uppercase tracking-widest font-bold opacity-40 hover:opacity-100 hover:text-red-400 transition-colors">
@@ -236,41 +256,41 @@
     </div>
 
     <div class="mt-12 pt-8 border-t border-white/5">
-        <h3 class="text-lg font-bold flex items-center gap-2 mb-6">
-            <iconify-icon icon="lucide:bar-chart-3" class="text-[#f5f2ed]/40"></iconify-icon>
+        <h3 class="text-lg font-display font-black flex items-center gap-2 mb-6">
+            <iconify-icon icon="lucide:bar-chart-3" class="text-[#ff6b35]"></iconify-icon>
             Project Metrics
         </h3>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <x-input name="metrics_shots_taken" label="Shots Taken" :value="$metrics['shots_taken'] ?? null" placeholder="1.2k+" />
-            <x-input name="metrics_final_selects" label="Final Selects" :value="$metrics['final_selects'] ?? null" placeholder="18" />
-            <x-input name="metrics_total_hours" label="Total Hours" :value="$metrics['total_hours'] ?? null" placeholder="72h" />
-            <x-input name="metrics_team_members" label="Team Members" :value="$metrics['team_members'] ?? null" placeholder="6" />
+            <x-ui.input name="metrics_shots_taken" label="Shots Taken" :value="$metrics['shots_taken'] ?? null" placeholder="1.2k+" />
+            <x-ui.input name="metrics_final_selects" label="Final Selects" :value="$metrics['final_selects'] ?? null" placeholder="18" />
+            <x-ui.input name="metrics_total_hours" label="Total Hours" :value="$metrics['total_hours'] ?? null" placeholder="72h" />
+            <x-ui.input name="metrics_team_members" label="Team Members" :value="$metrics['team_members'] ?? null" placeholder="6" />
         </div>
     </div>
 
     <div class="mt-12 pt-8 border-t border-white/5">
-        <h3 class="text-lg font-bold flex items-center gap-2 mb-6">
-            <iconify-icon icon="lucide:camera" class="text-[#f5f2ed]/40"></iconify-icon>
+        <h3 class="text-lg font-display font-black flex items-center gap-2 mb-6">
+            <iconify-icon icon="lucide:camera" class="text-[#ff6b35]"></iconify-icon>
             Technical Specifications
         </h3>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <x-input name="camera_setup" label="Camera Setup" :value="$specs['camera_setup'] ?? null" placeholder="Leica M11 / Summilux 50mm f/1.4" />
-            <x-input name="camera_settings" label="Camera Settings" :value="$specs['camera_settings'] ?? null" placeholder="ISO 100-400 · 1/125s - 1/250s" />
-            <x-input name="lighting_array" label="Lighting Array" :value="$specs['lighting_array'] ?? null" placeholder="Profoto B10X + 3' Deep Octa" />
-            <x-textarea name="lighting_notes" label="Lighting Notes" :value="$specs['lighting_notes'] ?? null" rows="3" />
-            <x-textarea name="retouching_notes" label="Retouching Notes" :value="$specs['retouching_notes'] ?? null" rows="3" />
+            <x-ui.input name="camera_setup" label="Camera Setup" :value="$specs['camera_setup'] ?? null" placeholder="Leica M11 / Summilux 50mm f/1.4" />
+            <x-ui.input name="camera_settings" label="Camera Settings" :value="$specs['camera_settings'] ?? null" placeholder="ISO 100-400 · 1/125s - 1/250s" />
+            <x-ui.input name="lighting_array" label="Lighting Array" :value="$specs['lighting_array'] ?? null" placeholder="Profoto B10X + 3' Deep Octa" />
+            <x-ui.textarea name="lighting_notes" label="Lighting Notes" :value="$specs['lighting_notes'] ?? null" rows="3" />
+            <x-ui.textarea name="retouching_notes" label="Retouching Notes" :value="$specs['retouching_notes'] ?? null" rows="3" />
         </div>
 
         <div class="mt-8 pt-8 border-t border-white/5">
             <div class="flex items-center justify-between mb-6">
-                <h4 class="text-sm font-bold flex items-center gap-2">
-                    <iconify-icon icon="lucide:layers" class="text-[#f5f2ed]/40"></iconify-icon>
+                <h4 class="text-sm font-display font-black flex items-center gap-2">
+                    <iconify-icon icon="lucide:layers" class="text-[#ff6b35]"></iconify-icon>
                     Post-Processing Workflow
                 </h4>
                 <button
                     type="button"
                     id="add-post-processing-step"
-                    class="px-4 py-2 glass rounded-xl text-xs font-bold glass-hover flex items-center gap-2"
+                    class="px-4 py-2 rounded-xl border border-white/5 text-xs font-black hover:bg-white/5 transition-all flex items-center gap-2"
                 >
                     <iconify-icon icon="lucide:plus"></iconify-icon>
                     Add Step
@@ -279,7 +299,7 @@
 
             <div id="post-processing-list" class="space-y-4">
                 @foreach ($postProcessingSteps as $index => $step)
-                    <div class="post-processing-item glass rounded-2xl p-6 space-y-4" data-post-processing-item>
+                    <div class="post-processing-item card-photography rounded-2xl p-6 space-y-4" data-post-processing-item>
                         <div class="flex items-center justify-between">
                             <span class="text-[10px] uppercase tracking-widest font-bold opacity-40 post-processing-label">Step {{ $index + 1 }}</span>
                             <button
@@ -293,13 +313,13 @@
                                 Remove
                             </button>
                         </div>
-                        <x-input
+                        <x-ui.input
                             name="post_processing[{{ $index }}][title]"
                             label="Title"
                             :value="$step['title']"
                             placeholder="Color Grading"
                         />
-                        <x-textarea
+                        <x-ui.textarea
                             name="post_processing[{{ $index }}][text]"
                             label="Text"
                             :value="$step['text']"
@@ -311,7 +331,7 @@
             </div>
 
             <template id="post-processing-template">
-                <div class="post-processing-item glass rounded-2xl p-6 space-y-4" data-post-processing-item>
+                <div class="post-processing-item card-photography rounded-2xl p-6 space-y-4" data-post-processing-item>
                     <div class="flex items-center justify-between">
                         <span class="text-[10px] uppercase tracking-widest font-bold opacity-40 post-processing-label">Step</span>
                         <button type="button" data-remove-post-processing class="text-[10px] uppercase tracking-widest font-bold opacity-40 hover:opacity-100 hover:text-red-400 transition-colors">
@@ -332,21 +352,21 @@
     </div>
 
     <div class="mt-12 pt-8 border-t border-white/5">
-        <h3 class="text-lg font-bold flex items-center gap-2 mb-6">
-            <iconify-icon icon="lucide:git-branch" class="text-[#f5f2ed]/40"></iconify-icon>
+        <h3 class="text-lg font-display font-black flex items-center gap-2 mb-6">
+            <iconify-icon icon="lucide:git-branch" class="text-[#ff6b35]"></iconify-icon>
             Timeline & Contributors
         </h3>
 
         <div class="mb-8">
             <div class="flex items-center justify-between mb-6">
-                <h4 class="text-sm font-bold flex items-center gap-2">
-                    <iconify-icon icon="lucide:calendar-range" class="text-[#f5f2ed]/40"></iconify-icon>
+                <h4 class="text-sm font-display font-black flex items-center gap-2">
+                    <iconify-icon icon="lucide:calendar-range" class="text-[#ff6b35]"></iconify-icon>
                     Production Timeline
                 </h4>
                 <button
                     type="button"
                     id="add-timeline-item"
-                    class="px-4 py-2 glass rounded-xl text-xs font-bold glass-hover flex items-center gap-2"
+                    class="px-4 py-2 rounded-xl border border-white/5 text-xs font-black hover:bg-white/5 transition-all flex items-center gap-2"
                 >
                     <iconify-icon icon="lucide:plus"></iconify-icon>
                     Add Phase
@@ -355,7 +375,7 @@
 
             <div id="timeline-list" class="space-y-4">
                 @foreach ($timelineItems as $index => $item)
-                    <div class="timeline-item glass rounded-2xl p-6 space-y-4" data-timeline-item>
+                    <div class="timeline-item card-photography rounded-2xl p-6 space-y-4" data-timeline-item>
                         <div class="flex items-center justify-between">
                             <span class="text-[10px] uppercase tracking-widest font-bold opacity-40 timeline-label">Phase {{ $index + 1 }}</span>
                             <button
@@ -369,13 +389,13 @@
                                 Remove
                             </button>
                         </div>
-                        <x-input
+                        <x-ui.input
                             name="timeline[{{ $index }}][title]"
                             label="Title"
                             :value="$item['title']"
                             placeholder="Week 01: Ideation"
                         />
-                        <x-textarea
+                        <x-ui.textarea
                             name="timeline[{{ $index }}][text]"
                             label="Text"
                             :value="$item['text']"
@@ -387,7 +407,7 @@
             </div>
 
             <template id="timeline-template">
-                <div class="timeline-item glass rounded-2xl p-6 space-y-4" data-timeline-item>
+                <div class="timeline-item card-photography rounded-2xl p-6 space-y-4" data-timeline-item>
                     <div class="flex items-center justify-between">
                         <span class="text-[10px] uppercase tracking-widest font-bold opacity-40 timeline-label">Phase</span>
                         <button type="button" data-remove-timeline class="text-[10px] uppercase tracking-widest font-bold opacity-40 hover:opacity-100 hover:text-red-400 transition-colors">
@@ -408,14 +428,14 @@
 
         <div>
             <div class="flex items-center justify-between mb-6">
-                <h4 class="text-sm font-bold flex items-center gap-2">
-                    <iconify-icon icon="lucide:users" class="text-[#f5f2ed]/40"></iconify-icon>
+                <h4 class="text-sm font-display font-black flex items-center gap-2">
+                    <iconify-icon icon="lucide:users" class="text-[#ff6b35]"></iconify-icon>
                     Contributors
                 </h4>
                 <button
                     type="button"
                     id="add-contributor"
-                    class="px-4 py-2 glass rounded-xl text-xs font-bold glass-hover flex items-center gap-2"
+                    class="px-4 py-2 rounded-xl border border-white/5 text-xs font-black hover:bg-white/5 transition-all flex items-center gap-2"
                 >
                     <iconify-icon icon="lucide:plus"></iconify-icon>
                     Add Contributor
@@ -425,7 +445,7 @@
             <div id="contributors-list" class="space-y-4">
                 @foreach ($contributors as $index => $contributor)
                     @php $previewUrl = $contributorImageUrl($contributor); @endphp
-                    <div class="contributor-item glass rounded-2xl p-6 space-y-4" data-contributor-item>
+                    <div class="contributor-item card-photography rounded-2xl p-6 space-y-4" data-contributor-item>
                         <div class="flex items-center justify-between">
                             <span class="text-[10px] uppercase tracking-widest font-bold opacity-40 contributor-label">Contributor {{ $index + 1 }}</span>
                             <button
@@ -474,7 +494,7 @@
                                 <div
                                     data-contributor-dropzone
                                     @class([
-                                        'relative flex flex-col items-center justify-center gap-2 p-6 glass rounded-xl border-dashed border-white/10 cursor-pointer hover:border-white/20 transition-colors aspect-square overflow-hidden',
+                                        'relative flex flex-col items-center justify-center gap-2 p-6 card-photography rounded-xl border-dashed border-white/10 cursor-pointer hover:border-[#ff6b35]/30 transition-colors aspect-square overflow-hidden',
                                         'hidden' => filled($previewUrl),
                                     ])
                                 >
@@ -494,26 +514,26 @@
 
                             <div class="lg:col-span-2 space-y-4">
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <x-input
+                                    <x-ui.input
                                         name="contributors[{{ $index }}][name]"
                                         label="Name"
                                         :value="$contributor['name']"
                                         placeholder="Evan W."
                                     />
-                                    <x-input
+                                    <x-ui.input
                                         name="contributors[{{ $index }}][job]"
                                         label="Job"
                                         :value="$contributor['job']"
                                         placeholder="Lead Photographer"
                                     />
                                 </div>
-                                <x-input
+                                <x-ui.input
                                     name="contributors[{{ $index }}][social_media]"
                                     label="Social Media"
                                     :value="$contributor['social_media']"
                                     placeholder="@username or https://instagram.com/..."
                                 />
-                                <x-textarea
+                                <x-ui.textarea
                                     name="contributors[{{ $index }}][description]"
                                     label="Description"
                                     :value="$contributor['description']"
@@ -527,7 +547,7 @@
             </div>
 
             <template id="contributor-template">
-                <div class="contributor-item glass rounded-2xl p-6 space-y-4" data-contributor-item>
+                <div class="contributor-item card-photography rounded-2xl p-6 space-y-4" data-contributor-item>
                     <div class="flex items-center justify-between">
                         <span class="text-[10px] uppercase tracking-widest font-bold opacity-40 contributor-label">Contributor</span>
                         <button type="button" data-remove-contributor class="text-[10px] uppercase tracking-widest font-bold opacity-40 hover:opacity-100 hover:text-red-400 transition-colors">
@@ -540,7 +560,7 @@
                             <p class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Photo</p>
                             <input type="file" accept="image/*,.heic,.heif,.avif,.jpg,.jpeg,.png,.gif,.webp,.bmp,.svg,.tiff,.tif,.ico,.jfif,.jxl,.apng" tabindex="-1" class="absolute h-px w-px overflow-hidden opacity-0" style="clip: rect(0, 0, 0, 0); white-space: nowrap;" data-field="image" data-contributor-image-input>
                             <div class="hidden" data-contributor-preview-wrap></div>
-                            <div data-contributor-dropzone class="relative flex flex-col items-center justify-center gap-2 p-6 glass rounded-xl border-dashed border-white/10 cursor-pointer hover:border-white/20 transition-colors aspect-square overflow-hidden">
+                            <div data-contributor-dropzone class="relative flex flex-col items-center justify-center gap-2 p-6 card-photography rounded-xl border-dashed border-white/10 cursor-pointer hover:border-[#ff6b35]/30 transition-colors aspect-square overflow-hidden">
                                 <label data-contributor-image-trigger class="absolute inset-0 z-10 cursor-pointer" aria-label="Upload contributor photo"></label>
                                 <div class="pointer-events-none flex flex-col items-center justify-center gap-2">
                                     <iconify-icon icon="lucide:user-round" class="text-2xl opacity-30"></iconify-icon>
@@ -577,13 +597,13 @@
     </div>
 
     <div class="mt-12 pt-8 border-t border-white/5">
-        <h3 class="text-lg font-bold flex items-center gap-2 mb-6">
-            <iconify-icon icon="lucide:message-circle" class="text-[#f5f2ed]/40"></iconify-icon>
+        <h3 class="text-lg font-display font-black flex items-center gap-2 mb-6">
+            <iconify-icon icon="lucide:message-circle" class="text-[#ff6b35]"></iconify-icon>
             Client Testimonial
         </h3>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="lg:col-span-2">
-                <x-textarea name="testimonial_quote" label="Quote" :value="$testimonial['quote'] ?? null" rows="4" />
+                <x-ui.textarea name="testimonial_quote" label="Quote" :value="$testimonial['quote'] ?? null" rows="4" />
             </div>
             <div class="space-y-2">
                 <label class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">Author</label>

@@ -41,6 +41,16 @@ class User extends Authenticatable
         return $this->hasMany(Jurnal::class);
     }
 
+    public function portfolioCategories(): HasMany
+    {
+        return $this->hasMany(PortfolioCategory::class);
+    }
+
+    public function jurnalCategories(): HasMany
+    {
+        return $this->hasMany(JurnalCategory::class);
+    }
+
     public function sessions(): HasMany
     {
         return $this->hasMany(Session::class);

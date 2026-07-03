@@ -72,7 +72,7 @@
                         <label class="block text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-2">Password</label>
                         <input type="password" name="password" required class="custom-input" placeholder="••••••••">
                     </div>
-                    <x-checkbox />
+                    <x-ui.checkbox />
                 </div>
                 <button type="submit" class="w-full py-4 border border-zinc-800 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-white hover:text-black transition-all duration-500">Sign In</button>
             </form>

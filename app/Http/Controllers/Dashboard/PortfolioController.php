@@ -26,7 +26,9 @@ class PortfolioController extends Controller
 
     public function create(): View
     {
-        return view('dashboard.portofolio.create');
+        $categories = auth()->user()->portfolioCategories()->orderBy('title')->get();
+
+        return view('dashboard.portofolio.create', compact('categories'));
     }
 
     public function store(StorePortfolioRequest $request): RedirectResponse
@@ -44,7 +46,12 @@ class PortfolioController extends Controller
     {
         $this->authorizePortfolio($portofolio);
 
-        return view('dashboard.portofolio.edit', ['portfolio' => $portofolio]);
+        $categories = auth()->user()->portfolioCategories()->orderBy('title')->get();
+
+        return view('dashboard.portofolio.edit', [
+            'portfolio' => $portofolio,
+            'categories' => $categories,
+        ]);
     }
 
     public function update(UpdatePortfolioRequest $request, Portfolio $portofolio): RedirectResponse

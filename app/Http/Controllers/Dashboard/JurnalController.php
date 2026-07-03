@@ -26,7 +26,9 @@ class JurnalController extends Controller
 
     public function create(): View
     {
-        return view('dashboard.jurnal.create');
+        $categories = auth()->user()->jurnalCategories()->orderBy('title')->get();
+
+        return view('dashboard.jurnal.create', compact('categories'));
     }
 
     public function store(StoreJurnalRequest $request): RedirectResponse
@@ -44,7 +46,9 @@ class JurnalController extends Controller
     {
         $this->authorizeJurnal($jurnal);
 
-        return view('dashboard.jurnal.edit', compact('jurnal'));
+        $categories = auth()->user()->jurnalCategories()->orderBy('title')->get();
+
+        return view('dashboard.jurnal.edit', compact('jurnal', 'categories'));
     }
 
     public function update(UpdateJurnalRequest $request, Jurnal $jurnal): RedirectResponse
