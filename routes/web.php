@@ -31,6 +31,18 @@ Route::middleware('splash')->group(function () {
     Route::get('/contact', function () {
         return view('contact');
     })->name('contact');
+
+    Route::get('/privacy-security', function () {
+        return view('privacy-security');
+    })->name('privacy-security');
+
+    Route::get('/terms-of-service', function () {
+        return view('terms-of-service');
+    })->name('terms-of-service');
+
+    Route::get('/copyright', function () {
+        return view('copyright');
+    })->name('copyright');
 });
 
 Route::middleware('guest')->group(function () {

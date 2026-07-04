@@ -57,9 +57,9 @@
                 </button>
             </form>
             <div class="mt-20 flex flex-wrap gap-6 text-[10px] font-bold uppercase tracking-widest text-zinc-800">
-                <a href="#" class="hover:text-zinc-400" data-aos="fade-up" data-aos-delay="300">Privacy Policy</a>
-                <a href="#" class="hover:text-zinc-400" data-aos="fade-up" data-aos-delay="340">Terms of Service</a>
-                <a href="#" class="hover:text-zinc-400" data-aos="fade-up" data-aos-delay="380">Copyright 2024</a>
+                <a href="{{ route('privacy-security') }}" class="hover:text-zinc-400" data-aos="fade-up" data-aos-delay="300">Privacy Policy</a>
+                <a href="{{ route('terms-of-service') }}" class="hover:text-zinc-400" data-aos="fade-up" data-aos-delay="340">Terms of Service</a>
+                <a href="{{ route('copyright') }}" class="hover:text-zinc-400" data-aos="fade-up" data-aos-delay="380">Copyright 2026</a>
             </div>
         </div>
     </div>
