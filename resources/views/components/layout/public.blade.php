@@ -13,6 +13,26 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,600&family=Epilogue:wght@700;900&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     <title>{{ $title }}</title>
+    @if ($showSplash ?? false)
+        <style>
+            [data-splash-screen] {
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+            }
+
+            html.splash-seen [data-splash-screen] {
+                display: none !important;
+            }
+        </style>
+        <script>
+            try {
+                if (sessionStorage.getItem('noir-splash-seen') === '1') {
+                    document.documentElement.classList.add('splash-seen');
+                }
+            } catch (e) {}
+        </script>
+    @endif
     @if ($withScripts)
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @else
@@ -21,6 +41,9 @@
     @stack('head')
 </head>
 <body {{ $attributes->merge(['class' => 'noir-site']) }}>
+    @if ($showSplash ?? false)
+        <x-spashscreen.splashscreen />
+    @endif
     {{ $slot }}
     @stack('scripts')
 </body>

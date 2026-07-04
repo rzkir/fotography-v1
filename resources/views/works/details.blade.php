@@ -19,9 +19,9 @@
 
         <x-layout.header />
 
-        <main class="relative pt-40 z-10">
+        <main class="relative pt-28 z-10 space-y-24">
             {{-- Hero Header --}}
-            <section class="px-6 md:px-12 mb-32">
+            <section class="px-6 md:px-12">
                 <div class="asymmetric-grid">
                     <div class="col-span-12 lg:col-span-8">
                         <div class="mb-16">
@@ -30,7 +30,7 @@
                                 <span>Back to Selected Works</span>
                             </a>
                             <h1 class="text-5xl sm:text-7xl lg:text-9xl font-display font-black leading-[0.8] tracking-tighter uppercase mb-8">
-                                {{ $portfolio->headlineTitle() }}@if(filled($portfolio->subtitle))<br/><span class="font-serif italic capitalize text-zinc-500 lowercase">{{ $portfolio->subtitle }}</span>@endif
+                                {{ $portfolio->headlineTitle() }}@if(filled($portfolio->subtitle))<br/><span class="font-serif italic capitalize text-zinc-500">{{ $portfolio->subtitle }}</span>@endif
                             </h1>
                             <div class="flex flex-wrap gap-8 items-center mt-12">
                                 @if(filled($portfolio->client))
@@ -74,8 +74,8 @@
             </section>
 
             {{-- Hero Image & Conceptual Framework --}}
-            <section class="px-6 md:px-12 mb-40">
-                <div class="w-full aspect-[21/9] overflow-hidden rounded-sm group mb-24 relative lightbox-hover">
+            <section class="px-6 md:px-12">
+                <div class="w-full aspect-21/9 overflow-hidden rounded-sm group mb-24 relative lightbox-hover">
                     <img
                         src="{{ $heroUrl ?? $placeholderImage }}"
                         alt="{{ $portfolio->title }}"
@@ -148,7 +148,7 @@
                 || $metricsLargeImage
                 || count($metricsSquareImages) > 0
             )
-                <section class="px-6 md:px-12 mb-40">
+                <section class="px-6 md:px-12">
                     <div class="asymmetric-grid">
                         @if(
                             filled($metrics['shots_taken'] ?? null)
@@ -227,7 +227,7 @@
                 || count($timelineItems) > 0
                 || filled($testimonial['quote'] ?? null)
             )
-                <section class="bg-zinc-900 py-32 px-6 md:px-12">
+                <section class="bg-zinc-900 px-6 md:px-12 py-12">
                     <div class="asymmetric-grid">
                         @if(
                             filled($specs['camera_setup'] ?? null)
@@ -334,7 +334,7 @@
 
             {{-- Contributors --}}
             @if($contributors->isNotEmpty())
-                <section class="px-6 md:px-12 py-32">
+                <section class="px-6 md:px-12">
                     <h2 class="text-[10px] font-bold uppercase tracking-[0.5em] text-zinc-500 mb-16">The Contributors</h2>
                     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
                         @foreach($contributors as $contributor)
@@ -372,7 +372,7 @@
 
             {{-- Related Projects --}}
             @if($relatedPortfolios->isNotEmpty())
-                <section class="px-6 md:px-12 py-32 border-t border-zinc-900">
+                <section class="px-6 md:px-12 border-t border-zinc-900 py-12">
                     <div class="flex justify-between items-end mb-16">
                         <h2 class="text-3xl sm:text-5xl font-display font-bold uppercase tracking-tight">Related Projects</h2>
                         <a href="{{ route('works.index') }}" class="text-[10px] font-bold uppercase tracking-widest border-b border-white pb-1">Explore All</a>
@@ -380,7 +380,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
                         @foreach($relatedPortfolios as $related)
                             <a href="{{ route('works.show', $related) }}" class="group block">
-                                <div class="aspect-[3/4] overflow-hidden rounded-sm mb-6 grayscale group-hover:grayscale-0 transition-all duration-700 bg-zinc-900">
+                                <div class="aspect-3/4 overflow-hidden rounded-sm mb-6 grayscale group-hover:grayscale-0 transition-all duration-700 bg-zinc-900">
                                     <img
                                         src="{{ $related->heroImageUrl() ?? $placeholderImage }}"
                                         alt="{{ $related->title }}"

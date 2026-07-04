@@ -73,7 +73,22 @@ html.noir-site {
 .portfolio-grid {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
-    gap: 32px;
+    align-items: start;
+    gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+    .portfolio-grid {
+        gap: 2.5rem;
+    }
+}
+
+.portfolio-grid .project-card {
+    isolation: isolate;
+}
+
+.portfolio-grid .project-card:hover {
+    z-index: 10;
 }
 
 .project-card {
@@ -320,4 +335,134 @@ html.noir-site {
     -webkit-text-stroke: 1px #f5f2ed;
     color: transparent;
     opacity: 0.2;
+}
+
+html.splash-active,
+body.splash-active {
+    overflow: hidden;
+}
+
+html.splash-seen [data-splash-screen] {
+    display: none !important;
+}
+
+.splash-screen {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+        opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+        visibility 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.splash-screen--active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.splash-screen--exit {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.splash-screen--exit .splash-curtain {
+    transform: translateY(0);
+}
+
+.splash-curtain {
+    transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.splash-fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    animation: splash-fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: var(--splash-delay, 0s);
+}
+
+@keyframes splash-fade-up {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .splash-fade-up {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+
+    .splash-curtain {
+        display: none;
+    }
+}
+
+html.site-menu-active,
+body.site-menu-active {
+    overflow: hidden;
+}
+
+.site-nav--menu-open {
+    mix-blend-mode: normal;
+    z-index: 70;
+}
+
+.site-menu {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+        opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+        visibility 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.site-menu--open {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.site-menu__link {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+        opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+        color 0.3s ease;
+}
+
+.site-menu--open .site-menu__link {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.site-menu--open .site-menu__link:nth-child(1) {
+    transition-delay: 0.08s;
+}
+
+.site-menu--open .site-menu__link:nth-child(2) {
+    transition-delay: 0.14s;
+}
+
+.site-menu--open .site-menu__link:nth-child(3) {
+    transition-delay: 0.2s;
+}
+
+.site-menu--open .site-menu__link:nth-child(4) {
+    transition-delay: 0.26s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .site-menu,
+    .site-menu__link {
+        transition: none;
+    }
+
+    .site-menu__link {
+        opacity: 1;
+        transform: none;
+    }
 }

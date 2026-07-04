@@ -17,19 +17,21 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::middleware('splash')->group(function () {
+    Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/works', [WorkController::class, 'index'])->name('works.index');
+    Route::get('/works', [WorkController::class, 'index'])->name('works.index');
 
-Route::get('/works/{portfolio:slug}', [WorkController::class, 'show'])->name('works.show');
+    Route::get('/works/{portfolio:slug}', [WorkController::class, 'show'])->name('works.show');
 
-Route::get('/journal', [JournalController::class, 'index'])->name('journal.index');
+    Route::get('/journal', [JournalController::class, 'index'])->name('journal.index');
 
-Route::get('/journal/{jurnal:slug}', [JournalController::class, 'show'])->name('journal.show');
+    Route::get('/journal/{jurnal:slug}', [JournalController::class, 'show'])->name('journal.show');
 
-Route::get('/contact', function () {
-    return view('contact');
-})->name('contact');
+    Route::get('/contact', function () {
+        return view('contact');
+    })->name('contact');
+});
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');

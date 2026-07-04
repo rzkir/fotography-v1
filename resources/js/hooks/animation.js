@@ -1,10 +1,8 @@
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-
-function playHeroAnimations() {
-    const heroElements = document.querySelectorAll('[data-aos-hero] [data-aos]');
-
-    heroElements.forEach((element) => {
+import { isSplashSeen } from './splash-screen';
+function playImmediateAnimations(selector) {
+    document.querySelectorAll(`${selector} [data-aos]`).forEach((element) => {
         element.classList.remove('aos-animate');
 
         const delay = Number(element.getAttribute('data-aos-delay')) || 0;
@@ -14,9 +12,14 @@ function playHeroAnimations() {
         }, 80 + delay);
     });
 
-    document.querySelectorAll('[data-aos-hero] img').forEach((image) => {
+    document.querySelectorAll(`${selector} img`).forEach((image) => {
         image.style.transform = '';
     });
+}
+
+function playHeroAnimations() {
+    playImmediateAnimations('[data-aos-hero]');
+    playImmediateAnimations('[data-aos-header]');
 }
 
 function startAos() {
@@ -32,19 +35,31 @@ function startAos() {
         mirror: false,
     });
 
-    if (document.querySelector('[data-aos-hero]')) {
+    if (document.querySelector('[data-aos-hero], [data-aos-header]')) {
         playHeroAnimations();
     }
 
     requestAnimationFrame(() => AOS.refresh());
 }
 
-export function initAnimations() {
+function scheduleAosStart() {
     if (document.readyState === 'complete') {
         startAos();
     } else {
         window.addEventListener('load', startAos, { once: true });
     }
+}
+
+export function initAnimations() {
+    const hasSplash = document.querySelector('[data-splash-screen]');
+
+    if (hasSplash && ! isSplashSeen()) {
+        window.addEventListener('splash:complete', scheduleAosStart, { once: true });
+
+        return;
+    }
+
+    scheduleAosStart();
 }
 
 export function refreshAnimations() {

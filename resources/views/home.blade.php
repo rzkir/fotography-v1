@@ -50,7 +50,7 @@
                                 <span class="inline-block text-xs font-bold uppercase tracking-widest text-white/50" data-aos="fade-up" data-aos-delay="450" data-aos-offset="0">Series: Midnight Soul</span>
                             </div>
                         </div>
-                        <div class="absolute -top-12 -left-12 w-48 h-48 bg-zinc-900 hidden xl:flex items-center justify-center text-center p-8 rounded-full border border-zinc-800">
+                        <div class="absolute -top-12 -right-12 w-48 h-48 bg-zinc-900 hidden xl:flex items-center justify-center text-center p-8 rounded-full border border-zinc-800">
                             <p class="text-xs font-bold leading-tight uppercase tracking-widest" data-aos="zoom-in" data-aos-delay="350" data-aos-offset="0">Shot on 35mm Analog Film</p>
                         </div>
                     </div>

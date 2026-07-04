@@ -1,5 +1,7 @@
 import { initAlertDialogs } from "./hooks/alert-dialog";
 import { initAnimations } from "./hooks/animation";
+import { initSiteHeader } from "./hooks/site-header";
+import { initSplashScreen } from "./hooks/splash-screen";
 import { initCategoryDialog } from "./category.service";
 import { initDialogs } from "./hooks/dialog";
 import { initPaginationRoots } from "./hooks/pagination";
@@ -14,11 +16,13 @@ import { initHomePage, initWorksDetail } from "./home.page";
 import { initWorksIndex } from "./works.page";
 
 document.addEventListener("DOMContentLoaded", () => {
+    initAnimations();
+    initSplashScreen();
+    initSiteHeader();
     initPageSkeletons();
     initAlertDialogs();
     initDialogs();
     initPaginationRoots();
-    initAnimations();
 
     if (document.querySelector("[data-journal-index]")) {
         initJournalIndex();

@@ -23,19 +23,19 @@
 
         <x-layout.header />
 
-        <main class="relative z-10">
-            <header class="pt-28 px-6 md:px-12 pb-24 border-b border-zinc-900">
-                <div class="asymmetric-grid max-w-7xl mx-auto">
+        <main class="relative pt-28 z-10 space-y-24">
+            <header class="px-6 md:px-12 py-14 border-b border-zinc-900" data-aos-hero>
+                <div class="asymmetric-grid">
                     <div class="col-span-12 lg:col-span-7">
-                        <span class="text-[10px] font-bold tracking-[0.5em] text-zinc-500 uppercase block mb-6">Studio Journal & Insights</span>
-                        <h1 class="text-5xl md:text-7xl lg:text-9xl font-display font-black leading-[0.8] tracking-tighter uppercase mb-8">
+                        <span class="text-[10px] font-bold tracking-[0.5em] text-zinc-500 uppercase block mb-6" data-aos="fade-down" data-aos-offset="0">Studio Journal & Insights</span>
+                        <h1 class="text-5xl md:text-7xl lg:text-9xl font-display font-black leading-[0.8] tracking-tighter uppercase mb-8" data-aos="fade-right" data-aos-delay="80" data-aos-offset="0">
                             Selected<br/><span class="font-serif italic capitalize text-zinc-500">Writings</span>
                         </h1>
-                        <p class="text-zinc-500 font-light leading-relaxed max-w-xl text-lg">
+                        <p class="text-zinc-500 font-light leading-relaxed max-w-xl text-lg" data-aos="fade-right" data-aos-delay="160" data-aos-offset="0">
                             A curated collection of thoughts on light, shadow, and the human narrative. Exploring the intersection of fine art and technical mastery through the lens of a visionary.
                         </p>
                     </div>
-                    <div class="col-span-12 lg:col-span-5 flex flex-col justify-end lg:items-end mt-12 lg:mt-0">
+                    <div class="col-span-12 lg:col-span-5 flex flex-col justify-end lg:items-end mt-12 lg:mt-0" data-aos="fade-left" data-aos-delay="200" data-aos-offset="0">
                         <div class="w-full max-w-md">
                             <div class="relative flex items-center mb-8">
                                 <input
@@ -65,15 +65,15 @@
             </header>
 
             @if ($jurnals->isEmpty())
-                <section class="py-32 px-6 md:px-12 text-center">
+                <section class="py-32 px-6 md:px-12 text-center" data-aos="fade-up">
                     <iconify-icon icon="lucide:book-open" class="text-5xl text-zinc-700 mb-6"></iconify-icon>
                     <h2 class="text-2xl font-display font-black uppercase mb-4">No stories yet</h2>
                     <p class="text-zinc-500 text-sm max-w-md mx-auto">Published journal articles will appear here once they are live.</p>
                 </section>
             @else
-                <section class="py-24 px-6 md:px-12" id="journal-content" data-journal-index>
+                <section class="px-6 md:px-12" id="journal-content" data-journal-index>
                     @if ($categories->isNotEmpty())
-                        <div class="flex flex-wrap gap-6 md:gap-8 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-20 border-b border-zinc-900 pb-8" id="category-filters">
+                        <div class="flex flex-wrap gap-6 md:gap-8 text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-20 border-b border-zinc-900 pb-8" id="category-filters" data-aos="fade-up">
                             <button type="button" class="filter-btn active" data-category="all">All</button>
                             @foreach ($categories as $category)
                                 <button type="button" class="filter-btn hover:text-white" data-category="{{ $category->category_id }}">
@@ -83,7 +83,7 @@
                         </div>
                     @endif
 
-                    <div class="asymmetric-grid gap-y-32 max-w-7xl mx-auto" id="journal-layout">
+                    <div class="asymmetric-grid gap-y-32" id="journal-layout">
                         <div class="col-span-12 lg:col-span-8 article-featured hidden" id="featured-slot"></div>
 
                         <div class="col-span-12 lg:col-span-4 lg:pl-12 space-y-24 article-pinned-column hidden" id="pinned-slot">
@@ -105,7 +105,7 @@
                 </section>
             @endif
 
-            <div class="py-24 border-t border-zinc-900 overflow-hidden">
+            <div class="border-t border-zinc-900 overflow-hidden py-12" data-aos="fade-up">
                 <div class="marquee-text flex space-x-24 items-center">
                     <span class="text-5xl md:text-7xl font-display font-black text-transparent uppercase" style="-webkit-text-stroke: 1px #27272a;">Journal</span>
                     <span class="text-5xl md:text-7xl font-display font-black uppercase">Insights</span>

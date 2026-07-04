@@ -1,3 +1,5 @@
+import { refreshAnimations } from './hooks/animation';
+
 export function initWorksIndex() {
     const root = document.querySelector('[data-works-index]');
 
@@ -42,6 +44,8 @@ export function initWorksIndex() {
 
             loadMoreBtn.classList.toggle('hidden', shown >= totalMatching);
         }
+
+        refreshAnimations();
     };
 
     const sortItems = () => {
