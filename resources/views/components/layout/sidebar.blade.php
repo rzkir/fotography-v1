@@ -1,4 +1,7 @@
-@props(['active' => 'workspace'])
+@props([
+    'active' => 'workspace',
+    'storageStats' => null,
+])
 
 @php
     $portfolioOpen = in_array($active, ['projects', 'portfolio', 'portfolio-categories']);
@@ -36,6 +39,26 @@
                     ])
                 ></iconify-icon>
                 <span class="nav-text">Overview</span>
+            </a>
+
+            <a
+                href="{{ route('dashboard.analytics.index') }}"
+                id="nav-analytics"
+                @class([
+                    'nav-item flex items-center gap-3 px-3 py-3 rounded-xl transition-all group',
+                    'bg-white/5 text-white font-semibold shadow-inner' => $active === 'analytics',
+                    'text-zinc-400 hover:text-white hover:bg-white/5' => $active !== 'analytics',
+                ])
+            >
+                <iconify-icon
+                    icon="lucide:bar-chart-3"
+                    @class([
+                        'text-xl shrink-0',
+                        'text-[#ff6b35]' => $active === 'analytics',
+                        'group-hover:text-[#ff6b35]' => $active !== 'analytics',
+                    ])
+                ></iconify-icon>
+                <span class="nav-text">Analytics</span>
             </a>
 
             <div class="dropdown-container">
@@ -217,15 +240,20 @@
         <div class="promo-card p-4 rounded-2xl bg-linear-to-br from-zinc-900 to-black border border-white/5 relative overflow-hidden group">
             <div class="absolute -right-4 -top-4 w-20 h-20 bg-[#ff6b35]/10 rounded-full blur-2xl group-hover:bg-[#ff6b35]/20 transition-all"></div>
             <p class="text-[10px] font-bold text-zinc-500 mb-1">STORAGE</p>
-            <p class="text-sm font-bold mb-3">{{ $storage['used_percent'] }}% Full ({{ $storage['used_label'] }})</p>
-            <div class="w-full h-1 bg-zinc-800 rounded-full overflow-hidden mb-4">
-                <div
-                    class="h-full bg-linear-to-r from-[#ff6b35] to-[#fb7185]"
-                    style="width: {{ $storage['used_percent'] }}%"
-                ></div>
-            </div>
+            <p class="text-sm font-bold mb-3">
+                {{ $storage['used_label'] }}
+                <span class="text-zinc-500 font-medium"> / {{ $storage['quota_label'] }}</span>
+            </p>
+            <x-ui.progress
+                :value="$storage['used_percent']"
+                size="md"
+                theme="orange"
+                animated
+                aria-label="Storage usage"
+                class="mb-3"
+            />
             <p class="text-[10px] text-zinc-600 font-bold uppercase tracking-widest mb-4">
-                {{ $storage['used_label'] }} of {{ $storage['quota_label'] }} used
+                {{ $storage['used_percent'] }}% used
             </p>
             <a id="nav-upgrade" href="{{ route('contact') }}" class="block text-center py-2 bg-[#f5f2ed] text-[#0d0d0d] rounded-lg text-xs font-black hover:scale-[1.02] transition-transform">
                 UPGRADE PLAN

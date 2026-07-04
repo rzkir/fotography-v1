@@ -11,7 +11,7 @@ class UserStorageService
      * @return array{
      *     used_bytes: int,
      *     quota_bytes: int,
-     *     used_percent: int,
+     *     used_percent: float|int,
      *     used_label: string,
      *     quota_label: string,
      *     file_count: int
@@ -22,9 +22,7 @@ class UserStorageService
         $paths = $this->collectStoredPaths($user);
         $usedBytes = $this->calculateUsedBytes($paths);
         $quotaBytes = $this->quotaBytes();
-        $usedPercent = $quotaBytes > 0
-            ? min(100, (int) round(($usedBytes / $quotaBytes) * 100))
-            : 0;
+        $usedPercent = $this->usedPercent($usedBytes, $quotaBytes);
 
         return [
             'used_bytes' => $usedBytes,
@@ -97,6 +95,21 @@ class UserStorageService
         }
 
         return $total;
+    }
+
+    private function usedPercent(int $usedBytes, int $quotaBytes): float|int
+    {
+        if ($quotaBytes <= 0) {
+            return 0;
+        }
+
+        $percent = min(100, ($usedBytes / $quotaBytes) * 100);
+
+        if ($percent > 0 && $percent < 1) {
+            return round($percent, 1);
+        }
+
+        return (int) round($percent);
     }
 
     private function quotaBytes(): int

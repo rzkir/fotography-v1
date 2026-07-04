@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Dashboard\AnalyticsController;
 use App\Http\Controllers\Dashboard\FeatureController;
 use App\Http\Controllers\Dashboard\GalleryController;
 use App\Http\Controllers\Dashboard\JurnalCategoryController;
@@ -18,7 +19,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('splash')->group(function () {
+Route::middleware(['splash', 'track.pageview'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
     Route::get('/works', [WorkController::class, 'index'])->name('works.index');
@@ -98,6 +99,8 @@ Route::middleware(['auth', 'dashboard.storage'])->prefix('dashboard')->name('das
 
         return view('dashboard.index', compact('portfolios', 'stats', 'shoots'));
     })->name('index');
+
+    Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
 
     Route::get('portofolio/category', [PortfolioCategoryController::class, 'index'])->name('portofolio.category.index');
     Route::post('portofolio/category', [PortfolioCategoryController::class, 'store'])->name('portofolio.category.store');

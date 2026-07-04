@@ -173,7 +173,7 @@
 </head>
 <body>
     <div class="flex min-h-screen relative">
-        <x-layout.sidebar :active="$active" />
+        <x-layout.sidebar :active="$active" :storage-stats="$storageStats ?? null" />
 
         <main id="main-content" class="flex-1 min-w-0">
             @isset($header)

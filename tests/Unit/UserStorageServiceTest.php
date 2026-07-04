@@ -83,4 +83,21 @@ class UserStorageServiceTest extends TestCase
         $this->assertSame(512 * 1024, $stats['used_bytes']);
         $this->assertSame(1, $stats['file_count']);
     }
+
+    public function test_shows_fractional_percent_for_small_usage(): void
+    {
+        Storage::fake('public');
+        config(['upload.storage_quota_megabytes' => 5120]);
+
+        $user = User::factory()->create();
+        $fileContents = str_repeat('c', 14 * 1024 * 1024);
+
+        Storage::disk('public')->put('galleries/images/hero.jpg', $fileContents);
+        Gallery::factory()->for($user)->create(['image' => 'galleries/images/hero.jpg']);
+
+        $stats = app(UserStorageService::class)->forUser($user);
+
+        $this->assertSame(14 * 1024 * 1024, $stats['used_bytes']);
+        $this->assertSame(0.3, $stats['used_percent']);
+    }
 }
