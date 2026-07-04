@@ -6,6 +6,7 @@
     'preview' => null,
     'hint' => null,
     'previewAspect' => '21/9',
+    'previewHeight' => null,
 ])
 
 @php
@@ -15,9 +16,19 @@
     $pickerId = $inputId.'-picker';
     $storeId = $inputId.'-store';
     $hasPreview = filled($preview);
+    $aspectClass = match ($previewAspect) {
+        '1/1' => 'aspect-square',
+        '4/5' => 'aspect-4/5',
+        '3/4' => 'aspect-3/4',
+        '21/9' => 'aspect-21/9',
+        default => 'aspect-['.$previewAspect.']',
+    };
+    $previewStyle = filled($previewHeight)
+        ? 'height: '.$previewHeight.'; width: 100%;'
+        : 'aspect-ratio: '.str_replace('/', ' / ', $previewAspect).'; width: 100%;';
 @endphp
 
-<div {{ $attributes->only('class')->merge(['class' => 'relative space-y-2']) }} data-upload-root data-upload-mode="{{ $multiple ? 'gallery' : 'single' }}" data-upload-input-id="{{ $inputId }}">
+<div {{ $attributes->only('class')->merge(['class' => 'relative space-y-2']) }} data-upload-root data-upload-mode="{{ $multiple ? 'gallery' : 'single' }}" data-upload-input-id="{{ $inputId }}" data-upload-preview-aspect="{{ $previewAspect }}" data-upload-aspect-class="{{ $aspectClass }}" data-upload-preview-style="{{ $previewStyle }}">
     @if ($label)
         <p class="text-[10px] uppercase tracking-widest font-bold opacity-40 px-1">
             {{ $label }}
@@ -42,7 +53,7 @@
             <div
                 id="{{ $dropzoneId }}"
                 data-upload-dropzone
-                class="relative aspect-square rounded-xl overflow-hidden border border-dashed border-white/20 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-white/40 hover:bg-white/[0.02] transition-colors"
+                class="relative aspect-square rounded-xl overflow-hidden border border-dashed border-white/20 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-white/40 hover:bg-white/2 transition-colors"
             >
                 <input
                     type="file"
@@ -77,10 +88,10 @@
         {{-- Single: hide dropzone when preview exists --}}
         <div
             id="{{ $previewId }}"
-            @class(['hidden' => ! $hasPreview])
+            @class(['w-full', 'hidden' => ! $hasPreview])
         >
             @if ($hasPreview)
-                <div class="relative rounded-[1.25rem] overflow-hidden border border-white/10 aspect-[21/9] group">
+                <div class="relative rounded-[1.25rem] overflow-hidden border border-white/10 group" style="{{ $previewStyle }}">
                     <img src="{{ $preview }}" alt="Preview" class="w-full h-full object-cover">
                     <button
                         type="button"
@@ -98,9 +109,10 @@
             id="{{ $dropzoneId }}"
             data-upload-dropzone
             @class([
-                'relative flex flex-col items-center justify-center gap-3 p-8 glass rounded-[1.25rem] border-dashed border-white/10 cursor-pointer hover:border-white/20 transition-colors overflow-hidden',
+                'relative flex flex-col items-center justify-center gap-3 glass rounded-[1.25rem] border-dashed border-white/10 cursor-pointer hover:border-white/20 transition-colors overflow-hidden w-full',
                 'hidden' => $hasPreview,
             ])
+            style="{{ $previewStyle }}"
         >
             <label for="{{ $inputId }}" class="absolute inset-0 z-10 cursor-pointer" aria-label="Upload image"></label>
             <div class="pointer-events-none flex flex-col items-center justify-center gap-3">

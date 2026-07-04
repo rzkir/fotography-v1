@@ -81,7 +81,7 @@
             </div>
 
             <a
-                href="/works"
+                href="{{ route('dashboard.gallery.index') }}"
                 id="nav-gallery"
                 @class([
                     'nav-item flex items-center gap-3 px-3 py-3 rounded-xl transition-all group',
@@ -202,69 +202,34 @@
                     </a>
                 </div>
             </div>
-
-            <a
-                href="/contact"
-                id="nav-schedule"
-                @class([
-                    'nav-item flex items-center gap-3 px-3 py-3 rounded-xl transition-all group',
-                    'bg-white/5 text-white font-semibold' => $active === 'schedule',
-                    'text-zinc-400 hover:text-white hover:bg-white/5' => $active !== 'schedule',
-                ])
-            >
-                <iconify-icon icon="lucide:calendar-range" class="text-xl shrink-0 group-hover:text-yellow-400"></iconify-icon>
-                <span class="nav-text">Shooting Plan</span>
-            </a>
-        </div>
-
-        <div class="space-y-1">
-            <p class="group-title text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-black px-3 mb-4">Account</p>
-
-            <a
-                href="{{ route('dashboard.profile.index') }}"
-                id="nav-profile"
-                @class([
-                    'nav-item flex items-center gap-3 px-3 py-3 rounded-xl transition-all group',
-                    'bg-white/5 text-white font-semibold shadow-inner' => in_array($active, ['profile', 'profile-password']),
-                    'text-zinc-400 hover:text-white hover:bg-white/5' => ! in_array($active, ['profile', 'profile-password']),
-                ])
-            >
-                <iconify-icon
-                    icon="lucide:user"
-                    @class([
-                        'text-xl shrink-0',
-                        'text-[#fb7185]' => in_array($active, ['profile', 'profile-password']),
-                        'group-hover:text-[#fb7185]' => ! in_array($active, ['profile', 'profile-password']),
-                    ])
-                ></iconify-icon>
-                <span class="nav-text">Profile Settings</span>
-            </a>
-        </div>
-
-        <div class="promo-card mt-auto p-4 mx-1 rounded-2xl bg-linear-to-br from-zinc-900 to-black border border-white/5 relative overflow-hidden group">
-            <div class="absolute -right-4 -top-4 w-20 h-20 bg-[#ff6b35]/10 rounded-full blur-2xl group-hover:bg-[#ff6b35]/20 transition-all"></div>
-            <p class="text-[10px] font-bold text-zinc-500 mb-1">STORAGE</p>
-            <p class="text-sm font-bold mb-3">82% Full (4.1 TB)</p>
-            <div class="w-full h-1 bg-zinc-800 rounded-full overflow-hidden mb-4">
-                <div class="h-full bg-linear-to-r from-[#ff6b35] to-[#fb7185] w-[82%]"></div>
-            </div>
-            <a id="nav-upgrade" href="/contact" class="block text-center py-2 bg-[#f5f2ed] text-[#0d0d0d] rounded-lg text-xs font-black hover:scale-[1.02] transition-transform">
-                UPGRADE PLAN
-            </a>
         </div>
     </nav>
 
     <div class="p-6 border-t border-white/5">
-        <div class="flex items-center gap-3 p-2 bg-white/5 rounded-2xl">
-            <img
-                src="https://api.dicebear.com/7.x/shapes/svg?seed={{ rawurlencode(auth()->user()->name) }}"
-                class="w-10 h-10 rounded-xl object-cover"
-                alt="{{ auth()->user()->name }}"
-            >
-            <div class="user-info flex flex-col overflow-hidden">
-                <span class="text-sm font-bold whitespace-nowrap">{{ auth()->user()->name }}</span>
-                <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Pro Photographer</span>
+        @php
+            $storage = $storageStats ?? [
+                'used_percent' => 0,
+                'used_label' => '0 B',
+                'quota_label' => '0 B',
+            ];
+        @endphp
+
+        <div class="promo-card p-4 rounded-2xl bg-linear-to-br from-zinc-900 to-black border border-white/5 relative overflow-hidden group">
+            <div class="absolute -right-4 -top-4 w-20 h-20 bg-[#ff6b35]/10 rounded-full blur-2xl group-hover:bg-[#ff6b35]/20 transition-all"></div>
+            <p class="text-[10px] font-bold text-zinc-500 mb-1">STORAGE</p>
+            <p class="text-sm font-bold mb-3">{{ $storage['used_percent'] }}% Full ({{ $storage['used_label'] }})</p>
+            <div class="w-full h-1 bg-zinc-800 rounded-full overflow-hidden mb-4">
+                <div
+                    class="h-full bg-linear-to-r from-[#ff6b35] to-[#fb7185]"
+                    style="width: {{ $storage['used_percent'] }}%"
+                ></div>
             </div>
+            <p class="text-[10px] text-zinc-600 font-bold uppercase tracking-widest mb-4">
+                {{ $storage['used_label'] }} of {{ $storage['quota_label'] }} used
+            </p>
+            <a id="nav-upgrade" href="{{ route('contact') }}" class="block text-center py-2 bg-[#f5f2ed] text-[#0d0d0d] rounded-lg text-xs font-black hover:scale-[1.02] transition-transform">
+                UPGRADE PLAN
+            </a>
         </div>
     </div>
 </aside>

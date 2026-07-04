@@ -366,23 +366,60 @@ html.noir-site:has([data-legal-page]) {
 }
 
 [data-gallery-index] .gallery-card {
-    transition: opacity 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    content-visibility: auto;
+    contain-intrinsic-size: auto 420px;
+    contain: layout paint style;
 }
 
-[data-gallery-index] .gallery-card:hover {
-    opacity: 0.7;
+.gallery-item__image {
+    transition: opacity 0.35s ease, transform 0.5s ease;
 }
 
-[data-gallery-index] .gallery-card:hover img {
-    transform: none;
+@media (hover: hover) {
+    [data-gallery-index] .gallery-card:hover .gallery-item__image {
+        opacity: 0.88;
+        transform: scale(1.03);
+    }
 }
 
-.gallery-item img {
-    transition: transform 0.8s ease;
+[data-error-page] .error-grain-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 40;
+    opacity: 0.04;
+    background-image: url("https://grainy-gradients.vercel.app/noise.svg");
 }
 
-.gallery-item:hover img {
-    transform: scale(1.05);
+[data-error-page] .btn-noir {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    width: 100%;
+    border: 1px solid #f5f2ed;
+    padding: 1.25rem 2rem;
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 0.75rem;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-error-page] .btn-noir:hover {
+    background-color: #f5f2ed;
+    color: #0d0d0d;
+}
+
+[data-error-page] .btn-noir--muted {
+    border-color: rgba(245, 242, 237, 0.1);
+    opacity: 0.6;
+}
+
+[data-error-page] .btn-noir--muted:hover {
+    opacity: 1;
 }
 
 .step-number {

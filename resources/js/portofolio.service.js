@@ -157,10 +157,12 @@ function initSingleUpload(root, inputId) {
 
         hideDropzone();
 
+        const previewStyle =
+            root.dataset.uploadPreviewStyle ?? "aspect-ratio: 21 / 9; width: 100%;";
         const reader = new FileReader();
         reader.onload = (loadEvent) => {
             previewArea.innerHTML = `
-                <div class="relative rounded-[1.25rem] overflow-hidden border border-white/10 aspect-21/9 group">
+                <div class="relative rounded-[1.25rem] overflow-hidden border border-white/10 group" style="${previewStyle}">
                     <img src="${loadEvent.target.result}" alt="${file.name}" class="w-full h-full object-cover">
                     <button type="button" data-upload-change class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest">
                         <iconify-icon icon="lucide:refresh-cw"></iconify-icon>

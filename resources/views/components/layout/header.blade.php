@@ -48,9 +48,9 @@
                         href="{{ route($item['route']) }}"
                         id="{{ $item['id'] }}"
                         @class([
-                            'transition-opacity hover:opacity-100',
-                            'opacity-100' => $activeNav === $item['key'],
-                            'opacity-60' => $activeNav !== $item['key'],
+                            'relative pb-1 transition-opacity hover:opacity-100 after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-current after:transition-opacity',
+                            'opacity-100 after:opacity-100' => $activeNav === $item['key'],
+                            'opacity-60 after:opacity-0' => $activeNav !== $item['key'],
                         ])
                         @if ($activeNav === $item['key']) aria-current="page" @endif
                         data-aos="fade-down"
@@ -96,9 +96,9 @@
                         href="{{ route($item['route']) }}"
                         data-menu-link
                         @class([
-                            'site-menu__link block py-3 text-4xl sm:text-5xl font-display font-black uppercase tracking-tighter transition-colors',
-                            'text-white' => $activeNav === $item['key'],
-                            'text-zinc-500 hover:text-white' => $activeNav !== $item['key'],
+                            'site-menu__link block border-l-2 py-3 pl-5 text-4xl sm:text-5xl font-display font-black uppercase tracking-tighter transition-colors',
+                            'border-white text-white' => $activeNav === $item['key'],
+                            'border-transparent text-zinc-500 hover:border-zinc-700 hover:text-white' => $activeNav !== $item['key'],
                         ])
                         @if ($activeNav === $item['key']) aria-current="page" @endif
                     >{{ $item['label'] }}</a>

@@ -33,6 +33,10 @@ class ImageFile implements ValidationRule
         }
 
         if (! $value->isValid()) {
+            if (in_array($value->getError(), [UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE, UPLOAD_ERR_PARTIAL], true)) {
+                return;
+            }
+
             $fail('The :attribute failed to upload.');
 
             return;

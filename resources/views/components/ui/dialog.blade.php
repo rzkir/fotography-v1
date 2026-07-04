@@ -2,12 +2,13 @@
     'id' => 'dialog',
     'title' => null,
     'maxWidth' => 'max-w-lg',
+    'scrollable' => false,
 ])
 
 <div
     id="{{ $id }}"
     data-dialog
-    class="fixed inset-0 z-[200] hidden items-center justify-center p-4"
+    class="fixed inset-0 z-200 hidden items-center justify-center p-4"
     role="dialog"
     aria-modal="true"
     @if ($title) aria-labelledby="{{ $id }}-title" @endif
@@ -19,10 +20,13 @@
     ></div>
 
     <div
-        @class(['w-full rounded-[2rem] p-6 lg:p-8', $maxWidth])
+        @class([
+            'w-full rounded-[2rem] p-6 lg:p-8 flex flex-col max-h-[90vh]',
+            $maxWidth,
+        ])
         style="position: relative; z-index: 10; background: #181818; border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35), 0 28px 64px rgba(0, 0, 0, 0.70);"
     >
-        <div class="flex items-start justify-between gap-4 mb-6">
+        <div class="flex items-start justify-between gap-4 mb-6 shrink-0">
             @if ($title)
                 <h3 id="{{ $id }}-title" data-dialog-title class="text-xl font-display font-black tracking-tight">
                     {{ $title }}
@@ -33,13 +37,19 @@
             <button
                 type="button"
                 data-dialog-close
-                class="w-10 h-10 rounded-xl border border-white/5 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/5 transition-all flex-shrink-0"
+                class="w-10 h-10 rounded-xl border border-white/5 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/5 transition-all shrink-0"
                 title="Close"
             >
                 <iconify-icon icon="lucide:x" class="text-lg"></iconify-icon>
             </button>
         </div>
 
-        {{ $slot }}
+        @if ($scrollable)
+            <div class="flex-1 min-h-0 overflow-y-auto custom-scroll -mx-1 px-1">
+                {{ $slot }}
+            </div>
+        @else
+            {{ $slot }}
+        @endif
     </div>
 </div>

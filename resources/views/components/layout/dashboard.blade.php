@@ -49,8 +49,7 @@
         #sidebar.collapsed .nav-text,
         #sidebar.collapsed .chevron,
         #sidebar.collapsed .group-title,
-        #sidebar.collapsed .promo-card,
-        #sidebar.collapsed .user-info {
+        #sidebar.collapsed .promo-card {
             display: none;
         }
         #sidebar.collapsed .nav-item {
@@ -197,15 +196,7 @@
                             <iconify-icon icon="lucide:search" class="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500"></iconify-icon>
                         </div>
                         <div class="flex items-center gap-2">
-                            <form method="POST" action="{{ route('logout') }}" class="inline">
-                                @csrf
-                                <button type="submit" class="w-12 h-12 rounded-xl border border-white/5 flex items-center justify-center text-zinc-400 hover:text-white transition-all hover:bg-white/5" title="Sign out">
-                                    <iconify-icon icon="lucide:log-out" class="text-xl"></iconify-icon>
-                                </button>
-                            </form>
-                            <a href="{{ route('dashboard.portofolio.create') }}" class="w-12 h-12 rounded-xl bg-[#ff6b35] text-white flex items-center justify-center shadow-lg shadow-orange-500/20 hover:scale-105 transition-all" title="New project">
-                                <iconify-icon icon="lucide:plus" class="text-2xl"></iconify-icon>
-                            </a>
+                            <x-layout.profile />
                         </div>
                     </div>
                 </header>
@@ -257,6 +248,54 @@
             sidebar.classList.toggle('collapsed');
             mainContent.classList.toggle('sidebar-collapsed');
         }
+
+        function initDashboardProfile() {
+            const profile = document.querySelector('[data-dashboard-profile]');
+
+            if (!profile) {
+                return;
+            }
+
+            const toggle = profile.querySelector('[data-dashboard-profile-toggle]');
+            const menu = profile.querySelector('[data-dashboard-profile-menu]');
+            const chevron = profile.querySelector('[data-dashboard-profile-chevron]');
+
+            const closeMenu = () => {
+                menu?.classList.add('hidden');
+                toggle?.setAttribute('aria-expanded', 'false');
+                chevron?.classList.remove('rotate-180');
+            };
+
+            const openMenu = () => {
+                menu?.classList.remove('hidden');
+                toggle?.setAttribute('aria-expanded', 'true');
+                chevron?.classList.add('rotate-180');
+            };
+
+            toggle?.addEventListener('click', (event) => {
+                event.stopPropagation();
+
+                if (menu?.classList.contains('hidden')) {
+                    openMenu();
+                } else {
+                    closeMenu();
+                }
+            });
+
+            document.addEventListener('click', (event) => {
+                if (!profile.contains(event.target)) {
+                    closeMenu();
+                }
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    closeMenu();
+                }
+            });
+        }
+
+        initDashboardProfile();
 
         document.addEventListener('keydown', (e) => {
             if ((e.ctrlKey || e.metaKey) && e.key === 'b') {

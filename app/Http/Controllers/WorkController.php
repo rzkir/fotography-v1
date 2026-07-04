@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Gallery;
 use App\Models\Portfolio;
 use App\Models\PortfolioCategory;
 use Illuminate\View\View;
@@ -47,7 +48,11 @@ class WorkController extends Controller
 
     public function gallery(): View
     {
-        return view('gellery');
+        $galleries = Gallery::query()
+            ->latest()
+            ->get();
+
+        return view('gellery', compact('galleries'));
     }
 
     public function show(Portfolio $portfolio): View

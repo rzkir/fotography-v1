@@ -5,14 +5,16 @@
                 <h1 class="text-2xl font-display font-black tracking-tight leading-none uppercase">Studio Highlights</h1>
                 <p class="text-xs text-zinc-500 font-bold tracking-[0.2em] mt-1 uppercase">Features & Key Metrics</p>
             </div>
-            <button
-                type="button"
-                data-feature-open="feature-dialog"
-                data-feature-mode="create"
-                class="px-6 py-3 bg-[#ff6b35] text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-orange-500/20 hover:scale-105 transition-all"
-            >
-                Add Feature
-            </button>
+            <x-layout.dashboard-header-actions>
+                <button
+                    type="button"
+                    data-feature-open="feature-dialog"
+                    data-feature-mode="create"
+                    class="px-6 py-3 bg-[#ff6b35] text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-orange-500/20 hover:scale-105 transition-all"
+                >
+                    Add Feature
+                </button>
+            </x-layout.dashboard-header-actions>
         </header>
     </x-slot:header>
 

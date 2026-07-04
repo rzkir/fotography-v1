@@ -47,6 +47,20 @@ function startLegalPageAnimations() {
     playHeroAnimations();
 }
 
+function startGalleryPageAnimations() {
+    playHeroAnimations();
+    revealStaticAosElements();
+
+    document.querySelectorAll('[data-gallery-index] [data-aos]').forEach((element) => {
+        element.classList.add('aos-animate');
+    });
+}
+
+function startErrorPageAnimations() {
+    playHeroAnimations();
+    revealStaticAosElements();
+}
+
 function startAos() {
     if (! document.querySelector('[data-aos]')) {
         return;
@@ -56,6 +70,18 @@ function startAos() {
 
     if (isLegalPage) {
         startLegalPageAnimations();
+
+        return;
+    }
+
+    if (document.querySelector('[data-gallery-index]')) {
+        startGalleryPageAnimations();
+
+        return;
+    }
+
+    if (document.querySelector('[data-error-page]')) {
+        startErrorPageAnimations();
 
         return;
     }

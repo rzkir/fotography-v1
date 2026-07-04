@@ -12,7 +12,9 @@ import { initPageSkeletons } from "./hooks/skeleton";
 import { initTeamForm } from "./teams.service";
 import { initFeaturesDialog } from "./features.blade.js";
 import { initTestimonialsDialog } from "./testimonials.service";
+import { initGalleryDialog } from "./gallery.service";
 import { initLegalNav } from "./hooks/legal-nav";
+import { initGalleryPage } from "./gallery.page";
 import { initHomePage, initWorksDetail } from "./home.page";
 import { initWorksIndex } from "./works.page";
 
@@ -45,6 +47,10 @@ document.addEventListener("DOMContentLoaded", () => {
         initHomePage();
     }
 
+    if (document.querySelector("[data-gallery-index]")) {
+        initGalleryPage();
+    }
+
     document.querySelectorAll("[data-category-form]").forEach((form) => {
         initCategoryDialog(form.id.replace("-form", ""));
     });
@@ -55,6 +61,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll("[data-feature-form]").forEach((form) => {
         initFeaturesDialog(form.id.replace("-form", ""));
+    });
+
+    document.querySelectorAll("[data-gallery-form]").forEach((form) => {
+        initGalleryDialog(form.id.replace("-form", ""));
     });
 
     if (document.getElementById("portfolio-form")) {

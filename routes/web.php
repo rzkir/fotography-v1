@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Dashboard\FeatureController;
+use App\Http\Controllers\Dashboard\GalleryController;
 use App\Http\Controllers\Dashboard\JurnalCategoryController;
 use App\Http\Controllers\Dashboard\JurnalController;
 use App\Http\Controllers\Dashboard\PortfolioCategoryController;
@@ -56,7 +57,7 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
-Route::middleware('auth')->prefix('dashboard')->name('dashboard.')->group(function () {
+Route::middleware(['auth', 'dashboard.storage'])->prefix('dashboard')->name('dashboard.')->group(function () {
     Route::get('/', function () {
         $user = auth()->user();
         $portfolios = $user->portfolios()->with('portfolioCategory')->latest()->take(3)->get();
@@ -112,6 +113,7 @@ Route::middleware('auth')->prefix('dashboard')->name('dashboard.')->group(functi
     Route::resource('testimonials', TestimonialController::class)->except(['show', 'create', 'edit']);
     Route::resource('features', FeatureController::class)->except(['show', 'create', 'edit']);
     Route::resource('teams', TeamController::class)->except(['show']);
+    Route::resource('gallery', GalleryController::class)->except(['show', 'create', 'edit']);
 
     Route::get('profile', function (Request $request) {
         $user = $request->user();
