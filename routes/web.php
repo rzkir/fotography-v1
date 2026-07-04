@@ -22,6 +22,8 @@ Route::middleware('splash')->group(function () {
 
     Route::get('/works', [WorkController::class, 'index'])->name('works.index');
 
+    Route::get('/gallery', [WorkController::class, 'gallery'])->name('gallery.index');
+
     Route::get('/works/{portfolio:slug}', [WorkController::class, 'show'])->name('works.show');
 
     Route::get('/journal', [JournalController::class, 'index'])->name('journal.index');

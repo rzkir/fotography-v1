@@ -22,8 +22,41 @@ function playHeroAnimations() {
     playImmediateAnimations('[data-aos-header]');
 }
 
+function revealStaticAosElements() {
+    document.querySelectorAll('footer [data-aos]').forEach((element) => {
+        element.classList.add('aos-animate');
+    });
+}
+
+function startLegalPageAnimations() {
+    revealStaticAosElements();
+
+    if (document.querySelector('[data-legal-page] main [data-aos]')) {
+        AOS.init({
+            duration: 700,
+            easing: 'ease-out-cubic',
+            once: true,
+            offset: 60,
+            mirror: false,
+            throttleDelay: 120,
+        });
+
+        requestAnimationFrame(() => AOS.refresh());
+    }
+
+    playHeroAnimations();
+}
+
 function startAos() {
     if (! document.querySelector('[data-aos]')) {
+        return;
+    }
+
+    const isLegalPage = document.querySelector('[data-legal-page]') !== null;
+
+    if (isLegalPage) {
+        startLegalPageAnimations();
+
         return;
     }
 
@@ -33,6 +66,7 @@ function startAos() {
         once: true,
         offset: 80,
         mirror: false,
+        throttleDelay: 120,
     });
 
     if (document.querySelector('[data-aos-hero], [data-aos-header]')) {

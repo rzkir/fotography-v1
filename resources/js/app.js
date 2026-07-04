@@ -12,6 +12,7 @@ import { initPageSkeletons } from "./hooks/skeleton";
 import { initTeamForm } from "./teams.service";
 import { initFeaturesDialog } from "./features.blade.js";
 import { initTestimonialsDialog } from "./testimonials.service";
+import { initLegalNav } from "./hooks/legal-nav";
 import { initHomePage, initWorksDetail } from "./home.page";
 import { initWorksIndex } from "./works.page";
 
@@ -23,6 +24,10 @@ document.addEventListener("DOMContentLoaded", () => {
     initAlertDialogs();
     initDialogs();
     initPaginationRoots();
+
+    if (document.querySelector("[data-legal-page]")) {
+        initLegalNav();
+    }
 
     if (document.querySelector("[data-journal-index]")) {
         initJournalIndex();

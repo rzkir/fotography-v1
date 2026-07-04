@@ -45,6 +45,11 @@ class WorkController extends Controller
         ));
     }
 
+    public function gallery(): View
+    {
+        return view('gellery');
+    }
+
     public function show(Portfolio $portfolio): View
     {
         abort_unless($portfolio->is_published, 404);

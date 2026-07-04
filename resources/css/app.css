@@ -21,11 +21,38 @@ html.noir-site {
     scroll-behavior: smooth;
 }
 
+html.noir-site:has([data-legal-page]) {
+    scroll-behavior: auto;
+}
+
 .noir-site {
     background-color: var(--bg-color);
     color: var(--accent-color);
     font-family: "Satoshi", sans-serif;
-    overflow-x: hidden;
+    overflow-x: clip;
+}
+
+[data-legal-page],
+[data-legal-page] main {
+    overflow: visible;
+}
+
+[data-legal-nav] a {
+    display: block;
+    opacity: 0.4;
+    transition: opacity 0.3s ease, border-color 0.3s ease, padding 0.3s ease;
+}
+
+[data-legal-nav] a:hover {
+    opacity: 1;
+}
+
+[data-legal-nav] li.is-active a,
+[data-legal-nav] a.is-active {
+    opacity: 1;
+    padding-left: 1rem;
+    border-left: 1px solid var(--accent-color);
+    margin-left: -1rem;
 }
 
 .noir-site input::placeholder,
@@ -321,6 +348,33 @@ html.noir-site {
 
 .custom-input:focus {
     border-color: #f5f2ed;
+}
+
+.gallery-filter-btn {
+    border-bottom: 2px solid transparent;
+    opacity: 0.4;
+    transition: opacity 0.3s ease, border-color 0.3s ease;
+}
+
+.gallery-filter-btn:hover,
+.gallery-filter-btn.active {
+    opacity: 1;
+}
+
+.gallery-filter-btn.active {
+    border-bottom-color: var(--accent-color);
+}
+
+[data-gallery-index] .gallery-card {
+    transition: opacity 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+[data-gallery-index] .gallery-card:hover {
+    opacity: 0.7;
+}
+
+[data-gallery-index] .gallery-card:hover img {
+    transform: none;
 }
 
 .gallery-item img {
